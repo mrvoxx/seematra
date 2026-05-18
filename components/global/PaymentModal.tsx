@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ShieldCheck, IndianRupee, Users, Car } from 'lucide-react';
+import { ShieldCheck, IndianRupee, Users, Car, CheckCircle2, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { IPricingTier } from '@/types';
 
@@ -32,45 +32,43 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
   const [contactPhone, setContactPhone] = useState('');
   const [tourDate, setTourDate] = useState('');
   const [groupSize, setGroupSize] = useState<GroupSize>(2);
-  const [method, setMethod] = useState<'online' | 'direct'>('online');
+  
+  // Payment selection
+  const [paymentMode, setPaymentMode] = useState<'full' | 'advance_40' | 'reservation_500'>('advance_40');
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const totalAmount = getTierPrice(itinerary.pricingTiers, groupSize, itinerary.price);
   const vehicleAssigned = getTierVehicle(itinerary.pricingTiers, groupSize);
-  const advanceLevel = Math.ceil(totalAmount / 3);
-  const balanceDue = totalAmount - advanceLevel;
+
+  let amountToPayNow = 0;
+  if (paymentMode === 'full') amountToPayNow = totalAmount;
+  if (paymentMode === 'advance_40') amountToPayNow = Math.ceil(totalAmount * 0.4);
+  if (paymentMode === 'reservation_500') amountToPayNow = 500;
 
   // Minimum date = today
   const today = new Date().toISOString().split('T')[0];
 
   const handleCheckout = async () => {
+    if (paymentMode === 'reservation_500' && !disclaimerAccepted) {
+      toast.error('You must accept the reservation terms to proceed.');
+      return;
+    }
+
     setLoading(true);
     try {
-      if (method === 'direct') {
-        const res = await fetch('/api/bookings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            itineraryId: itinerary._id,
-            paymentType: 'direct',
-            pickupPoint,
-            contactPhone,
-            tourDate,
-            groupSize,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Booking failed');
-        toast.success('Booking confirmed! Payment due on arrival.');
-        onSuccess(data.data._id);
-        return;
-      }
-
-      // Online payment flow via Razorpay
       const res = await fetch('/api/payments/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itineraryId: itinerary._id, pickupPoint, contactPhone, tourDate, groupSize }),
+        body: JSON.stringify({ 
+          itineraryId: itinerary._id, 
+          pickupPoint, 
+          contactPhone, 
+          tourDate, 
+          groupSize,
+          paymentMode,
+          disclaimerAccepted
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to initialize payment');
@@ -82,8 +80,9 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
         amount: amountPaidOnline * 100,
         currency: 'INR',
         name: 'Seematra Tourism',
-        description: `Advance payment for ${itinerary.title}`,
+        description: `${paymentMode === 'full' ? 'Full' : paymentMode === 'advance_40' ? 'Advance' : 'Reservation'} payment for ${itinerary.title}`,
         order_id: orderId,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         handler: async function (response: any) {
           try {
             const verifyRes = await fetch('/api/payments/verify', {
@@ -101,15 +100,18 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
 
             toast.success('Payment successful! Booking confirmed.');
             onSuccess(bookingId);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
             toast.error(err.message || 'Payment verification failed');
           }
         },
-        prefill: { name: '', email: '' },
+        prefill: { contact: contactPhone },
         theme: { color: '#E87F24' },
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rzp = new (window as any).Razorpay(options);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rzp.on('payment.failed', function (response: any) {
         toast.error(`Payment failed: ${response.error.description}`);
       });
@@ -159,30 +161,24 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
                     key={size}
                     type="button"
                     onClick={() => setGroupSize(size)}
-                    className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all text-center ${
+                    className={`flex flex-col items-center justify-center gap-1 p-2 rounded-xl border-2 transition-all text-center h-20 ${
                       groupSize === size
                         ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-brand-border dark:border-brand-border-dark text-brand-text/70 dark:text-brand-text-dark/70 hover:border-primary/50'
+                        : 'border-brand-border dark:border-brand-border-dark text-brand-text/70 hover:border-primary/50'
                     }`}
                   >
-                    <span className="text-lg font-bold">{size}</span>
-                    <span className="text-[10px] font-medium opacity-60">{size === 1 ? 'Person' : 'Persons'}</span>
+                    <span className="text-lg font-bold leading-none">{size}</span>
+                    <span className="text-[10px] font-medium opacity-60 leading-none">{size === 1 ? 'Person' : 'Persons'}</span>
                     {hasTier && (
-                      <span className="text-[10px] font-bold text-primary">₹{tierPrice.toLocaleString('en-IN')}</span>
+                      <span className="text-[10px] font-bold text-primary leading-none mt-1">₹{tierPrice.toLocaleString('en-IN')}</span>
                     )}
                     {hasTier && tierVehicle && (
-                      <span className="text-[9px] opacity-50 truncate w-full">{tierVehicle}</span>
+                      <span className="text-[9px] opacity-50 truncate w-full leading-none mt-0.5 px-1">{tierVehicle}</span>
                     )}
                   </button>
                 );
               })}
             </div>
-            {vehicleAssigned && (
-              <p className="mt-2 text-xs text-brand-text/60 dark:text-brand-text-dark/60 flex items-center gap-1">
-                <Car size={12} className="text-primary" />
-                Vehicle: <span className="font-bold text-brand-text dark:text-brand-text-dark">{vehicleAssigned}</span>
-              </p>
-            )}
           </div>
 
           {/* Pickup Point */}
@@ -208,7 +204,7 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-brand-border dark:border-brand-border-dark">
-            <button onClick={onClose} className="btn-secondary py-2" disabled={loading}>Cancel</button>
+            <button onClick={onClose} className="btn-secondary py-2 px-4" disabled={loading}>Cancel</button>
             <button
               onClick={() => {
                 if (!tourDate) return toast.error('Please select your arrival date');
@@ -216,78 +212,139 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
                 if (contactPhone.trim().length < 10) return toast.error('Valid phone is required');
                 setStep(2);
               }}
-              className="btn-primary py-2 w-32 justify-center"
+              className="btn-primary py-2 px-8 flex items-center gap-2"
             >
-              Continue ✓
+              Continue <CheckCircle2 size={16} />
             </button>
           </div>
         </div>
       )}
 
       {step === 2 && (
-        <div className="animate-fade-in space-y-6">
-          <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/20">
-            <h3 className="font-outfit font-bold text-lg mb-4 flex items-center justify-between">
-              Step 2: Review &amp; Payment
-              <span className="text-primary"><IndianRupee size={20} className="inline mr-1 -mt-1"/>{totalAmount.toLocaleString('en-IN')}</span>
+        <div className="animate-fade-in flex flex-col gap-5">
+          <div className="bg-brand-border/10 dark:bg-brand-border-dark/20 rounded-2xl p-5 border border-brand-border/50 dark:border-brand-border-dark/50">
+            <h3 className="font-outfit font-bold text-xl mb-4 flex items-center justify-between">
+              Complete Booking
+              <span className="text-primary font-bold text-lg flex items-center">
+                <IndianRupee size={18} />{totalAmount.toLocaleString('en-IN')}
+              </span>
             </h3>
 
-            <div className="mb-4 p-3 bg-surface dark:bg-surface-dark border border-brand-border dark:border-brand-border-dark rounded-lg text-sm flex flex-col gap-1 shadow-sm">
-              <span className="font-bold opacity-80 text-xs uppercase tracking-widest text-primary">Your Details</span>
-              <div className="flex justify-between items-center"><span className="opacity-60">Trip:</span> <span className="truncate max-w-[200px] font-bold text-primary">{itinerary.title}</span></div>
-              <div className="flex justify-between items-center"><span className="opacity-60">Date:</span> <span className="font-bold">{new Date(tourDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</span></div>
-              <div className="flex justify-between items-center"><span className="opacity-60">Group:</span> <span className="font-bold">{groupSize} {groupSize === 1 ? 'Person' : 'Persons'}</span></div>
-              {vehicleAssigned && <div className="flex justify-between items-center"><span className="opacity-60">Vehicle:</span> <span className="font-bold">{vehicleAssigned}</span></div>}
-              <div className="flex justify-between items-center"><span className="opacity-60">Pickup:</span> <span className="font-bold truncate max-w-[200px]">{pickupPoint}</span></div>
-              <div className="flex justify-between items-center"><span className="opacity-60">Phone:</span> <span className="font-mono font-bold">{contactPhone}</span></div>
+            {/* Clean Details Layout */}
+            <div className="mb-5 bg-surface dark:bg-surface-dark p-4 rounded-xl border border-brand-border/40 shadow-sm text-sm">
+              <p className="font-bold text-brand-text mb-3 border-b border-brand-border/30 pb-2 text-base">
+                {itinerary.title}
+              </p>
+              <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                <div>
+                  <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Date</span>
+                  <span className="font-medium text-brand-text/90">
+                    {new Date(tourDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Group</span>
+                  <span className="font-medium text-brand-text/90">{groupSize} Person(s)</span>
+                </div>
+                {vehicleAssigned && (
+                  <div className="col-span-2">
+                    <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Vehicle</span>
+                    <span className="font-medium text-brand-text/90 flex items-center gap-1">
+                      <Car size={14} className="text-primary" /> {vehicleAssigned}
+                    </span>
+                  </div>
+                )}
+                <div className="col-span-2">
+                  <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Pickup</span>
+                  <span className="font-medium text-brand-text/90">{pickupPoint}</span>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors shadow-sm ${method === 'online' ? 'border-primary bg-surface dark:bg-surface-dark' : 'border-brand-border dark:border-brand-border-dark'}`}>
+            {/* Payment Modes */}
+            <div className="space-y-3">
+              <h4 className="font-bold text-sm text-brand-text/80 mb-2">Select Payment Method</h4>
+
+              <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm ${paymentMode === 'full' ? 'border-primary bg-primary/5' : 'border-brand-border/50 hover:border-primary/30 bg-surface'}`}>
                 <div className="flex items-start gap-3">
-                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={method === 'online'} onChange={() => setMethod('online')} />
+                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={paymentMode === 'full'} onChange={() => setPaymentMode('full')} />
                   <div className="flex-1">
-                    <span className="font-outfit font-bold block mb-1">Pay 1/3 Advance Online</span>
-                    <span className="text-sm font-inter text-brand-text/70 dark:text-brand-text-dark/70 block">Secure your booking instantly. Balance due on arrival.</span>
-                    <div className="mt-3 text-sm font-bold bg-primary/10 text-primary-dark inline-block px-3 py-1 rounded-md">
-                      Due Now: ₹{advanceLevel.toLocaleString('en-IN')}
-                    </div>
+                    <span className="font-bold block text-sm">Full Payment (100%)</span>
+                    <span className="text-xs text-brand-text/60 mt-0.5 block">Pay total amount now for instant confirmation.</span>
+                    <div className="mt-2 text-sm font-bold text-primary">Pay Now: ₹{totalAmount.toLocaleString('en-IN')}</div>
                   </div>
                 </div>
               </label>
 
-              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors shadow-sm ${method === 'direct' ? 'border-primary bg-surface dark:bg-surface-dark' : 'border-brand-border dark:border-brand-border-dark'}`}>
+              <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm ${paymentMode === 'advance_40' ? 'border-primary bg-primary/5' : 'border-brand-border/50 hover:border-primary/30 bg-surface'}`}>
                 <div className="flex items-start gap-3">
-                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={method === 'direct'} onChange={() => setMethod('direct')} />
+                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={paymentMode === 'advance_40'} onChange={() => setPaymentMode('advance_40')} />
                   <div className="flex-1">
-                    <span className="font-outfit font-bold block mb-1">Pay Full on Arrival</span>
-                    <span className="text-sm font-inter text-brand-text/70 dark:text-brand-text-dark/70 block">Reserve now, pay the master guide directly.</span>
-                    <div className="mt-3 text-sm font-bold bg-brand-border dark:bg-brand-border-dark text-brand-text inline-block px-3 py-1 rounded-md">
-                      Due Now: ₹0
-                    </div>
+                    <span className="font-bold block text-sm">40% Advance Payment</span>
+                    <span className="text-xs text-brand-text/60 mt-0.5 block">Secure your booking. Pay the 60% balance 3 days before trip.</span>
+                    <div className="mt-2 text-sm font-bold text-primary">Pay Now: ₹{Math.ceil(totalAmount * 0.4).toLocaleString('en-IN')}</div>
+                  </div>
+                </div>
+              </label>
+
+              <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm ${paymentMode === 'reservation_500' ? 'border-primary bg-primary/5' : 'border-brand-border/50 hover:border-primary/30 bg-surface'}`}>
+                <div className="flex items-start gap-3">
+                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={paymentMode === 'reservation_500'} onChange={() => { setPaymentMode('reservation_500'); setDisclaimerAccepted(false); }} />
+                  <div className="flex-1">
+                    <span className="font-bold block text-sm">Pay on Arrival (₹500 Reservation)</span>
+                    <span className="text-xs text-brand-text/60 mt-0.5 block">Lock your price today. Pay the entire balance when you arrive.</span>
+                    <div className="mt-2 text-sm font-bold text-primary">Pay Now: ₹500</div>
                   </div>
                 </div>
               </label>
             </div>
+
+            {paymentMode === 'reservation_500' && (
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg animate-fade-in">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="mt-0.5 accent-red-600 w-4 h-4 rounded cursor-pointer"
+                    checked={disclaimerAccepted}
+                    onChange={(e) => setDisclaimerAccepted(e.target.checked)}
+                  />
+                  <span className="text-xs text-red-800 dark:text-red-200 font-medium leading-relaxed">
+                    I understand that this ₹500 fee is strictly non-refundable and reserves my spot, but hotel availability is only guaranteed once a 40% advance is paid.
+                  </span>
+                </label>
+              </div>
+            )}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-brand-text/50 justify-center">
-            <ShieldCheck size={16} className="text-green-500" />
-            Secure 256-bit encrypted checkout via Razorpay
-          </div>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-[11px] text-brand-text/50 justify-center">
+              <ShieldCheck size={14} className="text-green-500" />
+              Secure 256-bit encrypted checkout via Razorpay
+            </div>
 
-          <div className="flex justify-between items-center pt-2 border-t border-brand-border dark:border-brand-border-dark">
-            <button onClick={() => setStep(1)} className="btn-secondary py-2" disabled={loading}>← Back</button>
-            <button onClick={handleCheckout} className="btn-primary py-2 min-w-[200px] justify-center" disabled={loading}>
-              {loading ? 'Processing...' : method === 'online' ? `Pay ₹${advanceLevel.toLocaleString('en-IN')}` : 'Confirm Booking'}
-            </button>
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button onClick={() => setStep(1)} className="btn-secondary py-3 px-6 w-full sm:w-auto text-sm" disabled={loading}>← Back</button>
+                <a 
+                  href="https://wa.me/919999999999?text=Hi!%20I%20need%20help%20booking%20the%20trip%20to%20Uttarakhand." 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#25D366] hover:bg-[#1ebd5a] text-white py-3 px-4 rounded-xl flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto"
+                  title="Chat on WhatsApp"
+                >
+                  <MessageCircle size={18} />
+                </a>
+              </div>
+              <button onClick={handleCheckout} className="btn-primary py-3 px-8 w-full sm:w-auto shadow-md" disabled={loading}>
+                {loading ? 'Processing...' : `Pay ₹${amountToPayNow.toLocaleString('en-IN')}`}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {method === 'online' && (
-        <script src="https://checkout.razorpay.com/v1/checkout.js" async />
-      )}
+      {/* Load Razorpay Script dynamically only when needed */}
+      <script src="https://checkout.razorpay.com/v1/checkout.js" async />
     </div>
   );
 }
