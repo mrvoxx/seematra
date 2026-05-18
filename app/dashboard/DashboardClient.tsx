@@ -523,9 +523,9 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <ProtectedRoute>
-      <div className="container mx-auto px-4 lg:px-8 py-8 md:py-12 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-outfit font-extrabold mb-1">My Account</h1>
+      <div className="container mx-auto px-4 lg:px-8 pt-32 pb-12 max-w-7xl">
+        <div className="mb-10">
+          <h1 className="text-3xl md:text-4xl font-outfit font-extrabold mb-4">My Account</h1>
           <p className="text-brand-text/70 dark:text-brand-text-dark/70 font-inter text-sm">
             Manage your profile, bookings, and payments.
           </p>
