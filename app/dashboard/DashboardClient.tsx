@@ -247,6 +247,18 @@ function DashboardContent() {
       setUserData({ favoriteItineraries: favorites.itineraries, favoriteBlogs: favorites.blogs, preferences: newPrefs });
       await api.put('/user/profile', newPrefs);
       toast.success('Preferences updated!');
+
+      // Handle language change automatically via Google Translate
+      if (updates.language) {
+        if (updates.language === 'hindi') {
+          document.cookie = 'googtrans=/en/hi; path=/';
+        } else {
+          document.cookie = 'googtrans=/en/en; path=/';
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'; // clear
+        }
+        // Small delay to let toast show before reloading
+        setTimeout(() => window.location.reload(), 500);
+      }
     } catch {
       toast.error('Failed to update preferences');
     }
