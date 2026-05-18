@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and auth routes from crawlers
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+
+# Sitemap location
+Sitemap: https://seematra.com/sitemap.xml

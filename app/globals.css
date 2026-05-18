@@ -1,0 +1,287 @@
+/* Google Fonts are loaded via <link> in app/layout.tsx for correct cross-device font rendering */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  /* Light Mode Palette - Premium Travel Tech */
+  --color-primary-dyn: #0E7490;    /* Deep Premium Teal */
+  --color-secondary-dyn: #0F172A;  /* Deep Navy */
+  --color-accent-dyn: #F97316;     /* Warm Orange for CTA */
+  --color-surface-dyn: #FFFFFF;    /* Pure White */
+  --color-card-dyn: #F9FAFB;       /* Gray 50 */
+  --text-dyn: #111827;             /* Charcoal */
+  --text-secondary-dyn: #4B5563;   /* Gray 600 */
+  --border-dyn: #E5E7EB;           /* Gray 200 */
+}
+
+.dark {
+  /* Dark Mode Palette - Premium Slate */
+  --color-primary-dyn: #22D3EE;    /* Cyan 400 */
+  --color-secondary-dyn: #38BDF8;  /* Sky 400 */
+  --color-accent-dyn: #FB923C;     /* Orange 400 */
+  --color-surface-dyn: #0F172A;    /* Slate 900 */
+  --color-card-dyn: #1E293B;       /* Slate 800 */
+  --text-dyn: #F9FAFB;             /* Gray 50 */
+  --text-secondary-dyn: #9CA3AF;   /* Gray 400 */
+  --border-dyn: #334155;           /* Slate 700 */
+}
+
+/* ─── Seematra Design Tokens (Tailwind v4 @theme) ──────────────────────────── */
+@theme {
+  --color-primary: var(--color-primary-dyn);
+  --color-primary-dark: var(--color-primary-dyn);
+  --color-secondary: var(--color-secondary-dyn);
+  --color-secondary-dark: var(--color-secondary-dyn);
+  --color-accent: var(--color-accent-dyn);
+  --color-accent-dark: var(--color-accent-dyn);
+  --color-surface: var(--color-surface-dyn);
+  --color-surface-dark: var(--color-surface-dyn);
+
+  --color-brand-text: var(--text-dyn);
+  --color-brand-text-dark: var(--text-dyn);
+  
+  --color-brand-card: var(--color-card-dyn);
+  --color-brand-card-dark: var(--color-card-dyn);
+  --color-brand-border: var(--border-dyn);
+  --color-brand-border-dark: var(--border-dyn);
+
+  /* Fonts */
+  --font-poppins: 'Poppins', sans-serif;
+  --font-edu: 'Edu NSW ACT Cursive', cursive;
+  --font-boldonse: 'Boldonse', system-ui;
+
+  --font-outfit: var(--font-boldonse);
+  /* Fallback mapping for existing classes */
+  --font-inter: var(--font-poppins);
+  /* Fallback mapping for existing classes */
+
+  /* Screens */
+  --breakpoint-xs: 480px;
+
+  /* Animations */
+  --animate-scroll-left: scrollLeft 40s linear infinite;
+  --animate-scroll-right: scrollRight 40s linear infinite;
+  --animate-fade-up: fadeUp 0.6s ease forwards;
+  --animate-float: float 6s ease-in-out infinite;
+
+  /* Keyframes */
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes scrollRight {
+    0% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html, body {
+    @apply bg-surface text-brand-text font-poppins antialiased transition-colors duration-300;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.75;
+    /* Safe overflow prevention: body overflow-x doesn't clip position:fixed children on iOS */
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    html, body {
+      font-size: 16px;
+      line-height: 1.8;
+    }
+  }
+
+  .dark html, .dark body {
+    @apply bg-surface-dark text-brand-text-dark;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-boldonse font-normal tracking-wide;
+    line-height: 1.25;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface dark:bg-surface-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+  }
+
+  /* Touch - eliminates 300ms delay on mobile for all interactive elements */
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Dark mode */
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+/* ─── Components ────────────────────────────────────────────────────────────── */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full bg-primary text-surface font-poppins font-semibold text-xs md:text-sm tracking-wide transition-all duration-200 hover:bg-primary hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border-2 border-secondary text-secondary font-poppins font-semibold text-xs md:text-sm tracking-wide transition-all duration-200 hover:bg-secondary hover:text-[#ffffff] hover:scale-105 active:scale-95;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border-2 border-primary text-primary font-poppins font-semibold text-xs md:text-sm tracking-wide transition-all duration-200 hover:bg-primary hover:text-surface hover:scale-105 active:scale-95;
+  }
+
+  .card {
+    @apply bg-brand-card dark:bg-brand-card-dark rounded-2xl shadow-sm border border-brand-border dark:border-brand-border-dark transition-shadow duration-200 hover:shadow-md;
+  }
+
+  .section-title {
+    @apply text-lg md:text-xl lg:text-2xl font-boldonse font-normal text-brand-text dark:text-brand-text-dark tracking-wide leading-relaxed;
+  }
+
+  .section-subtitle {
+    @apply text-sm md:text-base lg:text-lg font-edu leading-relaxed;
+    font-optical-sizing: auto;
+    color: color-mix(in srgb, var(--color-brand-text) 70%, transparent);
+  }
+
+  .dark .section-subtitle {
+    color: color-mix(in srgb, var(--color-brand-text-dark) 70%, transparent);
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface dark:bg-brand-card-dark text-brand-text dark:text-brand-text-dark placeholder:opacity-40 focus:outline-none focus:ring-2 focus:border-primary transition-all duration-200;
+  }
+
+  .badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest;
+  }
+
+  .badge-primary {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest text-primary;
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+
+  .badge-secondary {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest text-secondary;
+    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+  }
+}
+
+/* ─── Review Carousel (infinite scroll) ────────────────────────────────────── */
+.carousel-track {
+  @apply flex gap-4;
+  width: max-content;
+}
+
+.animate-scroll-left { animation: scrollLeft 40s linear infinite; }
+.animate-scroll-right { animation: scrollRight 40s linear infinite; }
+.animate-scroll-left-slow { animation: scrollLeft 60s linear infinite; }
+.animate-scroll-right-slow { animation: scrollRight 60s linear infinite; }
+.animate-scroll-left-fast { animation: scrollLeft 20s linear infinite; }
+.animate-scroll-right-fast { animation: scrollRight 20s linear infinite; }
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+/* ─── GSAP Roadmap Canvas ───────────────────────────────────────────────────── */
+.roadmap-canvas {
+  @apply absolute inset-0 w-full h-full;
+  pointer-events: none;
+}
+
+/* ─── No-scrollbar utility (used in GenreFilter horizontal scroll) ─── */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Horizontal scroll containers ─────────────────────────────── */
+.scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
