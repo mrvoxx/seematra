@@ -26,8 +26,8 @@ export default async function BlogsPage() {
     <div className="w-full">
       <UnifiedHero 
         title="Travel Guides & Stories"
-        subtitle="Immerse yourself in tales of adventure, spiritual journeys, and practical tips for navigating the Himalayas."
-        backgroundImage="/blog.png"
+        subtitle="Read stories, tips, and insights from our community."
+        backgroundImage="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136948/seematra/backgrounds/blog.jpg"
         showCanvas={true}
       />
 

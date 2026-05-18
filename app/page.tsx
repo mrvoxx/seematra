@@ -87,7 +87,7 @@ export default async function Home() {
         title="Discover the Soul of Uttarakhand"
         eyebrow="Seematra"
         subtitle="Weekend trips from ₹3,499 per person · Groups, Families & Couples"
-        backgroundImage="/uttrakhand.jpg"
+        backgroundImage="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136945/seematra/backgrounds/uttrakhand.jpg"
         showCanvas={true}
       >
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6 flex-wrap">

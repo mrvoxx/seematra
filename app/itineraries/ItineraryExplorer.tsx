@@ -76,9 +76,9 @@ export default function ItineraryExplorer() {
     <div className="w-full">
       <UnifiedHero
         title="Discover Experiences"
-        subtitle="Filter by genre and find the perfect journey for your soul."
-        backgroundImage="/itineraries.jpg"
-        showCanvas={true}
+        subtitle="Handpicked weekend getaways and Himalayan expeditions"
+        backgroundImage="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136951/seematra/backgrounds/itineraries.jpg"
+        showCanvas={false}
       />
 
       <div className="container mx-auto px-4 lg:px-8 py-12 overflow-x-hidden">

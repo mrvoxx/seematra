@@ -13,7 +13,7 @@ export default function AboutPage() {
       {/* ─── Hero Section ─── */}
       <section className="relative h-[50vh] lg:h-screen w-full overflow-hidden flex items-center justify-center pt-16 isolate">
         <div className="absolute inset-0 z-[-2]">
-          <Image src="/about.jpg" alt="About Seematra" fill className="object-cover" priority />
+          <Image src="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136949/seematra/backgrounds/about.jpg" alt="About Seematra" fill className="object-cover" priority />
         </div>
         <div className="absolute inset-0 z-[-1] bg-black/50" />
         <div className="absolute inset-0 z-[-1] bg-gradient-to-b from-transparent via-black/20 to-surface dark:to-surface-dark" />
@@ -35,7 +35,7 @@ export default function AboutPage() {
           <div className="lg:col-span-5 relative">
             <div className="rounded-2xl overflow-hidden shadow-2xl h-[450px] lg:h-[600px] relative w-full border border-brand-border/50 dark:border-brand-border-dark/50">
               <Image
-                src="/owner.jpeg"
+                src="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136949/seematra/team/owner.jpg"
                 alt="Seematra Founder"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-700"

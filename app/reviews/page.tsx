@@ -13,8 +13,8 @@ export default function ReviewsPage() {
       <UnifiedHero
         title="Wanderers' Tales"
         eyebrow="Seematra"
-        subtitle="Real stories from real travelers. Every review is verified."
-        backgroundImage="/about.jpg"
+        subtitle="Real stories and experiences from our travelers"
+        backgroundImage="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136949/seematra/backgrounds/about.jpg"
         showCanvas={false}
       />
       <ReviewsClient />
