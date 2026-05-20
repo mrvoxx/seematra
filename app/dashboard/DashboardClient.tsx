@@ -252,8 +252,10 @@ function DashboardContent() {
       if (updates.language) {
         if (updates.language === 'hindi') {
           document.cookie = 'googtrans=/en/hi; path=/';
+          document.cookie = 'googtrans=/en/hi; path=/; domain=' + window.location.hostname;
         } else {
           document.cookie = 'googtrans=/en/en; path=/';
+          document.cookie = 'googtrans=/en/en; path=/; domain=' + window.location.hostname;
           document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'; // clear
         }
         // Small delay to let toast show before reloading

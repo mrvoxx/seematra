@@ -122,7 +122,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
   );
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-x-hidden">
       <UnifiedHero
         title={itinerary.title}
         subtitle={tags.length > 0 ? tags.join(' • ') : itinerary.duration}

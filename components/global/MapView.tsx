@@ -8,16 +8,23 @@ import L from 'leaflet';
 import type { IMapPin } from '@/types';
 import Link from 'next/link';
 
-// Fix leaflet default icon issue in Next.js
-const customIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
+// We define the icon inside the component or export a function to get it.
+let customIcon: L.Icon | undefined;
+function getCustomIcon() {
+  if (typeof window === 'undefined') return undefined as any;
+  if (!customIcon) {
+    customIcon = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  }
+  return customIcon;
+}
 
 // Helper component to auto-fit bounds
 function MapBounds({ pins }: { pins: IMapPin[] }) {
@@ -64,7 +71,7 @@ export default function MapView({ pins, height = 'h-[500px]', interactive = true
         />
         <MapBounds pins={pins} />
         {pins.map((pin, index) => (
-          <Marker key={`${pin.itineraryId}-${index}`} position={[pin.lat, pin.lng]} icon={customIcon}>
+          <Marker key={`${pin.itineraryId}-${index}`} position={[pin.lat, pin.lng]} icon={getCustomIcon()}>
             <Popup className="seematra-popup rounded-lg border-2 border-primary">
               <div className="flex flex-col gap-2 min-w-[200px] p-1 font-inter">
                 <img src={pin.thumbnail} alt={pin.title} className="w-full h-24 object-cover rounded-md" />

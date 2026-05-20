@@ -1,4 +1,3 @@
-// store/itineraryStore.ts
 import { create } from 'zustand';
 import { IItinerary } from '@/types';
 
@@ -7,9 +6,13 @@ interface ItineraryState {
   filtered: IItinerary[];
   activeGenre: string;
   searchQuery: string;
+  maxBudget: number | null;
+  activeLocation: string;
   setItineraries: (data: IItinerary[]) => void;
   setGenre: (genre: string) => void;
   setSearch: (query: string) => void;
+  setBudget: (budget: number | null) => void;
+  setLocation: (location: string) => void;
   filterData: () => void;
 }
 
@@ -18,7 +21,12 @@ export const useItineraryStore = create<ItineraryState>((set, get) => ({
   filtered: [],
   activeGenre: 'All',
   searchQuery: '',
-  setItineraries: (data) => set({ itineraries: data, filtered: data }),
+  maxBudget: null,
+  activeLocation: 'All',
+  setItineraries: (data) => {
+    set({ itineraries: data });
+    get().filterData();
+  },
   setGenre: (genre) => {
     set({ activeGenre: genre });
     get().filterData();
@@ -27,8 +35,16 @@ export const useItineraryStore = create<ItineraryState>((set, get) => ({
     set({ searchQuery: query });
     get().filterData();
   },
+  setBudget: (budget) => {
+    set({ maxBudget: budget });
+    get().filterData();
+  },
+  setLocation: (location) => {
+    set({ activeLocation: location });
+    get().filterData();
+  },
   filterData: () => {
-    const { itineraries, activeGenre, searchQuery } = get();
+    const { itineraries, activeGenre, searchQuery, maxBudget, activeLocation } = get();
     let result = [...itineraries];
 
     if (activeGenre !== 'All') {
@@ -36,14 +52,27 @@ export const useItineraryStore = create<ItineraryState>((set, get) => ({
       result = result.filter(it => it.genres.includes(activeGenre as any));
     }
     
+    if (activeLocation !== 'All') {
+      const loc = activeLocation.toLowerCase();
+      result = result.filter(it => 
+        it.roadmap?.some(r => r.locationName.toLowerCase().includes(loc)) ||
+        it.title.toLowerCase().includes(loc)
+      );
+    }
+
+    if (maxBudget !== null) {
+      result = result.filter(it => it.price <= maxBudget);
+    }
+
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       result = result.filter(it => 
         it.title.toLowerCase().includes(q) || 
-        it.tags.some(t => t.toLowerCase().includes(q))
+        it.tags?.some(t => t.toLowerCase().includes(q))
       );
     }
     
     set({ filtered: result });
   }
 }));
+

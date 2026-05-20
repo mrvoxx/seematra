@@ -151,7 +151,7 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
               <Users size={14} className="inline mr-1 -mt-0.5" />
               Group Size <span className="text-red-400">*</span>
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {GROUP_SIZES.map(size => {
                 const tierPrice = getTierPrice(itinerary.pricingTiers, size, itinerary.price);
                 const tierVehicle = getTierVehicle(itinerary.pricingTiers, size);
@@ -223,7 +223,7 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
       {step === 2 && (
         <div className="animate-fade-in flex flex-col gap-5">
           <div className="bg-brand-border/10 dark:bg-brand-border-dark/20 rounded-2xl p-5 border border-brand-border/50 dark:border-brand-border-dark/50">
-            <h3 className="font-outfit font-bold text-xl mb-4 flex items-center justify-between">
+            <h3 className="font-outfit font-bold text-xl mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               Complete Booking
               <span className="text-primary font-bold text-lg flex items-center">
                 <IndianRupee size={18} />{totalAmount.toLocaleString('en-IN')}

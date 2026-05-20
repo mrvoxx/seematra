@@ -35,7 +35,7 @@ export default function AboutPage() {
           <div className="lg:col-span-5 relative">
             <div className="rounded-2xl overflow-hidden shadow-2xl h-[450px] lg:h-[600px] relative w-full border border-brand-border/50 dark:border-brand-border-dark/50">
               <Image
-                src="https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136949/seematra/team/owner.jpg"
+                src="/owner.jpeg"
                 alt="Seematra Founder"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-700"
