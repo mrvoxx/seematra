@@ -108,6 +108,17 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
       >
         Book Now
       </button>
+
+      {/* Social proof addition */}
+      <div className="flex items-center justify-center gap-2 mb-3 bg-green-500/10 text-green-700 dark:text-green-400 py-1.5 px-3 rounded-full w-fit mx-auto">
+        <div className="flex -space-x-2">
+          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://i.pravatar.cc/100?img=12" alt="avatar" />
+          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://i.pravatar.cc/100?img=32" alt="avatar" />
+          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://i.pravatar.cc/100?img=44" alt="avatar" />
+        </div>
+        <span className="text-[11px] font-bold">23 people booked this month</span>
+      </div>
+
       <p className="text-xs text-center mb-6 text-brand-text/50 font-inter">
         You can choose to pay an advance online or reserve and pay on arrival.
       </p>
@@ -352,7 +363,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           itinerary={{ _id: itinerary._id, title: itinerary.title, price: itinerary.price, pricingTiers }}
           onSuccess={(id) => {
             setIsPaymentModalOpen(false);
-            window.location.href = '/dashboard';
+            window.location.href = `/booking-confirmation/${id}`;
           }}
           onClose={() => setIsPaymentModalOpen(false)}
         />

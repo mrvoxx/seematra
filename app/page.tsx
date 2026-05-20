@@ -92,7 +92,7 @@ export default async function Home() {
       >
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6 flex-wrap">
           <Link href="/itineraries" className="btn-primary flex items-center justify-center text-center w-[85%] max-w-[260px] sm:w-auto text-sm sm:text-base py-2.5 sm:py-3">
-            Explore Packages
+            Find My Trip — From ₹3,499
           </Link>
 
           <a
