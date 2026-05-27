@@ -47,29 +47,16 @@ export default async function MapPage() {
         </div>
         <div className="absolute inset-0 z-[-1] bg-black/50" />
         <div className="absolute inset-0 z-[-1] bg-gradient-to-b from-transparent via-black/20 to-surface dark:to-surface-dark" />
-        <div className="container relative z-10 mx-auto px-4 text-center mt-12">
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-boldonse font-normal mb-4 text-white drop-shadow-sm">
+        <div className="container relative z-10 mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-outfit font-extrabold mb-4 text-white drop-shadow-sm">
             Explore <span className="text-primary">Uttarakhand</span>
           </h1>
-          <p className="text-sm md:text-base font-inter text-white/85 max-w-2xl mx-auto drop-shadow-sm">
+          <p className="text-base md:text-lg font-inter text-white/85 max-w-2xl mx-auto drop-shadow-sm">
             Navigate through our curated destinations. Click on any pin to view the package details and pricing.
           </p>
-          <div className="flex justify-center gap-4 sm:gap-6 mt-8 animate-fade-up" style={{ animationDelay: '100ms' }}>
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 shadow-xl">
-              <span className="block text-xl sm:text-2xl font-boldonse text-primary">{itineraries.length}</span>
-              <span className="text-xs sm:text-sm text-white/80 uppercase tracking-wider font-medium">Curated Trips</span>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 shadow-xl hidden sm:block">
-              <span className="block text-xl sm:text-2xl font-boldonse text-primary">100%</span>
-              <span className="text-xs sm:text-sm text-white/80 uppercase tracking-wider font-medium">Local Experts</span>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 shadow-xl hidden md:block">
-              <span className="block text-xl sm:text-2xl font-boldonse text-primary">24/7</span>
-              <span className="text-xs sm:text-sm text-white/80 uppercase tracking-wider font-medium">Support</span>
-            </div>
-          </div>
         </div>
       </section>
+
       {/* ─── Map ─── */}
       <div className="container mx-auto px-4 lg:px-8 py-12 animate-fade-up">
         <MapClient pins={pins} />
