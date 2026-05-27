@@ -58,6 +58,25 @@ export default function MapView({ pins, height = 'h-[500px]', interactive = true
 
   return (
     <div className="w-full h-[300px] md:h-[500px] rounded-xl overflow-hidden shadow-md z-0 relative border border-brand-border dark:border-brand-border-dark">
+      <style>{`
+        .custom-leaflet-popup .leaflet-popup-content-wrapper {
+          padding: 0;
+          overflow: hidden;
+          border-radius: 0.75rem;
+          background: transparent;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .custom-leaflet-popup .leaflet-popup-content {
+          margin: 0;
+          width: auto !important;
+        }
+        .custom-leaflet-popup .leaflet-popup-tip {
+          background: var(--color-surface);
+        }
+        .dark .custom-leaflet-popup .leaflet-popup-tip {
+          background: var(--color-surface-dark);
+        }
+      `}</style>
       <MapContainer 
         center={[30.0668, 79.0193]} // Uttarakhand center
         zoom={7} 
@@ -72,17 +91,27 @@ export default function MapView({ pins, height = 'h-[500px]', interactive = true
         <MapBounds pins={pins} />
         {pins.map((pin, index) => (
           <Marker key={`${pin.itineraryId}-${index}`} position={[pin.lat, pin.lng]} icon={getCustomIcon()}>
-            <Popup className="seematra-popup rounded-lg border-2 border-primary">
-              <div className="flex flex-col gap-2 min-w-[200px] p-1 font-inter">
-                <img src={pin.thumbnail} alt={pin.title} className="w-full h-24 object-cover rounded-md" />
-                <h4 className="font-outfit font-bold text-base leading-tight mt-1">{pin.title}</h4>
-                <p className="text-primary font-bold text-sm">₹{pin.price.toLocaleString('en-IN')}</p>
-                <Link 
-                  href={`/itineraries/${pin.itineraryId}`}
-                  className="mt-1 bg-primary text-surface text-center py-1.5 rounded-md text-xs font-bold hover:bg-primary-dark transition-colors"
-                >
-                  View Package
-                </Link>
+            <Popup className="seematra-popup custom-leaflet-popup">
+              <div className="flex flex-col w-[240px] font-inter overflow-hidden rounded-xl bg-surface dark:bg-surface-dark border border-brand-border dark:border-brand-border-dark">
+                <div className="relative h-32 w-full">
+                  <img src={pin.thumbnail} alt={pin.title} className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <h4 className="font-outfit font-bold text-lg leading-tight drop-shadow-md line-clamp-2">{pin.title}</h4>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-brand-text-secondary uppercase tracking-wider font-bold">Price</span>
+                    <span className="text-primary font-black text-base">₹{pin.price.toLocaleString('en-IN')}</span>
+                  </div>
+                  <Link 
+                    href={`/itineraries/${pin.itineraryId}`}
+                    className="w-full bg-primary text-white text-center py-2.5 rounded-lg text-sm font-bold tracking-wide hover:bg-primary-dark hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-md"
+                  >
+                    View Details
+                  </Link>
+                </div>
               </div>
             </Popup>
           </Marker>
