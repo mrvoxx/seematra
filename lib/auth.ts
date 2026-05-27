@@ -79,8 +79,8 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = ((user as { role?: string }).role ?? 'user') as 'user' | 'admin';
       }
-      // For Google OAuth, fetch role from DB since it's not in the OAuth profile
-      if (account?.provider === 'google' && token.email && !token.role) {
+      // For Google OAuth, fetch true DB _id because the default user.id is the Google subject ID
+      if (account?.provider === 'google' && token.email) {
         try {
           await connectDB();
           const dbUser = await User.findOne({ email: token.email }).select('role _id');

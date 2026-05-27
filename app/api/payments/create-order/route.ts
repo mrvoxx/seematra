@@ -1,5 +1,5 @@
-// app/api/payments/create-order/route.ts
 import { NextRequest } from 'next/server';
+import fs from 'fs';
 import { connectDB } from '@/lib/mongodb';
 import Itinerary from '@/models/Itinerary';
 import Booking from '@/models/Booking';
@@ -41,6 +41,17 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
 
   await connectDB();
+
+  let finalUserId = (session!.user as any).id;
+  if (!mongoose.isValidObjectId(finalUserId)) {
+    // Fallback for stale Google OAuth JWTs where the ID is still the Google subject ID
+    const dbUser = await User.findOne({ email: session!.user!.email }).select('_id');
+    if (dbUser) {
+      finalUserId = dbUser._id.toString();
+    } else {
+      return error('User not found in database', 400);
+    }
+  }
 
   // ✅ Always fetch price from DB — never trust client-side amounts
   const itinerary = await Itinerary.findById(itineraryId);
@@ -88,56 +99,61 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const balanceDueDate = new Date(tourDateObj);
   balanceDueDate.setDate(balanceDueDate.getDate() - 3);
 
-  // ✅ Create Razorpay order
-  const order = await razorpay.orders.create({
-    amount:   amountInPaise,
-    currency: 'INR',
-    receipt:  `booking_${Date.now()}`,
-    notes: {
-      itineraryId,
-      userId:      ((session?.user as any)?.id || session?.user?.email || 'guest') as string,
+  try {
+    // ✅ Create Razorpay order
+    const order = await razorpay.orders.create({
+      amount:   amountInPaise,
+      currency: 'INR',
+      receipt:  `booking_${Date.now()}`,
+      notes: {
+        itineraryId,
+        userId:      ((session?.user as any)?.id || session?.user?.email || 'guest') as string,
+        paymentMode,
+      },
+    });
+
+    // ✅ Persist pending booking immediately
+    const booking = await Booking.create({
+      user:             finalUserId,
+      itinerary:        itineraryId,
+      pickupPoint,
+      contactPhone,
+      tourDate:         tourDateObj,
+      groupSize,
+      vehicleAssigned,
+      paymentType:      'online',
       paymentMode,
-    },
-  });
+      totalAmount,
+      amountPaidOnline,
+      reservationFee,
+      balanceDue,
+      balanceDueDate,
+      paymentStatus:    'PENDING', // Will be updated after verify
+      bookingStatus:    'pending',
+      razorpayOrderId:  order.id,
+      disclaimerAccepted: disclaimerAccepted ?? false,
+    });
 
-  // ✅ Persist pending booking immediately
-  const booking = await Booking.create({
-    user:             (session!.user as any).id,
-    itinerary:        itineraryId,
-    pickupPoint,
-    contactPhone,
-    tourDate:         tourDateObj,
-    groupSize,
-    vehicleAssigned,
-    paymentType:      'online',
-    paymentMode,
-    totalAmount,
-    amountPaidOnline,
-    reservationFee,
-    balanceDue,
-    balanceDueDate,
-    paymentStatus:    'PENDING', // Will be updated after verify
-    bookingStatus:    'pending',
-    razorpayOrderId:  order.id,
-    disclaimerAccepted: disclaimerAccepted ?? false,
-  });
+    // Labels for the payment screen
+    const paymentLabels: Record<string, string> = {
+      full:            'Full Payment',
+      advance_40:      '40% Advance',
+      reservation_500: '₹500 Reservation',
+    };
 
-  // Labels for the payment screen
-  const paymentLabels: Record<string, string> = {
-    full:            'Full Payment',
-    advance_40:      '40% Advance',
-    reservation_500: '₹500 Reservation',
-  };
-
-  return ok({
-    orderId:         order.id,
-    bookingId:       booking._id.toString(),
-    totalAmount,
-    amountPaidOnline,
-    balanceDue,
-    paymentMode,
-    paymentLabel:    paymentLabels[paymentMode],
-    currency:        'INR',
-    keyId:           process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-  }, 201);
+    return ok({
+      orderId:         order.id,
+      bookingId:       booking._id.toString(),
+      totalAmount,
+      amountPaidOnline,
+      balanceDue,
+      paymentMode,
+      paymentLabel:    paymentLabels[paymentMode],
+      currency:        'INR',
+      keyId:           process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    }, 201);
+  } catch (error: any) {
+    fs.appendFileSync('debug_payment.log', `[${new Date().toISOString()}] Payment Error: ${error.message}\nStack: ${error.stack}\nData: ${JSON.stringify(error)}\n\n`);
+    throw error;
+  }
 });
