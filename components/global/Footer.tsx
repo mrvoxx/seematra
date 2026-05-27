@@ -22,7 +22,8 @@ export default function Footer() {
             <p className="text-sm text-brand-text/70 dark:text-brand-text-dark/70 font-inter leading-relaxed">
               Curated travel experiences in the heart of Uttarakhand. We bring you closer to mountains, spirituality, and adventure.
               <br /><br />
-              <strong>Office:</strong> Bhairav Colony, Gali no 1, Bhattowala,<br />Gumamniwala, Rishikesh, Uttarakhand
+              <strong>Office:</strong> Bhairav Colony, Gali no 1, Bhattowala, Gumamniwala<br />
+              Rishikesh, Uttarakhand
             </p>
           </div>
 

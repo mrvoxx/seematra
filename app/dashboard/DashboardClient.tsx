@@ -127,7 +127,7 @@ function BookingDetailPanel({
             <CheckCircle2 className="text-primary shrink-0 mt-0.5" size={18} />
             <p className="text-xs text-brand-text/70 dark:text-brand-text-dark/70">
               Your booking is secured by Razorpay. For any changes or support, WhatsApp us or email{' '}
-              <a href="mailto:support@seematra.com" className="text-primary font-bold">support@seematra.com</a>.
+              <a href="mailto:seematra.support@gmail.com" className="text-primary font-bold">seematra.support@gmail.com</a>.
             </p>
           </div>
         </div>

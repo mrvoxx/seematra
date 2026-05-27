@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Cancellation & Refund Policy',
-  description: 'Read Seematra\'s cancellation and refund policy for travel bookings.',
+  title: 'Cancellation Policy | Seematra',
+  description: 'Read the cancellation and refund policy governing use of Seematra travel services.',
 };
 
 export default function CancellationPage() {
@@ -10,90 +10,111 @@ export default function CancellationPage() {
     <div className="min-h-screen bg-surface dark:bg-surface-dark">
       <div className="container mx-auto px-4 lg:px-8 py-16 max-w-4xl">
         <div className="mb-10">
-          <p className="text-sm text-primary font-inter font-semibold uppercase tracking-widest mb-2">Policies</p>
+          <p className="text-sm text-primary font-inter font-semibold uppercase tracking-widest mb-2">Legal</p>
           <h1 className="text-3xl md:text-4xl font-boldonse font-normal text-brand-text dark:text-brand-text-dark mb-4">Cancellation &amp; Refund Policy</h1>
-          <p className="text-sm text-brand-text/50 dark:text-brand-text-dark/50 font-inter">Last updated: May 16, 2025</p>
+          <p className="text-sm text-brand-text/50 dark:text-brand-text-dark/50 font-inter">Last Updated: May 26, 2026</p>
         </div>
 
         <div className="prose dark:prose-invert max-w-none font-inter text-brand-text/80 dark:text-brand-text-dark/80 space-y-8">
+          
+          <p>
+            This policy explains how cancellations and refunds work for Seematra bookings.
+          </p>
 
-          <div className="p-5 rounded-xl bg-primary/5 border border-primary/20">
-            <p className="font-semibold text-primary mb-1">Our Commitment to You</p>
-            <p className="text-sm">We understand travel plans change. Our policy is designed to be fair — we protect your money while ensuring our local guides and vendors are also treated fairly. Please read this carefully before booking.</p>
-          </div>
+          <hr className="border-brand-border dark:border-brand-border-dark" />
 
           <section>
-            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-4">Standard Cancellation Schedule</h2>
-            <div className="overflow-x-auto rounded-xl border border-brand-border dark:border-brand-border-dark">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-primary/10">
-                    <th className="text-left p-4 font-semibold">Notice Before Tour Date</th>
-                    <th className="text-left p-4 font-semibold">Refund</th>
-                    <th className="text-left p-4 font-semibold">Processing Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-border dark:divide-brand-border-dark">
-                  <tr className="hover:bg-surface dark:hover:bg-surface-dark/50">
-                    <td className="p-4">More than 15 days</td>
-                    <td className="p-4 text-green-600 font-semibold">100% refund</td>
-                    <td className="p-4">5–7 business days</td>
-                  </tr>
-                  <tr className="hover:bg-surface dark:hover:bg-surface-dark/50">
-                    <td className="p-4">7 to 15 days</td>
-                    <td className="p-4 text-amber-600 font-semibold">50% refund</td>
-                    <td className="p-4">5–7 business days</td>
-                  </tr>
-                  <tr className="hover:bg-surface dark:hover:bg-surface-dark/50">
-                    <td className="p-4">Less than 7 days</td>
-                    <td className="p-4 text-red-600 font-semibold">No refund</td>
-                    <td className="p-4">—</td>
-                  </tr>
-                  <tr className="hover:bg-surface dark:hover:bg-surface-dark/50">
-                    <td className="p-4">No-show on tour date</td>
-                    <td className="p-4 text-red-600 font-semibold">No refund</td>
-                    <td className="p-4">—</td>
-                  </tr>
-                </tbody>
-              </table>
+            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">1. Booking Confirmation Rule</h2>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>A ₹500 non-refundable reservation token is required at the time of booking.</li>
+              <li>This token confirms your booking and secures arrangements with partners.</li>
+            </ul>
+          </section>
+
+          <hr className="border-brand-border dark:border-brand-border-dark" />
+
+          <section>
+            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">2. Refund Policy Timeline</h2>
+            
+            <div className="bg-green-50 dark:bg-green-900/10 border-l-4 border-green-500 p-4 rounded-r-lg my-4">
+              <h3 className="text-lg font-outfit font-semibold text-green-800 dark:text-green-400 mb-2">✅ Full Refund (Within 24 Hours)</h3>
+              <p>If cancellation is requested within 24 hours of payment:</p>
+              <ul className="list-disc pl-6 mt-2 space-y-1">
+                <li>100% refund will be provided (including token if applicable).</li>
+              </ul>
+            </div>
+
+            <div className="bg-yellow-50 dark:bg-yellow-900/10 border-l-4 border-yellow-500 p-4 rounded-r-lg my-4">
+              <h3 className="text-lg font-outfit font-semibold text-yellow-800 dark:text-yellow-400 mb-2">⚠️ Partial Deduction (24 Hours to 2 Days)</h3>
+              <p>If cancellation is made after 24 hours but before 2 days:</p>
+              <ul className="list-disc pl-6 mt-2 space-y-1">
+                <li>₹500 reservation token will be deducted</li>
+                <li>Remaining amount will be refunded</li>
+              </ul>
+            </div>
+
+            <div className="bg-orange-50 dark:bg-orange-900/10 border-l-4 border-orange-500 p-4 rounded-r-lg my-4">
+              <h3 className="text-lg font-outfit font-semibold text-orange-800 dark:text-orange-400 mb-2">⚠️ 25% Deduction (3 to 7 Days Before Trip)</h3>
+              <p>If cancellation is made between 3 to 7 days before trip start:</p>
+              <ul className="list-disc pl-6 mt-2 space-y-1">
+                <li>25% of total booking amount will be deducted</li>
+                <li>Remaining amount will be refunded</li>
+              </ul>
+            </div>
+
+            <div className="bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 p-4 rounded-r-lg my-4">
+              <h3 className="text-lg font-outfit font-semibold text-red-800 dark:text-red-400 mb-2">❌ No Refund (Within 7 Days of Trip)</h3>
+              <p>If cancellation is made within 7 days of trip start date:</p>
+              <ul className="list-disc pl-6 mt-2 space-y-1">
+                <li>No refund will be provided</li>
+              </ul>
             </div>
           </section>
 
+          <hr className="border-brand-border dark:border-brand-border-dark" />
+
           <section>
-            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">Force Majeure &amp; Natural Events</h2>
-            <p>If your trip is cancelled or significantly disrupted due to events beyond our control — such as severe weather, natural disasters, landslides, road blockages, government orders, or political unrest — we will:</p>
+            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">3. Force Majeure Situations</h2>
+            <p>No refunds will be provided for cancellations caused by:</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Offer a full <strong>credit note</strong> valid for 12 months for rebooking</li>
-              <li>Alternatively, offer a rescheduled trip at no extra cost (subject to availability)</li>
-              <li>In exceptional cases, offer a partial refund at our discretion</li>
+              <li>Natural disasters</li>
+              <li>Weather disruptions</li>
+              <li>Government restrictions</li>
+              <li>Road closures</li>
+              <li>Unforeseen local emergencies</li>
             </ul>
-            <p>We strongly recommend purchasing travel insurance covering trip cancellation for mountain travel.</p>
+            <p className="mt-4 font-semibold">
+              However, Seematra will try to assist in rescheduling where possible.
+            </p>
           </section>
 
-          <section>
-            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">How to Cancel</h2>
-            <ol className="list-decimal pl-6 space-y-2">
-              <li>Log in to your <strong>Seematra dashboard</strong> and navigate to "My Bookings".</li>
-              <li>Click the "Cancel Booking" button on the relevant booking.</li>
-              <li>You will receive an email confirmation of your cancellation within 1 hour.</li>
-              <li>Refunds (where applicable) are processed automatically to your original payment method.</li>
-            </ol>
-            <p>Alternatively, contact us directly at <strong>support@seematra.com</strong> or WhatsApp <strong>+91 99999 99999</strong>.</p>
-          </section>
+          <hr className="border-brand-border dark:border-brand-border-dark" />
 
           <section>
-            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">Cancellations by Seematra</h2>
-            <p>In the rare event that we cancel a tour (due to insufficient group size, safety concerns, or operational issues), you will receive:</p>
+            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">4. Refund Processing Time</h2>
             <ul className="list-disc pl-6 space-y-2">
-              <li>A <strong>full 100% refund</strong>, processed within 5–7 business days</li>
-              <li>Priority rebooking assistance for alternate dates at no extra charge</li>
-              <li>A personal call from our team to discuss alternatives</li>
+              <li>Refunds may take 5–10 business days depending on bank and payment provider.</li>
+              <li>Delays from banks or payment gateways are outside Seematra’s control.</li>
             </ul>
           </section>
 
+          <hr className="border-brand-border dark:border-brand-border-dark" />
+
           <section>
-            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">Contact for Refund Queries</h2>
-            <p><strong>Seematra Travel Private Limited</strong><br />Email: support@seematra.com<br />WhatsApp: +91 99999 99999<br />Hours: Monday–Saturday, 9 AM – 7 PM IST</p>
+            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">5. Modification of Booking</h2>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Date changes or itinerary modifications are subject to availability.</li>
+              <li>Additional charges may apply depending on changes requested.</li>
+            </ul>
+          </section>
+
+          <hr className="border-brand-border dark:border-brand-border-dark" />
+
+          <section>
+            <h2 className="text-xl font-outfit font-semibold text-brand-text dark:text-brand-text-dark mb-3">6. Contact for Cancellations</h2>
+            <p>
+              All cancellation requests must be sent through official Seematra support channels for verification and processing.
+            </p>
           </section>
 
         </div>
