@@ -155,7 +155,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           <div className="flex items-center gap-2">
             {/* WhatsApp Enquire */}
             <a
-              href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi, I'm interested in the "${itinerary.title}" package. Could you share more details and pricing?`)}`}
+              href={`https://wa.me/qr/IP26U77IWO5GO1?text=${encodeURIComponent(`Hi, I'm interested in the "${itinerary.title}" package. Could you share more details and pricing?`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-poppins font-semibold tracking-wide transition-all duration-200 active:scale-95 border"

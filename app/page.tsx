@@ -96,7 +96,7 @@ export default async function Home() {
           </Link>
 
           <a
-            href="https://wa.me/919999999999?text=Hi,%20I'm%20interested%20in%20a%20group%20trip%20with%20Seematra.%20Can%20you%20share%20packages%20and%20pricing?"
+            href="https://wa.me/qr/IP26U77IWO5GO1?text=Hi,%20I'm%20interested%20in%20a%20group%20trip%20with%20Seematra.%20Can%20you%20share%20packages%20and%20pricing?"
             target="_blank"
             rel="noopener noreferrer"
             className="flex justify-center items-center text-center gap-2 w-[85%] max-w-[260px] sm:w-auto px-4 py-2.5 sm:px-6 sm:py-[11px] rounded-full text-xs sm:text-sm font-poppins font-semibold tracking-wide transition-all duration-200 active:scale-95 shadow-lg"
@@ -294,7 +294,7 @@ export default async function Home() {
               </div>
             </div>
             <a
-              href="https://wa.me/919999999999?text=Hi,%20I%20want%20to%20check%20availability%20for%20a%20family%20or%20couple%20trip%20this%20summer."
+              href="https://wa.me/qr/IP26U77IWO5GO1?text=Hi,%20I%20want%20to%20check%20availability%20for%20a%20family%20or%20couple%20trip%20this%20summer."
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary text-sm py-2 px-4 shrink-0 whitespace-nowrap sm:ml-auto"
@@ -364,7 +364,7 @@ export default async function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="https://wa.me/919999999999?text=Hi,%20I'm%20planning%20a%20group%20trip.%20Here%20are%20my%20details%3A%0A%0AGroup%20size%3A%0ADates%3A%0ABudget%20per%20person%3A%0APreference%3A"
+                href="https://wa.me/qr/IP26U77IWO5GO1?text=Hi,%20I'm%20planning%20a%20group%20trip.%20Here%20are%20my%20details%3A%0A%0AGroup%20size%3A%0ADates%3A%0ABudget%20per%20person%3A%0APreference%3A"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary flex items-center justify-center gap-2 py-3"

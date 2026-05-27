@@ -326,7 +326,7 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
               <div className="flex gap-2 w-full sm:w-auto">
                 <button onClick={() => setStep(1)} className="btn-secondary py-3 px-6 w-full sm:w-auto text-sm" disabled={loading}>← Back</button>
                 <a 
-                  href="https://wa.me/919999999999?text=Hi!%20I%20need%20help%20booking%20the%20trip%20to%20Uttarakhand." 
+                  href="https://wa.me/qr/IP26U77IWO5GO1?text=Hi!%20I%20need%20help%20booking%20the%20trip%20to%20Uttarakhand." 
                   target="_blank" 
                   rel="noreferrer"
                   className="bg-[#25D366] hover:bg-[#1ebd5a] text-white py-3 px-4 rounded-xl flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto"

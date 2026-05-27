@@ -62,7 +62,7 @@ export default function AboutPage() {
                 Experiencing the Soul of Uttarakhand
               </h2>
               <p className="text-lg md:text-xl font-poppins text-brand-text/70 dark:text-brand-text-dark/70 font-light leading-relaxed">
-                Seematra was born from a simple idea—to help people truly experience the essence of the Himalayas, not just visit it. Built by a passionate B.Tech student, it’s a platform driven by learning, growing, and creating something deeply meaningful.
+                Seematra was born from a simple idea—to help people truly experience the essence of the Himalayas, not just visit it. Built by Ashwin, a passionate B.Tech CSE student at Graphic Era Hill University, it’s a platform driven by learning, growing, and creating something deeply meaningful for our local region.
               </p>
             </div>
 
@@ -76,7 +76,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Our Philosophy Grid */}
+            {/* Our Philosophy & Office Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
@@ -93,8 +93,11 @@ export default function AboutPage() {
                   <Compass size={18} className="text-secondary" />
                 </div>
                 <div>
-                  <h4 className="font-boldonse text-lg tracking-wide mb-1">Authentic Discovery</h4>
-                  <p className="font-poppins text-sm text-brand-text/60 dark:text-brand-text-dark/60">Come, experience Uttarakhand with us—the exact way it truly is meant to be seen.</p>
+                  <h4 className="font-boldonse text-lg tracking-wide mb-1">Local Headquarters</h4>
+                  <p className="font-poppins text-sm text-brand-text/60 dark:text-brand-text-dark/60">
+                    <strong>Office:</strong> Bhairav Colony, Gali no 1, Bhattowala, Gumamniwala<br />
+                    Rishikesh, Uttarakhand
+                  </p>
                 </div>
               </div>
             </div>

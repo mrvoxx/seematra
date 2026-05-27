@@ -25,7 +25,7 @@ export default function ClientWhatsAppSticky() {
 
   return (
     <a
-      href="https://wa.me/919999999999?text=Hi,%20I'm%20interested%20in%20exploring%20Uttarakhand%20with%20Seematra."
+      href="https://wa.me/qr/IP26U77IWO5GO1?text=Hi,%20I'm%20interested%20in%20exploring%20Uttarakhand%20with%20Seematra."
       target="_blank"
       rel="noopener noreferrer"
       className={`fixed top-[80px] lg:top-[90px] left-4 z-[99] px-4 py-2 lg:px-5 lg:py-2.5 bg-green-500 text-white rounded-full flex items-center justify-center gap-2 shadow-lg shadow-green-500/30 hover:bg-green-600 hover:scale-105 transition-all duration-300 ${
