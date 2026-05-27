@@ -62,7 +62,7 @@ export default function AboutPage() {
                 Experiencing the Soul of Uttarakhand
               </h2>
               <p className="text-lg md:text-xl font-poppins text-brand-text/70 dark:text-brand-text-dark/70 font-light leading-relaxed">
-                Seematra was born from a simple idea—to help people truly experience the essence of the Himalayas, not just visit it. Built by Ashwin, a passionate B.Tech CSE student at Graphic Era Hill University, it’s a platform driven by learning, growing, and creating something deeply meaningful for our local region.
+                Seematra was created to help travelers experience Uttarakhand through thoughtfully handmade curated itineraries. Founded by Ashwin, a B.Tech CSE student at Graphic Era Hill University, the platform takes care of everything behind the scenes — from bookings and stays to activities and local experiences — so travelers can simply enjoy the journey.
               </p>
             </div>
 
