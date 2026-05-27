@@ -83,7 +83,7 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
           ))}
         </div>
 
-        <h3 className="text-sm lg:text-base font-outfit font-medium mb-2 text-brand-text dark:text-brand-text-dark group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem] lg:min-h-[3rem]">
+        <h3 className="text-base lg:text-xl font-outfit font-medium mb-2 text-brand-text dark:text-brand-text-dark group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem] lg:min-h-[3rem]">
           {itinerary.title}
         </h3>
 
