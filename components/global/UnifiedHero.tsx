@@ -62,7 +62,7 @@ export default function UnifiedHero({
             <span className="w-4 h-px bg-white/40 inline-block"></span>
           </p>
         )}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-boldonse font-normal mb-3 tracking-wide leading-snug sm:leading-normal drop-shadow-sm text-white animate-fade-up">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-boldonse font-normal mb-3 tracking-wide leading-snug sm:leading-normal drop-shadow-sm text-white animate-fade-up">
           {title}
         </h1>
 
