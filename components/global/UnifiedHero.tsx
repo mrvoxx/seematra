@@ -36,6 +36,7 @@ export default function UnifiedHero({
           className="object-cover"
           priority
           fetchPriority="high"
+          quality={60}
         />
       </div>
 
@@ -48,7 +49,7 @@ export default function UnifiedHero({
 
       {/* Layer 3: Overlays for Depth & Readability */}
       <div className="absolute inset-0 z-[-1] pointer-events-none w-full h-full">
-        <div className="absolute inset-0 bg-black/40 dark:bg-black/60 transition-colors" />
+        <div className="absolute inset-0 bg-black/50 dark:bg-black/70 transition-colors" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-surface dark:via-black/20 dark:to-surface-dark" />
       </div>
 

@@ -59,7 +59,7 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
           src={itinerary.thumbnail}
           alt={itinerary.title}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="(max-width: 768px) 85vw, (max-width: 1200px) 50vw, 33vw"
           quality={60}
           priority={priority}
           className="object-cover group-hover:scale-110 transition-transform duration-500 ease-in-out"

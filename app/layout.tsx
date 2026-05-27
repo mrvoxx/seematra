@@ -137,29 +137,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        {/* Google Translate Script & CSS to hide the ugly top banner */}
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `
-              function googleTranslateElementInit() {
-                new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
-              }
-            `,
-          }}
-        />
-        <style dangerouslySetInnerHTML={{ __html: `
-          .goog-te-banner-frame.skiptranslate { display: none !important; } 
-          body { top: 0px !important; }
-          #goog-gt-tt { display: none !important; top: 0px !important; } 
-          .goog-tooltip skiptranslate { display: none !important; top: 0px !important; } 
-          .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-        `}} />
       </head>
       <body>
-        {/* Hidden translation target */}
-        <div id="google_translate_element" style={{ display: 'none' }}></div>
         <AuthProvider>
           <Navbar />
           <ClientWhatsAppSticky />

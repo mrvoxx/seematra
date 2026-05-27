@@ -1,5 +1,4 @@
 /* Google Fonts are loaded via <link> in app/layout.tsx for correct cross-device font rendering */
-@import 'leaflet/dist/leaflet.css';
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
