@@ -1,12 +1,18 @@
 import webpush from 'web-push';
 import User from '@/models/User';
 
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webpush.setVapidDetails(
-    `mailto:admin@seematra.com`,
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+try {
+  const vapidPublic = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.replace(/^["']|["']$/g, '');
+  const vapidPrivate = process.env.VAPID_PRIVATE_KEY?.replace(/^["']|["']$/g, '');
+  if (vapidPublic && vapidPrivate) {
+    webpush.setVapidDetails(
+      `mailto:admin@seematra.com`,
+      vapidPublic,
+      vapidPrivate
+    );
+  }
+} catch (e) {
+  console.warn('[push] VAPID key setup failed, push notifications disabled:', (e as Error).message);
 }
 
 export async function sendAdminPushNotification(title: string, body: string, url: string = '/admin') {

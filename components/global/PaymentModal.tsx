@@ -221,121 +221,121 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
       )}
 
       {step === 2 && (
-        <div className="animate-fade-in flex flex-col gap-5">
-          <div className="bg-brand-border/10 dark:bg-brand-border-dark/20 rounded-2xl p-5 border border-brand-border/50 dark:border-brand-border-dark/50">
-            <h3 className="font-outfit font-bold text-xl mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              Complete Booking
-              <span className="text-primary font-bold text-lg flex items-center">
-                <IndianRupee size={18} />{totalAmount.toLocaleString('en-IN')}
+        <div className="animate-fade-in flex flex-col gap-6">
+
+          {/* Booking Summary */}
+          <div>
+            <h3 className="font-poppins font-bold text-lg mb-4 flex items-center justify-between">
+              <span>Booking Summary</span>
+              <span className="text-primary font-bold text-base flex items-center">
+                <IndianRupee size={16} />{totalAmount.toLocaleString('en-IN')}
               </span>
             </h3>
 
-            {/* Clean Details Layout */}
-            <div className="mb-5 bg-surface dark:bg-surface-dark p-4 rounded-xl border border-brand-border/40 shadow-sm text-sm">
-              <p className="font-bold text-brand-text mb-3 border-b border-brand-border/30 pb-2 text-base">
+            <div className="bg-surface/60 dark:bg-surface-dark/60 rounded-xl p-4 text-sm">
+              <p className="font-semibold text-brand-text dark:text-brand-text-dark mb-3 text-base">
                 {itinerary.title}
               </p>
-              <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+              <div className="grid grid-cols-2 gap-3 text-brand-text/80 dark:text-brand-text-dark/80">
                 <div>
-                  <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Date</span>
-                  <span className="font-medium text-brand-text/90">
+                  <span className="block text-[10px] uppercase tracking-wider text-brand-text/45 dark:text-brand-text-dark/45 font-bold mb-0.5">Date</span>
+                  <span className="font-medium">
                     {new Date(tourDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Group</span>
-                  <span className="font-medium text-brand-text/90">{groupSize} Person(s)</span>
+                  <span className="block text-[10px] uppercase tracking-wider text-brand-text/45 dark:text-brand-text-dark/45 font-bold mb-0.5">Group</span>
+                  <span className="font-medium">{groupSize} Person(s)</span>
                 </div>
                 {vehicleAssigned && (
-                  <div className="col-span-2">
-                    <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Vehicle</span>
-                    <span className="font-medium text-brand-text/90 flex items-center gap-1">
-                      <Car size={14} className="text-primary" /> {vehicleAssigned}
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-wider text-brand-text/45 dark:text-brand-text-dark/45 font-bold mb-0.5">Vehicle</span>
+                    <span className="font-medium flex items-center gap-1">
+                      <Car size={13} className="text-primary" /> {vehicleAssigned}
                     </span>
                   </div>
                 )}
-                <div className="col-span-2">
-                  <span className="block text-[11px] uppercase tracking-wider text-brand-text/50 font-bold mb-0.5">Pickup</span>
-                  <span className="font-medium text-brand-text/90">{pickupPoint}</span>
+                <div>
+                  <span className="block text-[10px] uppercase tracking-wider text-brand-text/45 dark:text-brand-text-dark/45 font-bold mb-0.5">Pickup</span>
+                  <span className="font-medium">{pickupPoint}</span>
                 </div>
               </div>
             </div>
-
-            {/* Payment Modes */}
-            <div className="space-y-3">
-              <h4 className="font-bold text-sm text-brand-text/80 mb-2">Select Payment Method</h4>
-
-              <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm ${paymentMode === 'full' ? 'border-primary bg-primary/5' : 'border-brand-border/50 hover:border-primary/30 bg-surface'}`}>
-                <div className="flex items-start gap-3">
-                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={paymentMode === 'full'} onChange={() => setPaymentMode('full')} />
-                  <div className="flex-1">
-                    <span className="font-bold block text-sm">Full Payment (100%)</span>
-                    <span className="text-xs text-brand-text/60 mt-0.5 block">Pay total amount now for instant confirmation.</span>
-                    <div className="mt-2 text-sm font-bold text-primary">Pay Now: ₹{totalAmount.toLocaleString('en-IN')}</div>
-                  </div>
-                </div>
-              </label>
-
-              <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm ${paymentMode === 'advance_40' ? 'border-primary bg-primary/5' : 'border-brand-border/50 hover:border-primary/30 bg-surface'}`}>
-                <div className="flex items-start gap-3">
-                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={paymentMode === 'advance_40'} onChange={() => setPaymentMode('advance_40')} />
-                  <div className="flex-1">
-                    <span className="font-bold block text-sm">40% Advance Payment</span>
-                    <span className="text-xs text-brand-text/60 mt-0.5 block">Secure your booking. Pay the 60% balance 3 days before trip.</span>
-                    <div className="mt-2 text-sm font-bold text-primary">Pay Now: ₹{Math.ceil(totalAmount * 0.4).toLocaleString('en-IN')}</div>
-                  </div>
-                </div>
-              </label>
-
-              <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm ${paymentMode === 'reservation_500' ? 'border-primary bg-primary/5' : 'border-brand-border/50 hover:border-primary/30 bg-surface'}`}>
-                <div className="flex items-start gap-3">
-                  <input type="radio" name="payment" className="mt-1 accent-primary w-4 h-4 cursor-pointer" checked={paymentMode === 'reservation_500'} onChange={() => { setPaymentMode('reservation_500'); setDisclaimerAccepted(false); }} />
-                  <div className="flex-1">
-                    <span className="font-bold block text-sm">Pay on Arrival (₹500 Reservation)</span>
-                    <span className="text-xs text-brand-text/60 mt-0.5 block">Lock your price today. Pay the entire balance when you arrive.</span>
-                    <div className="mt-2 text-sm font-bold text-primary">Pay Now: ₹500</div>
-                  </div>
-                </div>
-              </label>
-            </div>
-
-            {paymentMode === 'reservation_500' && (
-              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg animate-fade-in">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="mt-0.5 accent-red-600 w-4 h-4 rounded cursor-pointer"
-                    checked={disclaimerAccepted}
-                    onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                  />
-                  <span className="text-xs text-red-800 dark:text-red-200 font-medium leading-relaxed">
-                    I understand that this ₹500 fee is strictly non-refundable and reserves my spot, but hotel availability is only guaranteed once a 40% advance is paid.
-                  </span>
-                </label>
-              </div>
-            )}
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-[11px] text-brand-text/50 justify-center">
-              <ShieldCheck size={14} className="text-green-500" />
+          {/* Divider */}
+          <hr className="border-brand-border/30 dark:border-brand-border-dark/30" />
+
+          {/* Payment Method Selection */}
+          <div>
+            <h4 className="font-poppins font-semibold text-sm mb-3">Select Payment Method</h4>
+            <div className="space-y-2">
+
+              <label className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'full' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
+                <input type="radio" name="payment" className="mt-0.5 accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'full'} onChange={() => setPaymentMode('full')} />
+                <div className="flex-1 min-w-0">
+                  <span className="font-semibold block text-sm">Full Payment (100%)</span>
+                  <span className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 block">Pay total amount now for instant confirmation.</span>
+                  <span className="mt-1 text-sm font-bold text-primary block">₹{totalAmount.toLocaleString('en-IN')}</span>
+                </div>
+              </label>
+
+              <label className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'advance_40' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
+                <input type="radio" name="payment" className="mt-0.5 accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'advance_40'} onChange={() => setPaymentMode('advance_40')} />
+                <div className="flex-1 min-w-0">
+                  <span className="font-semibold block text-sm">40% Advance Payment</span>
+                  <span className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 block">Secure your booking. Pay the 60% balance 3 days before trip.</span>
+                  <span className="mt-1 text-sm font-bold text-primary block">₹{Math.ceil(totalAmount * 0.4).toLocaleString('en-IN')}</span>
+                </div>
+              </label>
+
+              <label className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'reservation_500' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
+                <input type="radio" name="payment" className="mt-0.5 accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'reservation_500'} onChange={() => { setPaymentMode('reservation_500'); setDisclaimerAccepted(false); }} />
+                <div className="flex-1 min-w-0">
+                  <span className="font-semibold block text-sm">Pay on Arrival (₹500 Reservation)</span>
+                  <span className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 block">Lock your price today. Pay the entire balance when you arrive.</span>
+                  <span className="mt-1 text-sm font-bold text-primary block">₹500</span>
+                </div>
+              </label>
+
+            </div>
+          </div>
+
+          {paymentMode === 'reservation_500' && (
+            <label className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/30 rounded-lg cursor-pointer animate-fade-in">
+              <input 
+                type="checkbox" 
+                className="mt-0.5 accent-red-600 w-4 h-4 shrink-0 rounded cursor-pointer"
+                checked={disclaimerAccepted}
+                onChange={(e) => setDisclaimerAccepted(e.target.checked)}
+              />
+              <span className="text-xs text-red-700 dark:text-red-300 font-medium leading-relaxed">
+                I understand that this ₹500 fee is strictly non-refundable and reserves my spot, but hotel availability is only guaranteed once a 40% advance is paid.
+              </span>
+            </label>
+          )}
+
+          {/* Footer */}
+          <div className="pt-2 border-t border-brand-border/20 dark:border-brand-border-dark/20 flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-[11px] text-brand-text/40 dark:text-brand-text-dark/40 justify-center">
+              <ShieldCheck size={13} className="text-green-500" />
               Secure 256-bit encrypted checkout via Razorpay
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
-              <div className="flex gap-2 w-full sm:w-auto">
-                <button onClick={() => setStep(1)} className="btn-secondary py-3 px-6 w-full sm:w-auto text-sm" disabled={loading}>← Back</button>
+            <div className="flex justify-between items-center gap-3">
+              <div className="flex gap-2">
+                <button onClick={() => setStep(1)} className="btn-secondary py-2.5 px-5 text-sm" disabled={loading}>← Back</button>
                 <a 
                   href="https://wa.me/qr/IP26U77IWO5GO1?text=Hi!%20I%20need%20help%20booking%20the%20trip%20to%20Uttarakhand." 
                   target="_blank" 
                   rel="noreferrer"
-                  className="bg-[#25D366] hover:bg-[#1ebd5a] text-white py-3 px-4 rounded-xl flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto"
+                  className="bg-[#25D366] hover:bg-[#1ebd5a] text-white py-2.5 px-3.5 rounded-xl flex items-center justify-center transition-colors"
                   title="Chat on WhatsApp"
                 >
-                  <MessageCircle size={18} />
+                  <MessageCircle size={16} />
                 </a>
               </div>
-              <button onClick={handleCheckout} className="btn-primary py-3 px-8 w-full sm:w-auto shadow-md" disabled={loading}>
+              <button onClick={handleCheckout} className="btn-primary py-2.5 px-8 shadow-md text-sm" disabled={loading}>
                 {loading ? 'Processing...' : `Pay ₹${amountToPayNow.toLocaleString('en-IN')}`}
               </button>
             </div>
