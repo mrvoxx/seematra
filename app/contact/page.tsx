@@ -57,7 +57,7 @@ export default function ContactPage() {
             </p>
             <a 
               href="mailto:seematra.support@gmail.com" 
-              className="mt-auto btn-outline w-[90%] mx-auto justify-center text-xs sm:text-sm px-2 sm:px-4"
+              className="mt-auto btn-outline w-full justify-center text-[13px] sm:text-sm px-2"
             >
               seematra.support@gmail.com
             </a>
