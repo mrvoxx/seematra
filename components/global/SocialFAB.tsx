@@ -21,7 +21,7 @@ export default function SocialFAB() {
 
       {/* Instagram */}
       <a
-        href="https://instagram.com"
+        href="https://www.instagram.com/seematra6?igsh=MTB4eGJlYTU5N2RkeA=="
         target="_blank"
         rel="noreferrer"
         className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white rounded-full flex items-center justify-center shadow-lg hover:brightness-110 hover:-translate-y-1 transition-all duration-300 pointer-events-auto"

@@ -92,7 +92,7 @@ export default async function Home() {
       >
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6 flex-wrap">
           <Link href="/itineraries" className="btn-primary flex items-center justify-center text-center w-[85%] max-w-[260px] sm:w-auto text-sm sm:text-base py-2.5 sm:py-3">
-            Find My Trip — From ₹3,499
+            Find My Trip From ₹3,499
           </Link>
 
           <a
@@ -161,7 +161,7 @@ export default async function Home() {
                   <path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.554 4.103 1.523 5.824L.057 23.882a.5.5 0 00.611.611l6.053-1.466A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.001-1.366l-.36-.213-3.724.902.919-3.626-.234-.373A9.818 9.818 0 1112 21.818z"/>
                 </svg>
               </div>
-              <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">Reply in 15 Minutes</h3>
+              <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">WhatsApp Assistance</h3>
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 No bots, no hold music. Real human assistance on WhatsApp, from planning your trip to the moment you return home safely.
               </p>
@@ -175,7 +175,7 @@ export default async function Home() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
                 <Compass className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
               </div>
-              <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">Hand Curated Trails</h3>
+              <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">Hand Curated Itineraries</h3>
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 We don't sell every route — only the ones we've personally explored. Our itineraries ensure you experience the absolute best.
               </p>
@@ -289,8 +289,8 @@ export default async function Home() {
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xl">🏔</span>
               <div>
-                <p className="text-sm font-outfit font-bold text-brand-text dark:text-brand-text-dark">Summer slots filling up fast</p>
-                <p className="text-xs font-inter text-brand-text/60 dark:text-brand-text-dark/60">Char Dham &amp; Valley of Flowers season — June weekends going first</p>
+                <p className="text-sm font-outfit font-bold text-brand-text dark:text-brand-text-dark">Slots filling up fast</p>
+                <p className="text-xs font-inter text-brand-text/60 dark:text-brand-text-dark/60">Char Dham &amp; Valley of Flowers season — weekends going first</p>
               </div>
             </div>
             <a
