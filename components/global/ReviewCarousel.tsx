@@ -105,9 +105,9 @@ export default function ReviewCarousel({ reviews, direction = 'left', speed = 'n
                     </div>
                   )}
                   <div className="min-w-0">
-                    <h4 className="font-outfit font-semibold text-sm text-brand-text dark:text-brand-text-dark truncate leading-tight">
+                    <h3 className="font-outfit font-semibold text-sm text-brand-text dark:text-brand-text-dark truncate leading-tight">
                       {review.name}
-                    </h4>
+                    </h3>
                     {review.location && (
                       <p className="text-[10px] text-brand-text/50 dark:text-brand-text-dark/50 font-inter truncate">{review.location}</p>
                     )}

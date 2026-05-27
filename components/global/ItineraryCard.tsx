@@ -59,7 +59,8 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
           src={itinerary.thumbnail}
           alt={itinerary.title}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          quality={60}
           priority={priority}
           className="object-cover group-hover:scale-110 transition-transform duration-500 ease-in-out"
         />
@@ -92,7 +93,7 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
 
         <div className="flex items-center justify-between mt-auto pt-3 lg:pt-4 border-t border-brand-border dark:border-brand-border-dark">
           <div className="flex flex-col">
-            <span className="text-[10px] lg:text-xs font-inter text-brand-text/50 dark:text-brand-text-dark/50 uppercase tracking-wide">Starting from</span>
+            <span className="text-[10px] lg:text-xs font-inter text-brand-text/70 dark:text-brand-text-dark/70 uppercase tracking-wide">Starting from</span>
             <div className="flex items-baseline flex-wrap gap-x-1.5 lg:gap-x-2">
               <span className="text-lg lg:text-2xl font-outfit font-medium text-primary">
                 ₹{itinerary.price.toLocaleString('en-IN')}

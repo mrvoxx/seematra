@@ -7,6 +7,21 @@ import Footer from '@/components/global/Footer';
 import SocialFAB from '@/components/global/SocialFAB';
 import ClientWhatsAppSticky from '@/components/global/ClientWhatsAppSticky';
 import { Toaster } from 'react-hot-toast';
+import { Poppins, Edu_NSW_ACT_Cursive } from 'next/font/google';
+
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins-next',
+  display: 'swap',
+});
+
+const edu = Edu_NSW_ACT_Cursive({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-edu-next',
+  display: 'swap',
+});
 
 // ─── Site-wide Metadata ───────────────────────────────────────────────────────
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://seematra.com';
@@ -113,17 +128,10 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${edu.variable}`}>
       <head>
         {/* Preconnect to external resources for faster loading */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Google Fonts — loaded via <link> so browsers fetch with correct User-Agent (gets WOFF2, not TTF) */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Boldonse&family=Edu+NSW+ACT+Cursive:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        />
         {/* Organization structured data */}
         <script
           type="application/ld+json"

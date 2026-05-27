@@ -26,6 +26,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -220,7 +221,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <img src="/logo.png" alt="Seematra Logo" width={150} height={28} className="h-7 w-auto object-contain" />
+            <Image src="/logo.png" alt="Seematra Logo" width={150} height={28} className="h-7 w-auto object-contain" />
             <span className="text-sm md:text-base font-boldonse font-normal text-secondary dark:text-secondary-dark tracking-wide">
               Seematra
             </span>

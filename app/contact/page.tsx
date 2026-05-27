@@ -29,7 +29,7 @@ export default function ContactPage() {
           
           {/* WhatsApp Card */}
           <div className="card p-8 flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform">
-            <div className="w-16 h-16 rounded-2xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2">
+            <div className="w-16 h-16 rounded-2xl bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center mb-2">
               <MessageCircle size={32} />
             </div>
             <h3 className="font-outfit font-bold text-xl text-brand-text dark:text-brand-text-dark">WhatsApp Assistance</h3>

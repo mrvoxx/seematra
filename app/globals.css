@@ -47,8 +47,8 @@
   --color-brand-border-dark: var(--border-dyn);
 
   /* Fonts */
-  --font-poppins: 'Poppins', sans-serif;
-  --font-edu: 'Edu NSW ACT Cursive', cursive;
+  --font-poppins: var(--font-poppins-next, 'Poppins', sans-serif);
+  --font-edu: var(--font-edu-next, 'Edu NSW ACT Cursive', cursive);
   --font-boldonse: 'Boldonse', system-ui;
 
   --font-outfit: var(--font-boldonse);
@@ -227,13 +227,13 @@
   }
 
   .badge-primary {
-    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest text-primary;
-    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest text-brand-text dark:text-brand-text-dark;
+    background-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
   }
 
   .badge-secondary {
-    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest text-secondary;
-    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+    @apply inline-block px-3 py-1 rounded-full text-xs font-poppins font-bold uppercase tracking-widest text-brand-text dark:text-brand-text-dark;
+    background-color: color-mix(in srgb, var(--color-secondary) 15%, transparent);
   }
 }
 

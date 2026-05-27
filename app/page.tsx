@@ -101,9 +101,9 @@ export default async function Home() {
             rel="noopener noreferrer"
             className="flex justify-center items-center text-center gap-2 w-[85%] max-w-[260px] sm:w-auto px-4 py-2.5 sm:px-6 sm:py-[11px] rounded-full text-xs sm:text-sm font-poppins font-semibold tracking-wide transition-all duration-200 active:scale-95 shadow-lg"
             style={{
-              background: 'rgba(37,211,102,0.18)',
-              border: '1.5px solid rgba(37,211,102,0.55)',
-              color: '#fff',
+              background: 'rgba(0,0,0,0.4)',
+              border: '1.5px solid rgba(37,211,102,0.6)',
+              color: '#25D366',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
             }}
@@ -165,56 +165,56 @@ export default async function Home() {
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 No bots, no hold music. Real human assistance on WhatsApp, from planning your trip to the moment you return home safely.
               </p>
-              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-600 dark:text-green-400">
+              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={2.5} /> Always Available
               </div>
             </div>
 
             {/* 2. Hand Curated Trails */}
             <div className="card p-4 sm:p-5 md:p-6 flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
                 <Compass className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
               </div>
               <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">Hand Curated Itineraries</h3>
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 We don't sell every route — only the ones we've personally explored. Our itineraries ensure you experience the absolute best.
               </p>
-              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-600 dark:text-green-400">
+              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={2.5} /> Expert Verified
               </div>
             </div>
 
             {/* 3. Secure Payments */}
             <div className="card p-4 sm:p-5 md:p-6 flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
                 <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
               </div>
               <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">Secure Payments</h3>
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 Book with confidence. We use bank-grade Razorpay encryption for all transactions, with no hidden charges or surprise fees.
               </p>
-              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-600 dark:text-green-400">
+              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={2.5} /> Razorpay Secure
               </div>
             </div>
 
             {/* 4. Local Assistance */}
             <div className="card p-4 sm:p-5 md:p-6 flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
               </div>
               <h3 className="font-outfit font-bold text-xs sm:text-base text-brand-text dark:text-brand-text-dark mb-1">Local Assistance</h3>
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 Our operations team is based in Uttarakhand. If a road closes or weather turns bad, our local network ensures you stay safe.
               </p>
-              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-600 dark:text-green-400">
+              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={2.5} /> Ground Support
               </div>
             </div>
 
             {/* 5. Quality Articles */}
             <div className="card p-4 sm:p-5 md:p-6 flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
@@ -223,14 +223,14 @@ export default async function Home() {
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 Read deep-dive guides into local culture, hidden spots, and preparation tips written by genuine mountain experts.
               </p>
-              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-600 dark:text-green-400">
+              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={2.5} /> Expert Written
               </div>
             </div>
 
             {/* 6. Affordable Packages */}
             <div className="card p-4 sm:p-5 md:p-6 flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center mb-2 sm:mb-3 shrink-0">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -239,7 +239,7 @@ export default async function Home() {
               <p className="hidden sm:block text-xs leading-relaxed font-inter text-brand-text/70 dark:text-brand-text-dark/70">
                 Direct partnerships with homestays and transporters mean no middleman fees. You get the best experiences at honest prices.
               </p>
-              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-600 dark:text-green-400">
+              <div className="mt-auto sm:mt-3 flex items-center justify-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-inter font-bold text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" strokeWidth={2.5} /> Group Rates
               </div>
             </div>

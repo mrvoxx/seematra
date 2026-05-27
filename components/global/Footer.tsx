@@ -1,5 +1,6 @@
 // components/global/Footer.tsx
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -10,7 +11,7 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 group">
-              <img 
+              <Image 
                 src="/logo.png" 
                 alt="Seematra Logo" 
                 width={150}
@@ -65,10 +66,10 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-brand-border dark:border-brand-border-dark pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-brand-text/50 dark:text-brand-text-dark/50">
+          <p className="text-xs text-brand-text/70 dark:text-brand-text-dark/70">
             &copy; {new Date().getFullYear()} Seematra Tourism. All rights reserved.
           </p>
-          <div className="text-xs text-brand-text/50 dark:text-brand-text-dark/50">
+          <div className="text-xs text-brand-text/70 dark:text-brand-text-dark/70">
             Powered by Next.js & Mongoose
           </div>
         </div>
