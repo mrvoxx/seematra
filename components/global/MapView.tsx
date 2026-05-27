@@ -97,7 +97,7 @@ export default function MapView({ pins, height = 'h-[500px]', interactive = true
                   <img src={pin.thumbnail} alt={pin.title} className="absolute inset-0 w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <h4 className="font-outfit font-bold text-lg leading-tight drop-shadow-md line-clamp-2">{pin.title}</h4>
+                    <h4 className="font-outfit font-bold text-base md:text-sm leading-tight drop-shadow-md line-clamp-2">{pin.title}</h4>
                   </div>
                 </div>
                 <div className="p-4 flex flex-col gap-3">
@@ -107,7 +107,8 @@ export default function MapView({ pins, height = 'h-[500px]', interactive = true
                   </div>
                   <Link 
                     href={`/itineraries/${pin.itineraryId}`}
-                    className="w-full bg-primary text-white text-center py-2.5 rounded-lg text-sm font-bold tracking-wide hover:bg-primary-dark hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-md"
+                    className="w-full bg-primary text-white hover:text-white text-center py-2.5 rounded-lg text-sm font-bold tracking-wide hover:bg-primary-dark hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-md"
+                    style={{ color: '#ffffff' }}
                   >
                     View Details
                   </Link>

@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { IItinerary } from '@/types';
 import { Clock, MapPin, CheckCircle, XCircle, Navigation, Hotel, Star, Users, Car, ChevronDown } from 'lucide-react';
 import Modal from '@/components/global/Modal';
@@ -20,6 +22,16 @@ const MapView = dynamic(() => import('@/components/global/MapView'), {
 
 export default function ItineraryDetailClient({ itinerary }: { itinerary: IItinerary }) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const { status } = useSession();
+  const router = useRouter();
+
+  const handleBookNowClick = () => {
+    if (status === 'unauthenticated') {
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+    } else {
+      setIsPaymentModalOpen(true);
+    }
+  };
 
   // Generate map pins from roadmap — guard against undefined/empty arrays
   const roadmap = itinerary.roadmap ?? [];
@@ -103,7 +115,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
       )}
 
       <button
-        onClick={() => setIsPaymentModalOpen(true)}
+        onClick={handleBookNowClick}
         className="btn-primary w-full text-lg justify-center py-4 mb-3 shadow-lg shadow-primary/30 hover:shadow-primary/50"
       >
         Book Now
@@ -176,7 +188,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
 
             {/* Book Now */}
             <button
-              onClick={() => setIsPaymentModalOpen(true)}
+              onClick={handleBookNowClick}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-poppins font-semibold tracking-wide bg-primary text-white transition-all duration-200 hover:bg-primary/90 active:scale-95 shadow-md shadow-primary/20"
             >
               Book Now →
@@ -347,7 +359,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
       {/* Mobile Fixed Book Now Button */}
       <div className="fixed bottom-4 right-4 z-40 block lg:hidden pointer-events-none">
         <button
-          onClick={() => setIsPaymentModalOpen(true)}
+          onClick={handleBookNowClick}
           className="btn-primary shadow-xl shadow-primary/40 px-6 py-3 text-sm rounded-full font-bold animate-bounce hover:animate-none pointer-events-auto"
         >
           Book Now →
