@@ -13,6 +13,8 @@ export default function Footer() {
               <img 
                 src="/logo.png" 
                 alt="Seematra Logo" 
+                width={150}
+                height={40}
                 className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
               />
               <span className="text-xl font-outfit font-extrabold tracking-tight text-brand-text dark:text-brand-text-dark">

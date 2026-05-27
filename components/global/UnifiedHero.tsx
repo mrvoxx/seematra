@@ -35,6 +35,7 @@ export default function UnifiedHero({
           fill
           className="object-cover"
           priority
+          fetchPriority="high"
         />
       </div>
 

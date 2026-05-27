@@ -12,8 +12,13 @@ export default function HeroCanvas() {
     let animationFrameId: number;
     let cleanupFn: (() => void) | null = null;
 
-    // Detect mobile: reduce particle count for performance
+    // Detect mobile: disable canvas on mobile for performance
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+    if (isMobile) {
+      console.log('[HeroCanvas] Disabled on mobile for performance.');
+      return;
+    }
 
     // Check WebGL support before loading Three.js — some Android WebViews lack it
     const testCanvas = document.createElement('canvas');
