@@ -3,6 +3,7 @@ import fs from 'fs';
 import { connectDB } from '@/lib/mongodb';
 import Itinerary from '@/models/Itinerary';
 import Booking from '@/models/Booking';
+import User from '@/models/User';
 import razorpay from '@/lib/razorpay';
 import { ok, error, requireAuth, withErrorHandler } from '@/lib/apiHelpers';
 import { z } from 'zod';
