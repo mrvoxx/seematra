@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
-import { api } from '@/lib/services/api';
 import { IMapPin } from '@/types';
 import MapClient from './MapClient';
+
+import { connectDB } from '@/lib/mongodb';
+import Itinerary from '@/models/Itinerary';
 
 export const metadata: Metadata = {
   title: 'Interactive Travel Map | Seematra',
@@ -12,7 +14,29 @@ export const metadata: Metadata = {
 export const revalidate = 3600; // SSG
 
 export default async function MapPage() {
-  const pins = await api.get('/map/pins').catch(() => []) as IMapPin[];
+  await connectDB();
+  const itineraries = await Itinerary.find({ active: true })
+    .select('_id title thumbnail price mapCoords roadmap')
+    .lean();
+
+  const pins = itineraries
+    .map((it: any) => {
+      const coords = it.mapCoords
+        ?? (it.roadmap?.length > 0
+          ? it.roadmap[it.roadmap.length - 1].coords
+          : null);
+
+      if (!coords) return null;
+      return {
+        itineraryId: it._id.toString(),
+        title: it.title,
+        lat: coords.lat,
+        lng: coords.lng,
+        thumbnail: it.thumbnail,
+        price: it.price,
+      };
+    })
+    .filter(Boolean) as IMapPin[];
 
   return (
     <div className="w-full">
