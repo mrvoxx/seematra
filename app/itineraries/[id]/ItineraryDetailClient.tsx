@@ -124,9 +124,9 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
       {/* Social proof addition */}
       <div className="flex items-center justify-center gap-2 mb-3 bg-green-500/10 text-green-700 dark:text-green-400 py-1.5 px-3 rounded-full w-fit mx-auto">
         <div className="flex -space-x-2">
-          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://i.pravatar.cc/100?img=12" alt="avatar" />
-          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://i.pravatar.cc/100?img=32" alt="avatar" />
-          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://i.pravatar.cc/100?img=44" alt="avatar" />
+          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar" />
+          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" />
+          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://randomuser.me/api/portraits/men/46.jpg" alt="avatar" />
         </div>
         <span className="text-[11px] font-bold">23 people booked this month</span>
       </div>
@@ -338,6 +338,20 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
               <MapView pins={mapPins} height="h-[500px]" interactive={false} />
             </section>
           )}
+
+          {/* Bottom CTA */}
+          <section className="mb-12 mt-12 bg-primary/10 dark:bg-primary/5 rounded-2xl p-8 border border-primary/20 text-center flex flex-col items-center">
+            <h2 className="text-3xl font-boldonse font-normal leading-snug mb-4">Ready to start your journey?</h2>
+            <p className="font-inter text-brand-text/70 dark:text-brand-text-dark/70 mb-6 max-w-lg">
+              Secure your spot today with a simple 40% advance payment. Limited slots available for upcoming dates!
+            </p>
+            <button
+              onClick={handleBookNowClick}
+              className="btn-primary py-4 px-10 text-lg shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              Book Your Adventure Now
+            </button>
+          </section>
 
         </div>
 

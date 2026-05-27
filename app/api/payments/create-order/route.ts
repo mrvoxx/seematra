@@ -95,7 +95,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     receipt:  `booking_${Date.now()}`,
     notes: {
       itineraryId,
-      userId:      (session!.user as any).id as string,
+      userId:      ((session?.user as any)?.id || session?.user?.email || 'guest') as string,
       paymentMode,
     },
   });
