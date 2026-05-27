@@ -18,8 +18,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 z-[-1] bg-black/50" />
         <div className="absolute inset-0 z-[-1] bg-gradient-to-b from-transparent via-black/20 to-surface dark:to-surface-dark" />
         <div className="container relative z-10 mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-outfit font-extrabold mb-4 text-white drop-shadow-sm">
-            Our <span className="text-primary">Story</span>
+          <h1 className="text-3xl md:text-4xl font-outfit font-extrabold mb-4 text-white drop-shadow-sm">
+            About <span className="text-primary">Seematra</span>
           </h1>
           <p className="text-base md:text-lg font-inter text-white/85 max-w-2xl mx-auto drop-shadow-sm">
             Helping You Experience Uttarakhand, Not Just Visit It

@@ -48,8 +48,7 @@
   /* Fonts */
   --font-poppins: var(--font-poppins-next, 'Poppins', sans-serif);
   --font-edu: var(--font-edu-next, 'Edu NSW ACT Cursive', cursive);
-  --font-boldonse: 'Boldonse', var(--font-boldonse-next, 'Outfit', system-ui);
-
+  --font-boldonse: 'Boldonse', var(--font-outfit-next, 'Outfit', system-ui);
   --font-outfit: var(--font-boldonse);
   /* Fallback mapping for existing classes */
   --font-inter: var(--font-poppins);

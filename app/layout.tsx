@@ -7,8 +7,7 @@ import Footer from '@/components/global/Footer';
 import SocialFAB from '@/components/global/SocialFAB';
 import ClientWhatsAppSticky from '@/components/global/ClientWhatsAppSticky';
 import { Toaster } from 'react-hot-toast';
-import { Poppins, Edu_NSW_ACT_Cursive, Boldonse } from 'next/font/google';
-
+import { Poppins, Edu_NSW_ACT_Cursive, Outfit } from 'next/font/google';
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
@@ -23,10 +22,10 @@ const edu = Edu_NSW_ACT_Cursive({
   display: 'swap',
 });
 
-const boldonse = Boldonse({
-  weight: ['400'],
+const outfit = Outfit({
+  weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
-  variable: '--font-boldonse-next',
+  variable: '--font-outfit-next',
   display: 'swap',
 });
 
@@ -135,8 +134,7 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${edu.variable} ${boldonse.variable}`}>
-      <head>
+    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${edu.variable} ${outfit.variable}`}>      <head>
         {/* Preconnect to external resources for faster loading */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
         {/* Organization structured data */}
