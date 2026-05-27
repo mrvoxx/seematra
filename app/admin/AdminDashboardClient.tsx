@@ -127,7 +127,7 @@ export default function AdminDashboardClient() {
   return (
     <AdminGuard>
       <div className="min-h-screen bg-surface dark:bg-surface-dark">
-        <div className="container mx-auto px-4 lg:px-8 py-8 max-w-7xl flex flex-col lg:flex-row gap-8">
+        <div className="container mx-auto px-4 lg:px-8 pt-28 pb-8 max-w-7xl flex flex-col lg:flex-row gap-8">
 
           {/* ── Sidebar ── */}
           <aside className="w-full lg:w-64 shrink-0 flex flex-col gap-4">
