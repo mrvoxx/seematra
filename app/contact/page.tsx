@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-surface dark:bg-surface-dark pb-20">
       {/* Header */}
-      <div className="bg-primary/5 py-16 md:py-24 border-b border-brand-border dark:border-brand-border-dark">
+      <div className="bg-primary/5 pt-32 pb-16 md:pt-40 md:pb-24 border-b border-brand-border dark:border-brand-border-dark">
         <div className="container mx-auto px-4 lg:px-8 text-center max-w-3xl">
           <p className="text-sm text-primary font-inter font-semibold uppercase tracking-widest mb-2">Support</p>
           <h1 className="text-3xl md:text-5xl font-boldonse font-normal text-brand-text dark:text-brand-text-dark mb-4">
@@ -57,7 +57,7 @@ export default function ContactPage() {
             </p>
             <a 
               href="mailto:seematra.support@gmail.com" 
-              className="mt-auto btn-outline w-full justify-center"
+              className="mt-auto btn-outline w-[90%] mx-auto justify-center text-xs sm:text-sm px-2 sm:px-4"
             >
               seematra.support@gmail.com
             </a>
