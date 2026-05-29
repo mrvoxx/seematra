@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "pseo:seed": "npx ts-node --compiler-options {\"module\":\"commonjs\"} scripts/pseo/seeds/seedPseo.ts",
+    "pseo:generate": "npx ts-node --compiler-options {\"module\":\"commonjs\"} scripts/pseo/generate.ts",
+    "pseo:generate:all": "npx ts-node --compiler-options {\"module\":\"commonjs\"} scripts/pseo/generate.ts --type=all",
+    "pseo:generate:dry": "npx ts-node --compiler-options {\"module\":\"commonjs\"} scripts/pseo/generate.ts --type=all --dry-run"
   },
   "dependencies": {
     "@next/font": "^14.2.15",
