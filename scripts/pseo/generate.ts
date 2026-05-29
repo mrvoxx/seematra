@@ -11,24 +11,15 @@ if (!MONGODB_URI) {
 }
 
 import PseoPage from '../../models/PseoPage';
-import PseoSeed from '../../models/PseoSeed';
 import { generateAllPages, generatePagesByType } from '../../lib/pseo/generator';
-import type { PseoPageType, CircuitSeed, DestinationSeed, ActivitySeed, IntentTemplate, EntitySeed } from '../../types/pseo';
+import type { PseoPageType } from '../../types/pseo';
 
-async function loadSeedData() {
-  console.log('📂 Loading seed data from MongoDB...');
-
-  const circuits = (await PseoSeed.find({ seed_type: 'circuit' }).lean()).map(s => s.data as unknown as CircuitSeed);
-  const destinations = (await PseoSeed.find({ seed_type: 'destination' }).lean()).map(s => s.data as unknown as DestinationSeed);
-  const activities = (await PseoSeed.find({ seed_type: 'activity' }).lean()).map(s => s.data as unknown as ActivitySeed);
-  const intentDocs = (await PseoSeed.find({ seed_type: 'intent_template' }).lean()).map(s => s.data as unknown as IntentTemplate);
-  const entities = (await PseoSeed.find({ seed_type: 'entity' }).lean()).map(s => s.data as unknown as EntitySeed);
-
-  console.log(`   Circuits: ${circuits.length}, Destinations: ${destinations.length}, Activities: ${activities.length}`);
-  console.log(`   Intents: ${intentDocs.length}, Entities: ${entities.length}`);
-
-  return { circuits, destinations, activities, intents: intentDocs, entities };
-}
+// Import seed data directly — avoids double-nesting from MongoDB storage
+import { CIRCUITS } from './seeds/circuits';
+import { DESTINATIONS } from './seeds/destinations';
+import { ACTIVITIES } from './seeds/activities';
+import { INTENT_TEMPLATES } from './seeds/intents';
+import { ENTITIES } from './seeds/entities';
 
 async function main() {
   console.log('\n🚀 Seematra pSEO Page Generator\n');
@@ -47,13 +38,18 @@ async function main() {
   await mongoose.connect(MONGODB_URI, { bufferCommands: false, maxPoolSize: 5 });
   console.log('✅ Connected to MongoDB\n');
 
-  // Load seed data
-  const seedData = await loadSeedData();
+  // Use seed data directly from TypeScript files
+  const seedData = {
+    circuits: CIRCUITS,
+    destinations: DESTINATIONS,
+    activities: ACTIVITIES,
+    intents: INTENT_TEMPLATES,
+    entities: ENTITIES,
+  };
 
-  if (seedData.circuits.length === 0) {
-    console.error('❌ No seed data found. Run `npm run pseo:seed` first.');
-    process.exit(1);
-  }
+  console.log(`📂 Seed data loaded:`);
+  console.log(`   Circuits: ${seedData.circuits.length}, Destinations: ${seedData.destinations.length}, Activities: ${seedData.activities.length}`);
+  console.log(`   Intents: ${seedData.intents.length}, Entities: ${seedData.entities.length}\n`);
 
   // Generate pages
   let pages;
@@ -76,8 +72,8 @@ async function main() {
   if (dryRun) {
     console.log(`\n🏃 DRY RUN — ${pages.length} pages would be saved. No changes made.`);
     console.log('\nSample slugs:');
-    pages.slice(0, 15).forEach(p => console.log(`   ${p.page_type.padEnd(20)} /explore/${p.slug}`));
-    if (pages.length > 15) console.log(`   ... and ${pages.length - 15} more`);
+    pages.slice(0, 20).forEach(p => console.log(`   ${p.page_type.padEnd(20)} /explore/${p.slug}`));
+    if (pages.length > 20) console.log(`   ... and ${pages.length - 20} more`);
     await mongoose.disconnect();
     process.exit(0);
   }
