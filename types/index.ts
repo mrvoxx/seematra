@@ -127,6 +127,10 @@ export interface IBlog {
     paragraph?: string;
     image?: string;
   }[];
+  faqs?: {
+    question: string;
+    answer: string;
+  }[];
 }
 
 // ─── Booking ──────────────────────────────────────────────────────────────────
