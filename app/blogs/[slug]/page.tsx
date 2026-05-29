@@ -175,6 +175,30 @@ export default async function BlogDetailPage(props: Props) {
               ))}
             </div>
           )}
+          
+          {/* Dynamic FAQs */}
+          {blog.faqs && blog.faqs.length > 0 && (
+            <div className="mt-16 border-t border-brand-border dark:border-brand-border-dark pt-12">
+              <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark mb-8">
+                Frequently Asked Questions
+              </h2>
+              <div className="space-y-4">
+                {blog.faqs.map((faq, idx) => (
+                  <details key={idx} className="group bg-surface/50 dark:bg-surface-dark/50 border border-brand-border dark:border-brand-border-dark rounded-xl overflow-hidden">
+                    <summary className="flex items-center justify-between p-5 cursor-pointer font-outfit font-bold text-lg text-brand-text dark:text-brand-text-dark select-none">
+                      {faq.question}
+                      <span className="text-primary transform group-open:rotate-180 transition-transform duration-300">
+                        ▼
+                      </span>
+                    </summary>
+                    <div className="p-5 pt-0 text-brand-text/80 dark:text-brand-text-dark/80 font-inter leading-relaxed whitespace-pre-wrap">
+                      {faq.answer}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
         </article>
 
         {/* Right Column: Sidebar */}

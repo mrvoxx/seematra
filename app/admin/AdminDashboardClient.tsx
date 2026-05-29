@@ -7,16 +7,15 @@ import { IBooking, IItinerary } from '@/types';
 import LoadingSpinner from '@/components/global/LoadingSpinner';
 import ItineraryForm from '@/components/admin/ItineraryForm';
 import BlogForm from '@/components/admin/BlogForm';
-import PseoEditor from '@/components/admin/PseoEditor';
 import {
   Pencil, Trash2, Plus, Bell, LayoutDashboard,
   Map, BookOpen, CalendarCheck, Users, IndianRupee,
-  TrendingUp, CheckCircle2, Clock, ChevronRight, Star, Eye, EyeOff, Settings, ExternalLink, Zap
+  TrendingUp, CheckCircle2, Clock, ChevronRight, Star, Eye, EyeOff
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 
-type Tab = 'overview' | 'bookings' | 'itineraries' | 'builder' | 'blogs' | 'blog-editor' | 'pseo' | 'pseo-editor' | 'reviews';
+type Tab = 'overview' | 'bookings' | 'itineraries' | 'builder' | 'blogs' | 'blog-editor' | 'reviews';
 
 interface Stats {
   totalBookings: number;
@@ -34,9 +33,7 @@ export default function AdminDashboardClient() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
   const [blogs, setBlogs] = useState<any[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
-  const [pseoPages, setPseoPages] = useState<any[]>([]);
   const [editingBlog, setEditingBlog] = useState<any | null>(null);
-  const [editingPseo, setEditingPseo] = useState<any | null>(null);
   const [editingItinerary, setEditingItinerary] = useState<any | null>(null);
   const [adminReviews, setAdminReviews] = useState<any[]>([]);
   const [showAddReview, setShowAddReview] = useState(false);
@@ -99,9 +96,6 @@ export default function AdminDashboardClient() {
         } else if (activeTab === 'blogs') {
           const res = await api.get('/blogs?limit=50');
           setBlogs(Array.isArray(res) ? res : res?.data || []);
-        } else if (activeTab === 'pseo') {
-          const res = await api.get('/admin/pseo');
-          setPseoPages(res?.data || []);
         } else if (activeTab === 'reviews') {
           const res = await api.get('/admin/reviews');
           setAdminReviews(Array.isArray(res) ? res : res?.data || []);
@@ -109,7 +103,7 @@ export default function AdminDashboardClient() {
       } catch (err) { console.error(err); }
       finally { setLoading(false); }
     };
-    if (!['builder', 'blog-editor', 'pseo-editor'].includes(activeTab)) fetchData();
+    if (!['builder', 'blog-editor'].includes(activeTab)) fetchData();
   }, [activeTab]);
 
   const NAV: { key: Tab; label: string; icon: any }[] = [
@@ -118,7 +112,6 @@ export default function AdminDashboardClient() {
     { key: 'itineraries',  label: 'Itineraries',     icon: Map },
     { key: 'builder',      label: 'New Itinerary',   icon: Plus },
     { key: 'blogs',        label: 'Blogs & Guides',  icon: BookOpen },
-    { key: 'pseo',         label: 'pSEO Pages',      icon: Zap },
     { key: 'blog-editor',  label: 'Write Blog',      icon: Pencil },
     { key: 'reviews',      label: 'Reviews',         icon: Star },
   ];
@@ -154,7 +147,7 @@ export default function AdminDashboardClient() {
               {NAV.map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
-                  onClick={() => { setEditingBlog(null); setEditingItinerary(null); setEditingPseo(null); setActiveTab(key); }}
+                  onClick={() => { setEditingBlog(null); setEditingItinerary(null); setActiveTab(key); }}
                   className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold font-outfit transition-all flex items-center gap-3 ${
                     activeTab === key
                       ? 'bg-primary text-white shadow-md'
@@ -385,14 +378,9 @@ export default function AdminDashboardClient() {
               <div className="bg-brand-card dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark rounded-2xl p-6 animate-fade-up">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-outfit font-bold">Blogs & Guides <span className="text-sm font-inter text-brand-text/50">({blogs.length})</span></h2>
-                  <div className="flex gap-2">
-                    <button onClick={() => { setEditingBlog(null); setActiveTab('blog-editor'); }} className="btn-primary text-xs py-2 px-4 flex items-center gap-2">
-                      <Plus size={14} /> New Blog
-                    </button>
-                    <button onClick={() => { setEditingPseo(null); setActiveTab('pseo-editor'); }} className="btn-secondary text-xs py-2 px-4 flex items-center gap-2 border border-primary text-primary">
-                      <Zap size={14} /> New pSEO Guide
-                    </button>
-                  </div>
+                  <button onClick={() => { setEditingBlog(null); setActiveTab('blog-editor'); }} className="btn-primary text-xs py-2 px-4 flex items-center gap-2">
+                    <Plus size={14} /> New Blog
+                  </button>
                 </div>
                 {loading ? <LoadingSpinner /> : (
                   <div className="flex flex-col gap-3">
@@ -422,69 +410,17 @@ export default function AdminDashboardClient() {
               </div>
             )}
 
-            {/* ══ PSEO TAB ══ */}
-            {activeTab === 'pseo' && (
-              <div className="space-y-6 animate-fade-in">
-                <div className="flex justify-between items-end">
-                  <h2 className="text-xl font-outfit font-bold">pSEO Pages <span className="text-sm font-inter text-brand-text/50">({pseoPages.length})</span></h2>
-                  <button onClick={() => { setEditingPseo(null); setActiveTab('pseo-editor'); }} className="btn-primary text-xs py-2 px-4 flex items-center gap-2">
-                    <Plus size={14} /> New Manual pSEO
-                  </button>
-                </div>
-                <div className="bg-surface dark:bg-surface-dark border border-brand-border dark:border-brand-border-dark rounded-2xl p-4 shadow-sm">
-                  <div className="space-y-2">
-                    {pseoPages.map(page => (
-                      <div key={page.slug} className="flex justify-between items-center p-4 border border-brand-border dark:border-brand-border-dark rounded-xl hover:border-primary/50 transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div>
-                            <h4 className="font-outfit font-bold text-sm flex items-center gap-2">
-                              {page.title}
-                              <span className="px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">{page.page_type}</span>
-                            </h4>
-                            <p className="text-xs text-brand-text/50 font-mono mt-1">/explore/{page.slug}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 text-xs rounded-full font-bold uppercase ${page.status === 'published' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>
-                            {page.status}
-                          </span>
-                          <button onClick={() => { setEditingPseo(page); setActiveTab('pseo-editor'); }} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
-                            <Pencil size={18} />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    {pseoPages.length === 0 && <p className="text-center py-12 text-brand-text/40">No pSEO pages found.</p>}
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* ══ BLOG EDITOR ══ */}
             {activeTab === 'blog-editor' && (
               <div className="bg-brand-card dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark rounded-2xl p-6 animate-fade-up">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6 border-b border-brand-border dark:border-brand-border-dark pb-4">
                   <div>
                     <h3 className="text-2xl font-outfit font-bold">{editingBlog ? `Editing: ${editingBlog.title}` : 'Write New Blog / Guide'}</h3>
-                    <p className="text-brand-text/60 dark:text-brand-text-dark/60 text-sm mt-1">Share stories, tips, and insights with your travelers.</p>
+                    <p className="text-brand-text/70 dark:text-brand-text-dark/70 text-sm">Create travel guides, tips, and destination stories.</p>
                   </div>
                   <button onClick={() => setActiveTab('blogs')} className="btn-secondary py-2 text-sm">Cancel</button>
                 </div>
                 <BlogForm initial={editingBlog} onSuccess={() => { setEditingBlog(null); setActiveTab('blogs'); }} />
-              </div>
-            )}
-
-            {/* ══ PSEO EDITOR ══ */}
-            {activeTab === 'pseo-editor' && (
-              <div className="animate-fade-in">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h3 className="text-2xl font-outfit font-bold">{editingPseo ? `Editing: ${editingPseo.title}` : 'Write New pSEO Guide'}</h3>
-                    <p className="text-brand-text/60 dark:text-brand-text-dark/60 text-sm mt-1">Manage structured travel guide content</p>
-                  </div>
-                  <button onClick={() => setActiveTab('pseo')} className="btn-secondary py-2 text-sm">Cancel</button>
-                </div>
-                <PseoEditor initial={editingPseo} onSuccess={() => { setEditingPseo(null); setActiveTab('pseo'); }} />
               </div>
             )}
 

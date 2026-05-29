@@ -75,16 +75,18 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                 )}
               </div>
               <div className="flex flex-col items-end">
-                <div className="relative inline-block text-[10px] text-brand-text/40 dark:text-brand-text-dark/40 font-semibold mb-0.5">
-                  ₹{Math.ceil(tier.totalPrice * 1.33).toLocaleString('en-IN')}
-                  <motion.span
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="absolute -left-[5%] top-1/2 w-[110%] h-[1.5px] bg-red-500 origin-left -translate-y-1/2 rotate-[-6deg]"
-                  />
-                </div>
+                {itinerary.hasDiscount && (
+                  <div className="relative inline-block text-[10px] text-brand-text/40 dark:text-brand-text-dark/40 font-semibold mb-0.5">
+                    ₹{Math.ceil(tier.totalPrice / 0.75).toLocaleString('en-IN')}
+                    <motion.span
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                      className="absolute -left-[5%] top-1/2 w-[110%] h-[1.5px] bg-red-500 origin-left -translate-y-1/2 rotate-[-6deg]"
+                    />
+                  </div>
+                )}
                 <span className="text-primary font-outfit font-bold text-sm">₹{tier.totalPrice.toLocaleString('en-IN')}</span>
               </div>
             </div>
@@ -92,22 +94,26 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
         </div>
       ) : (
         <div className="flex flex-col gap-1 mb-6 border-b border-brand-border dark:border-brand-border-dark pb-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-red-500 text-white font-bold font-outfit text-xs uppercase tracking-wider px-3 py-1.5 rounded-md shadow-md transform -rotate-2 flex items-center gap-1 border border-red-400">
-              <span className="text-yellow-300">🔥</span> 25% OFF <span className="opacity-80 font-medium ml-1 hidden sm:inline">— Limited Slots!</span>
-            </div>
-            <div className="relative inline-block text-sm text-brand-text/40 dark:text-brand-text-dark/40 font-semibold">
-              ₹{Math.ceil(itinerary.price * 1.33).toLocaleString('en-IN')}
-              <motion.span
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="absolute -left-[5%] top-1/2 w-[110%] h-[2px] bg-red-500 origin-left -translate-y-1/2 rotate-[-6deg]"
-              />
-            </div>
-          </div>
-          <div className="flex items-end gap-2">
+          {itinerary.hasDiscount && (
+            <>
+              <div className="flex items-center gap-3">
+                <div className="bg-red-500 text-white font-bold font-outfit text-xs uppercase tracking-wider px-3 py-1.5 rounded-md shadow-md transform -rotate-2 flex items-center gap-1 border border-red-400">
+                  <span className="text-yellow-300">🔥</span> 25% OFF <span className="opacity-80 font-medium ml-1 hidden sm:inline">— Limited Slots!</span>
+                </div>
+                <div className="relative inline-block text-sm text-brand-text/40 dark:text-brand-text-dark/40 font-semibold">
+                  ₹{Math.ceil(itinerary.price / 0.75).toLocaleString('en-IN')}
+                  <motion.span
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="absolute -left-[5%] top-1/2 w-[110%] h-[2px] bg-red-500 origin-left -translate-y-1/2 rotate-[-6deg]"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+          <div className="flex items-end gap-2 mt-1">
             <span className="text-4xl font-outfit font-bold text-primary">₹{itinerary.price.toLocaleString('en-IN')}</span>
             <span className="text-sm pb-1 text-brand-text/50 dark:text-brand-text-dark/50">per person</span>
           </div>

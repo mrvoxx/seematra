@@ -127,11 +127,6 @@ export interface IBlog {
     paragraph?: string;
     image?: string;
   }[];
-  // ─── pSEO integration fields ──────────────────────────────────────
-  source?: 'blog' | 'pseo';     // content origin
-  href?: string;                 // override link (pSEO → /explore/...)
-  pageType?: string;             // pSEO page_type for badges
-  circuit?: string;              // pSEO circuit
 }
 
 // ─── Booking ──────────────────────────────────────────────────────────────────

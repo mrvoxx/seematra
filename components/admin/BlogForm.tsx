@@ -26,6 +26,7 @@ export default function BlogForm({ onSuccess, initial }: Props) {
     videoUrl: initial?.videoUrl ?? '',
     relatedItinerary: initial?.relatedItinerary ?? '',
     sections: initial?.sections ?? [],
+    faqs: initial?.faqs ?? [],
   });
 
   useEffect(() => {
@@ -90,6 +91,22 @@ export default function BlogForm({ onSuccess, initial }: Props) {
     const newSections = [...formData.sections];
     newSections.splice(index, 1);
     setFormData(p => ({ ...p, sections: newSections }));
+  };
+
+  const addFaq = () => {
+    setFormData(p => ({ ...p, faqs: [...p.faqs, { question: '', answer: '' }] }));
+  };
+
+  const updateFaq = (index: number, key: string, value: string) => {
+    const newFaqs = [...formData.faqs];
+    newFaqs[index] = { ...newFaqs[index], [key]: value };
+    setFormData(p => ({ ...p, faqs: newFaqs }));
+  };
+
+  const removeFaq = (index: number) => {
+    const newFaqs = [...formData.faqs];
+    newFaqs.splice(index, 1);
+    setFormData(p => ({ ...p, faqs: newFaqs }));
   };
 
   // Auto-generate slug from title
@@ -202,6 +219,37 @@ export default function BlogForm({ onSuccess, initial }: Props) {
                 <label className="block text-sm font-bold mb-1">Image (Optional)</label>
                 {sec.image && <img src={sec.image} alt="section image" className="h-24 rounded mb-2 object-cover" />}
                 <input type="file" accept="image/*" onChange={e => handleSectionUpload(idx, e)} disabled={uploading} className="input-field py-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Dynamic FAQs */}
+        <div className="md:col-span-2 space-y-4 mt-6">
+          <div className="flex items-center justify-between border-b border-brand-border dark:border-brand-border-dark pb-2">
+            <h3 className="text-lg font-outfit font-bold">Frequently Asked Questions</h3>
+            <button type="button" onClick={addFaq} className="btn-secondary text-sm py-1.5 px-3">
+              + Add FAQ
+            </button>
+          </div>
+          {formData.faqs.map((faq: any, idx: number) => (
+            <div key={idx} className="p-4 border border-brand-border dark:border-brand-border-dark rounded-xl space-y-4 bg-brand-surface dark:bg-brand-surface-dark/50 relative">
+              <button type="button" onClick={() => removeFaq(idx)} className="absolute top-4 right-4 text-red-500 hover:text-red-600 text-sm font-bold">
+                Remove
+              </button>
+              
+              <div>
+                <label className="block text-sm font-bold mb-1">Question</label>
+                <input type="text" className="input-field pr-20" placeholder="E.g. What is the best time to visit?"
+                  value={faq.question || ''}
+                  onChange={e => updateFaq(idx, 'question', e.target.value)} />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold mb-1">Answer</label>
+                <textarea className="input-field h-24" placeholder="Write the answer here..."
+                  value={faq.answer || ''}
+                  onChange={e => updateFaq(idx, 'answer', e.target.value)} />
               </div>
             </div>
           ))}

@@ -18,6 +18,10 @@ export interface BlogDocument extends Document {
     paragraph?: string;
     image?: string;
   }[];
+  faqs?: {
+    question: string;
+    answer: string;
+  }[];
 }
 
 const BlogSchema = new Schema<BlogDocument>(
@@ -32,10 +36,9 @@ const BlogSchema = new Schema<BlogDocument>(
     publishedAt: { type: Date, default: Date.now },
     videoUrl: { type: String, required: false },
     relatedItinerary: { type: Schema.Types.ObjectId, ref: 'Itinerary', default: null },
-    sections: [{
-      header: { type: String },
-      paragraph: { type: String },
-      image: { type: String },
+    faqs: [{
+      question: { type: String },
+      answer: { type: String },
     }],
   },
   { timestamps: true },

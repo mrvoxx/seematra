@@ -100,7 +100,7 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
               </span>
               {itinerary.hasDiscount && (
                 <div className="relative inline-block text-[10px] lg:text-xs font-inter text-brand-text/40 dark:text-brand-text-dark/40 font-medium group-hover:text-brand-text/60 transition-colors mt-0.5">
-                  ₹{Math.ceil(itinerary.price * 1.33).toLocaleString('en-IN')}
+                  ₹{Math.ceil(itinerary.price / 0.75).toLocaleString('en-IN')}
                   <motion.span
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
