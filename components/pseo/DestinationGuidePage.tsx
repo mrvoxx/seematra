@@ -19,14 +19,14 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
     <article className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-slate-900 via-teal-900 to-emerald-900 text-white">
-        <div className="relative max-w-6xl mx-auto px-4 py-16 md:py-20">
+        <div className="relative max-w-6xl mx-auto px-4 py-12 md:py-16">
           <Breadcrumbs
             items={[
               { label: page.circuit.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), href: `/explore/${page.circuit}` },
               { label: page.title.split('(')[0]?.trim() || page.title, href: `/explore/${page.slug}` },
             ]}
           />
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
+          <h1 className="text-2xl md:text-4xl font-outfit font-bold leading-tight mb-3">
             {page.title}
           </h1>
 
@@ -56,7 +56,7 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
         {/* Why Visit */}
         {content.why_visit?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">✨ Why Visit</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">✨ Why Visit</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {content.why_visit.map((reason: string, i: number) => (
                 <div key={i} className="flex items-start gap-3 p-4 bg-teal-50/50 rounded-xl border border-teal-100">
@@ -71,7 +71,7 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
         {/* How to Reach */}
         {content.how_to_reach && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🚗 How to Reach</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">🚗 How to Reach</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-5 bg-blue-50/50 rounded-xl border border-blue-100">
                 <div className="text-2xl mb-2">✈️</div>
@@ -101,7 +101,7 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
         {/* Best Time to Visit */}
         {content.best_time?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🌤️ Best Time to Visit</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">🌤️ Best Time to Visit</h2>
             <div className="space-y-3">
               {content.best_time.map((season: any) => (
                 <div key={season.season} className={`p-4 rounded-xl border-2 ${season.recommended ? 'border-teal-200 bg-teal-50/30' : 'border-gray-100 bg-gray-50/30'}`}>
@@ -119,7 +119,7 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
         {/* Things to Do */}
         {content.things_to_do?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">🎯 Things to Do</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-6">🎯 Things to Do</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {content.things_to_do.map((thing: any, i: number) => (
                 <div key={i} className="p-5 rounded-xl border border-gray-200 hover:border-teal-300 transition-colors">
@@ -141,7 +141,7 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
         {/* Nearby Places */}
         {content.nearby_places?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">📍 Nearby Places</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">📍 Nearby Places</h2>
             <div className="overflow-x-auto pb-4">
               <div className="flex gap-4 min-w-max">
                 {content.nearby_places.map((place: any) => (
@@ -169,7 +169,7 @@ export default function DestinationGuidePage({ data, related }: DestinationGuide
         {/* Hotels */}
         {content.hotels?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🏨 Where to Stay</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">🏨 Where to Stay</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {content.hotels.map((hotel: any) => (
                 <div key={hotel.tier} className="p-5 rounded-xl border border-gray-200 bg-gray-50/30">

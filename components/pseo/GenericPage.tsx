@@ -30,7 +30,7 @@ export default function GenericPage({ data, related }: GenericPageProps) {
     <article className="min-h-screen bg-white">
       {/* Hero */}
       <section className={`bg-gradient-to-br ${config.gradient} text-white`}>
-        <div className="max-w-4xl mx-auto px-4 py-16 md:py-20">
+        <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">
           <Breadcrumbs
             items={[
               { label: page.circuit.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), href: `/explore/${page.circuit}` },
@@ -38,7 +38,7 @@ export default function GenericPage({ data, related }: GenericPageProps) {
             ]}
           />
           <span className="text-4xl mb-4 block">{config.icon}</span>
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4">{page.title}</h1>
+          <h1 className="text-2xl md:text-3xl font-outfit font-bold leading-tight mb-3">{page.title}</h1>
           {content.overview && (
             <p className="text-lg text-white/80 max-w-3xl">{content.overview}</p>
           )}
@@ -68,7 +68,7 @@ export default function GenericPage({ data, related }: GenericPageProps) {
 
             {content.activities?.length > 0 && (
               <section className="mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">🎯 Activities This Season</h2>
+                <h2 className="text-base font-outfit font-bold text-gray-900 mb-3">🎯 Activities This Season</h2>
                 <div className="flex flex-wrap gap-2">
                   {content.activities.map((a: string) => (
                     <span key={a} className="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-lg text-sm">{a}</span>
@@ -86,7 +86,7 @@ export default function GenericPage({ data, related }: GenericPageProps) {
 
             {content.packing_list?.length > 0 && (
               <section className="mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">🎒 Packing List</h2>
+                <h2 className="text-base font-outfit font-bold text-gray-900 mb-3">🎒 Packing List</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {content.packing_list.map((item: string, i: number) => (
                     <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
@@ -113,7 +113,7 @@ export default function GenericPage({ data, related }: GenericPageProps) {
         {/* FAQ Hub specific */}
         {pageType === 'faq_hub' && content.categories?.map((cat: any) => (
           <section key={cat.name} className="mb-10">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{cat.name}</h2>
+            <h2 className="text-base font-outfit font-bold text-gray-900 mb-4">{cat.name}</h2>
             <FaqAccordion faqs={cat.faqs} title="" />
           </section>
         ))}
@@ -165,13 +165,13 @@ export default function GenericPage({ data, related }: GenericPageProps) {
           <>
             {content.why_this_circuit && (
               <section className="mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">Why This Circuit?</h2>
+                <h2 className="text-base font-outfit font-bold text-gray-900 mb-3">Why This Circuit?</h2>
                 <p className="text-gray-700">{content.why_this_circuit}</p>
               </section>
             )}
             {content.recommended_activities?.length > 0 && (
               <section className="mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">Recommended Activities</h2>
+                <h2 className="text-base font-outfit font-bold text-gray-900 mb-3">Recommended Activities</h2>
                 <div className="flex flex-wrap gap-2">
                   {content.recommended_activities.map((a: string) => (
                     <span key={a} className="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-lg text-sm">{a}</span>

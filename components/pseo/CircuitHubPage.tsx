@@ -20,14 +20,14 @@ export default function CircuitHubPage({ data, related }: CircuitHubPageProps) {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-teal-900 via-teal-800 to-emerald-900 text-white">
         <div className="absolute inset-0 bg-[url('/images/pattern-topography.svg')] opacity-5" />
-        <div className="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
+        <div className="relative max-w-6xl mx-auto px-4 py-12 md:py-16">
           <Breadcrumbs
             items={[{ label: page.title.split('—')[0]?.trim() || page.title, href: `/explore/${page.slug}` }]}
           />
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4 [&_*]:text-white">
+          <h1 className="text-2xl md:text-4xl font-outfit font-bold leading-tight mb-3 [&_*]:text-white">
             {page.title}
           </h1>
-          <p className="text-lg md:text-xl text-teal-100 max-w-3xl leading-relaxed">
+          <p className="text-sm md:text-base text-teal-100 max-w-3xl leading-relaxed font-inter">
             {content.overview?.slice(0, 250)}...
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
@@ -42,14 +42,14 @@ export default function CircuitHubPage({ data, related }: CircuitHubPageProps) {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Overview */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Overview</h2>
-          <p className="text-gray-700 leading-relaxed text-lg">{content.overview}</p>
+          <h2 className="text-lg font-outfit font-bold text-gray-900 mb-3">Overview</h2>
+          <p className="text-gray-700 leading-relaxed text-sm font-inter">{content.overview}</p>
         </section>
 
         {/* Destinations Grid */}
         {content.destinations?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-6">
               🗺️ Destinations in This Circuit
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -87,7 +87,7 @@ export default function CircuitHubPage({ data, related }: CircuitHubPageProps) {
         {/* Activities */}
         {content.activities?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🎯 Top Activities</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">🎯 Top Activities</h2>
             <div className="flex flex-wrap gap-3">
               {content.activities.map((activity: string) => (
                 <span
@@ -104,7 +104,7 @@ export default function CircuitHubPage({ data, related }: CircuitHubPageProps) {
         {/* Seasons */}
         {content.best_seasons?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">🌤️ Best Time to Visit</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-6">🌤️ Best Time to Visit</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {content.best_seasons.map((season: any) => (
                 <div
@@ -137,7 +137,7 @@ export default function CircuitHubPage({ data, related }: CircuitHubPageProps) {
         {/* Transportation */}
         {content.transportation && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🚗 How to Get Here</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-4">🚗 How to Get Here</h2>
             <div className="bg-gray-50 rounded-xl p-6 space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">

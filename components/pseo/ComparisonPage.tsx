@@ -17,11 +17,11 @@ export default function ComparisonPage({ data, related }: ComparisonPageProps) {
     <article className="min-h-screen bg-white">
       {/* Hero */}
       <section className="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white">
-        <div className="max-w-5xl mx-auto px-4 py-16 md:py-20">
+        <div className="max-w-5xl mx-auto px-4 py-12 md:py-16">
           <Breadcrumbs
             items={[{ label: page.title.split('—')[0]?.trim() || 'Compare', href: `/explore/${page.slug}` }]}
           />
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
+          <h1 className="text-2xl md:text-3xl font-outfit font-bold leading-tight mb-3">
             {page.title}
           </h1>
         </div>
@@ -51,7 +51,7 @@ export default function ComparisonPage({ data, related }: ComparisonPageProps) {
         {/* Comparison Table */}
         {content.comparison_table?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Side-by-Side Comparison</h2>
+            <h2 className="text-lg font-outfit font-bold text-gray-900 mb-6">📊 Side-by-Side Comparison</h2>
             <div className="overflow-x-auto rounded-xl border border-gray-200">
               <table className="w-full text-sm">
                 <thead>
@@ -77,14 +77,14 @@ export default function ComparisonPage({ data, related }: ComparisonPageProps) {
 
         {/* Verdict */}
         <section className="mb-12 p-6 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl border border-teal-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-3">🏆 Verdict</h2>
+          <h2 className="text-base font-outfit font-bold text-gray-900 mb-3">🏆 Verdict</h2>
           <p className="text-gray-700 leading-relaxed">{content.verdict}</p>
         </section>
 
         {/* Persona Recommendations */}
         {content.persona_recommendations?.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">👤 Who Should Pick Which?</h2>
+            <h2 className="text-base font-outfit font-bold text-gray-900 mb-4">👤 Who Should Pick Which?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {content.persona_recommendations.map((rec: any) => (
                 <div key={rec.persona} className="p-4 rounded-xl border border-gray-200 bg-gray-50/30">

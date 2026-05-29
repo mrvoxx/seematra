@@ -34,7 +34,7 @@ export default function IntentPage({ data, related }: IntentPageProps) {
       {/* Hero Section */}
       <section className={`relative bg-gradient-to-br ${theme.gradient} text-white`}>
         <div className="absolute inset-0 bg-[url('/images/pattern-topography.svg')] opacity-5" />
-        <div className="relative max-w-4xl mx-auto px-4 py-16 md:py-20">
+        <div className="relative max-w-4xl mx-auto px-4 py-12 md:py-16">
           <Breadcrumbs
             items={[
               { label: page.circuit.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), href: `/explore/${page.circuit}` },
@@ -47,10 +47,10 @@ export default function IntentPage({ data, related }: IntentPageProps) {
               {category.replace(/_/g, ' ')}
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
+          <h1 className="text-2xl md:text-3xl font-outfit font-bold leading-tight mb-3">
             {page.title}
           </h1>
-          <p className="text-lg text-white/80 max-w-3xl leading-relaxed">
+          <p className="text-sm text-white/80 max-w-3xl leading-relaxed font-inter">
             {content.overview}
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function IntentPage({ data, related }: IntentPageProps) {
       <div className="max-w-4xl mx-auto px-4 py-12">
         {content.sections?.map((section: any, i: number) => (
           <section key={i} className="mb-10">
-            <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <h2 className="text-base font-outfit font-bold text-gray-900 mb-3 flex items-center gap-2">
               {section.heading}
             </h2>
             <div className="text-gray-700 leading-relaxed">
@@ -99,7 +99,7 @@ export default function IntentPage({ data, related }: IntentPageProps) {
 
         {/* CTA */}
         <div className="my-12 p-8 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl border border-teal-200 text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-base font-outfit font-bold text-gray-900 mb-2">
             Ready to explore?
           </h2>
           <p className="text-gray-600 mb-6">
