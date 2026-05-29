@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useItineraryStore } from '@/store/itineraryStore';
 import ItineraryCard from '@/components/global/ItineraryCard';
 import GenreFilter from '@/components/global/GenreFilter';
@@ -9,9 +10,18 @@ import { IItinerary } from '@/types';
 import { RefreshCw, AlertCircle, Package } from 'lucide-react';
 
 export default function ItineraryExplorer() {
+  const searchParams = useSearchParams();
+  const genreParam = searchParams.get('genre');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { filtered, setItineraries } = useItineraryStore();
+  const { filtered, setItineraries, setGenre } = useItineraryStore();
+
+  // Sync URL search param ?genre=X with state store
+  useEffect(() => {
+    if (genreParam) {
+      setGenre(genreParam);
+    }
+  }, [genreParam, setGenre]);
 
   const fetchItineraries = useCallback(async () => {
     setLoading(true);

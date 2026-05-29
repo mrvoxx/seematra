@@ -24,8 +24,12 @@ export default function FullWidthRecommendations({ currentBlogId, currentItinera
           api.get('/blogs?limit=6')
         ]);
         
-        let fetchedItineraries = itRes.data || itRes;
-        let fetchedBlogs = blRes.data || blRes;
+        let fetchedItineraries = Array.isArray(itRes?.data)
+          ? itRes.data
+          : (Array.isArray(itRes) ? itRes : []);
+        let fetchedBlogs = Array.isArray(blRes?.data)
+          ? blRes.data
+          : (Array.isArray(blRes) ? blRes : []);
 
         if (currentItineraryId) {
           fetchedItineraries = fetchedItineraries.filter((it: any) => it._id !== currentItineraryId);

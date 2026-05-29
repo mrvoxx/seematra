@@ -24,8 +24,12 @@ export default function SidebarRecommendations({ currentBlogId, currentItinerary
           api.get('/blogs?limit=5')
         ]);
         
-        let fetchedItineraries = itRes.data || itRes;
-        let fetchedBlogs = blRes.data || blRes;
+        let fetchedItineraries = Array.isArray(itRes?.data)
+          ? itRes.data
+          : (Array.isArray(itRes) ? itRes : []);
+        let fetchedBlogs = Array.isArray(blRes?.data)
+          ? blRes.data
+          : (Array.isArray(blRes) ? blRes : []);
 
         // Filter out current items and take top 2
         if (currentItineraryId) {

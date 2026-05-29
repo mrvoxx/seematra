@@ -49,7 +49,9 @@ export function withErrorHandler(handler: RouteHandler): RouteHandler {
       // ⚠️ SECURITY FIX: Never expose internal error details in production
       // Stack traces and DB error messages could reveal implementation details
       const isProd = process.env.NODE_ENV === 'production';
-      const message = err instanceof Error ? err.message : 'Internal server error';
+      const message = isProd
+        ? 'An unexpected error occurred. Please try again later.'
+        : (err instanceof Error ? err.message : 'Internal server error');
       return error(message, 500);
     }
   };

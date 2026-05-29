@@ -1,6 +1,8 @@
 // lib/jsonld.ts
 import type { IItinerary, IBlog } from '@/types';
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://seematra.com';
+
 export function itineraryJsonLd(itinerary: IItinerary, url: string) {
   return {
     '@context': 'https://schema.org',
@@ -26,8 +28,8 @@ export function itineraryJsonLd(itinerary: IItinerary, url: string) {
         },
       },
       breadcrumbJsonLd([
-        { name: 'Home', url: `${process.env.NEXT_PUBLIC_APP_URL}/` },
-        { name: 'Itineraries', url: `${process.env.NEXT_PUBLIC_APP_URL}/itineraries` },
+        { name: 'Home', url: `${BASE_URL}/` },
+        { name: 'Itineraries', url: `${BASE_URL}/itineraries` },
         { name: itinerary.title, url },
       ]),
     ],
@@ -50,8 +52,8 @@ export function blogJsonLd(blog: IBlog, url: string) {
         url,
       },
       breadcrumbJsonLd([
-        { name: 'Home', url: `${process.env.NEXT_PUBLIC_APP_URL}/` },
-        { name: 'Blogs', url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs` },
+        { name: 'Home', url: `${BASE_URL}/` },
+        { name: 'Blogs', url: `${BASE_URL}/blogs` },
         { name: blog.title, url },
       ]),
     ],
@@ -69,3 +71,4 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
     })),
   };
 }
+

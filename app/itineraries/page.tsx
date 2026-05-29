@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import ItineraryExplorer from './ItineraryExplorer';
+import LoadingSpinner from '@/components/global/LoadingSpinner';
 
 export const metadata: Metadata = {
   title: 'Explore Itineraries | Seematra',
@@ -7,5 +9,14 @@ export const metadata: Metadata = {
 };
 
 export default function ItinerariesPage() {
-  return <ItineraryExplorer />;
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center min-h-[50vh] pt-32">
+        <LoadingSpinner />
+      </div>
+    }>
+      <ItineraryExplorer />
+    </Suspense>
+  );
 }
+

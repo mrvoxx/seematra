@@ -45,12 +45,13 @@ export default async function ItineraryPage(props: Props) {
   } as IItinerary;
 
   // Generate SEO json-ld
-  const pageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/itineraries/${itinerary._id}`;
+  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://seematra.com';
+  const pageUrl = `${BASE_URL}/itineraries/${itinerary._id}`;
   const jsonLdTrip = itineraryJsonLd(itinerary, pageUrl);
   const jsonLdBreadcrumb = breadcrumbJsonLd([
-    { name: 'Home', url: '/' },
-    { name: 'Itineraries', url: '/itineraries' },
-    { name: itinerary.title, url: `/itineraries/${itinerary._id}` },
+    { name: 'Home', url: BASE_URL },
+    { name: 'Itineraries', url: `${BASE_URL}/itineraries` },
+    { name: itinerary.title, url: pageUrl },
   ]);
 
   return (
