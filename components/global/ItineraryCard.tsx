@@ -25,13 +25,14 @@ export const cardVariant: Variants = {
 
 export default function ItineraryCard({ itinerary, priority = false, index = 0 }: Props) {
   return (
+    <Link href={`/itineraries/${itinerary._id}`} className="card group flex flex-col h-full overflow-hidden relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary block">
     <motion.div
       variants={cardVariant}
       initial="hidden"
       whileInView="visible"
       custom={index}
       viewport={{ once: true, margin: '-60px' }}
-      className="card group flex flex-col h-full overflow-hidden relative"
+      className="flex flex-col h-full"
     >
       {/* Thumbnail Container */}
       <div className="relative h-56 lg:h-72 w-full shrink-0 overflow-hidden">
@@ -112,15 +113,15 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
               )}
             </div>
           </div>
-          <Link
-            href={`/itineraries/${itinerary._id}`}
-            className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-surface transition-all transform group-hover:scale-110 before:absolute before:inset-0 before:z-10"
-            aria-label="View Details"
+          <div
+            className="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-surface transition-all transform group-hover:scale-110"
+            aria-hidden="true"
           >
-            <Navigation size={20} className="ml-1" />
-          </Link>
+            <Navigation size={18} className="ml-0.5" />
+          </div>
         </div>
       </div>
     </motion.div>
+    </Link>
   );
 }

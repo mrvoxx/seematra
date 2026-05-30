@@ -19,13 +19,14 @@ export default function BlogCard({ blog, index = 0 }: Props) {
   const excerpt = (blog.content ?? '').replace(/<[^>]*>?/gm, '').slice(0, 150) + '...';
 
   return (
+    <Link href={`/blogs/${blog.slug}`} className="card group flex flex-col h-full overflow-hidden relative block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
     <motion.article
       variants={cardVariant}
       initial="hidden"
       whileInView="visible"
       custom={index}
       viewport={{ once: true, margin: '-60px' }}
-      className="card group flex flex-col h-full overflow-hidden relative"
+      className="flex flex-col h-full"
     >
       <div className="relative h-48 md:h-60 w-full overflow-hidden">
         <FavoriteButton itemId={blog._id} itemType="blog" />
@@ -59,23 +60,19 @@ export default function BlogCard({ blog, index = 0 }: Props) {
           </div>
         </div>
 
-        <Link href={`/blogs/${blog.slug}`} className="block group-hover:text-primary transition-colors mb-3">
-          <h3 className="text-xl font-outfit font-bold line-clamp-2">
+        <h3 className="text-xl font-outfit font-bold line-clamp-2 group-hover:text-primary transition-colors mb-3">
             {blog.title}
           </h3>
-        </Link>
 
         <p className="text-sm font-inter text-brand-text/70 dark:text-brand-text-dark/70 mb-6 line-clamp-3 flex-1">
           {excerpt}
         </p>
 
-        <Link
-          href={`/blogs/${blog.slug}`}
-          className="mt-auto text-primary font-outfit font-bold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all before:absolute before:inset-0 before:z-10"
-        >
+        <div className="mt-auto text-primary font-outfit font-bold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all">
           Read Full Article &rarr;
-        </Link>
+        </div>
       </div>
     </motion.article>
+    </Link>
   );
 }

@@ -108,11 +108,11 @@ export default function AboutPage() {
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 text-center animate-fade-up animate-delay-100">
           <div className="card p-8 flex flex-col items-center bg-gradient-to-b from-surface to-primary/5 border-t-2 border-t-primary">
-            <div className="text-4xl md:text-5xl font-boldonse text-primary mb-2">50+</div>
+            <div className="text-4xl md:text-5xl font-boldonse text-primary mb-2">30</div>
             <p className="font-poppins text-sm font-medium tracking-widest uppercase text-brand-text/60 dark:text-brand-text-dark/60">Curated Itineraries</p>
           </div>
           <div className="card p-8 flex flex-col items-center bg-gradient-to-b from-surface to-secondary/5 border-t-2 border-t-secondary">
-            <div className="text-4xl md:text-5xl font-boldonse text-secondary mb-2">10k+</div>
+            <div className="text-4xl md:text-5xl font-boldonse text-secondary mb-2">100+</div>
             <p className="font-poppins text-sm font-medium tracking-widest uppercase text-brand-text/60 dark:text-brand-text-dark/60">Happy Travelers</p>
           </div>
           <div className="card p-8 flex flex-col items-center bg-gradient-to-b from-surface to-accent/5 border-t-2 border-t-accent">

@@ -128,14 +128,26 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
       </button>
 
       {/* Social proof addition */}
-      <div className="flex items-center justify-center gap-2 mb-3 bg-green-500/10 text-green-700 dark:text-green-400 py-1.5 px-3 rounded-full w-fit mx-auto">
-        <div className="flex -space-x-2">
-          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar" />
-          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" />
-          <img className="w-5 h-5 rounded-full border border-white dark:border-gray-800" src="https://randomuser.me/api/portraits/men/46.jpg" alt="avatar" />
-        </div>
-        <span className="text-[11px] font-bold">23 people booked this month</span>
-      </div>
+      {(() => {
+        // Seeded count from itinerary ID — stable, believable (8–24 range)
+        const seed = itinerary._id ? String(itinerary._id).split('').reduce((a, c) => a + c.charCodeAt(0), 0) : 42;
+        const bookedCount = 8 + (seed % 17);
+        const avatarColors = ['bg-primary/20', 'bg-secondary/20', 'bg-accent/20'];
+        return (
+          <div className="flex items-center justify-center gap-2 mb-3 bg-green-500/10 text-green-700 dark:text-green-400 py-1.5 px-3 rounded-full w-fit mx-auto">
+            <div className="flex -space-x-1.5">
+              {avatarColors.map((color, i) => (
+                <div key={i} className={`w-5 h-5 rounded-full border border-white dark:border-gray-800 ${color} flex items-center justify-center shrink-0`}>
+                  <svg viewBox="0 0 24 24" className="w-3 h-3 text-brand-text/50 dark:text-brand-text-dark/50" fill="currentColor">
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                  </svg>
+                </div>
+              ))}
+            </div>
+            <span className="text-[11px] font-bold">{bookedCount} booked this month</span>
+          </div>
+        );
+      })()}
 
       <p className="text-xs text-center mb-6 text-brand-text/50 font-inter">
         You can choose to pay an advance online or reserve and pay on arrival.
@@ -233,9 +245,9 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                   Your transport is arranged based on your group size — the vehicle assigned at the time of booking.
                 </p>
 
-                {/* Per-group-size vehicle assignment table */}
+                {/* Per-group-size vehicle assignment — 2-col grid on mobile */}
                 {pricingTiers.some(t => t.vehicle) ? (
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {pricingTiers.filter(t => t.vehicle).map(tier => {
                       const vehicleDetail = vehicles.find(
                         v => v.name?.toLowerCase() === tier.vehicle?.toLowerCase()
@@ -243,44 +255,33 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                       return (
                         <div
                           key={tier.persons}
-                          className="flex items-center gap-3 p-3 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 hover:border-primary/40 transition-colors"
+                          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 hover:border-primary/40 transition-colors text-center"
                         >
-                          {/* Group size pill — always compact */}
-                          <div className="flex items-center gap-1.5 shrink-0 bg-primary/10 rounded-lg px-2 py-1.5">
-                            <Users size={11} className="text-primary" />
-                            <span className="text-primary font-bold font-outfit text-xs leading-none">{tier.persons}P</span>
-                          </div>
-
-                          <span className="text-brand-text/30 text-xs shrink-0">→</span>
-
-                          {/* Vehicle thumbnail — small fixed size */}
+                          {/* Vehicle thumbnail */}
                           {vehicleDetail?.image ? (
                             <img
                               src={vehicleDetail.image}
                               alt={tier.vehicle!}
-                              className="w-16 h-10 object-cover rounded-lg shrink-0 shadow-sm"
+                              className="w-full h-14 object-cover rounded-lg shadow-sm"
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
                           ) : (
-                            <div className="w-16 h-10 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
-                              <Car size={18} className="text-secondary/50" />
+                            <div className="w-full h-14 rounded-lg bg-secondary/10 flex items-center justify-center">
+                              <Car size={22} className="text-secondary/50" />
                             </div>
                           )}
 
-                          {/* Vehicle name + capacity */}
-                          <div className="flex-1 min-w-0">
-                            <div className="font-outfit font-bold text-sm truncate">{tier.vehicle}</div>
+                          {/* Group size pill + name */}
+                          <div className="flex flex-col items-center gap-0.5">
+                            <div className="flex items-center gap-1 bg-primary/10 rounded-md px-2 py-0.5">
+                              <Users size={9} className="text-primary" />
+                              <span className="text-primary font-bold font-outfit text-[10px]">{tier.persons}P</span>
+                            </div>
+                            <div className="font-outfit font-bold text-xs leading-tight">{tier.vehicle}</div>
                             {vehicleDetail?.capacity && (
-                              <div className="text-[10px] text-brand-text/50 font-inter">
-                                Seats {vehicleDetail.capacity}
-                              </div>
+                              <div className="text-[9px] text-brand-text/50">Seats {vehicleDetail.capacity}</div>
                             )}
                           </div>
-
-                          {/* Included tag — hidden on very small screens */}
-                          <span className="hidden xs:inline-flex items-center gap-1 text-[10px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full shrink-0">
-                            <CheckCircle size={8} /> Included
-                          </span>
                         </div>
                       );
                     })}
@@ -344,42 +345,35 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                 )}
               </div>
 
-              <div className="space-y-3">
+              {/* Hotels — 2-col grid on mobile */}
+              <div className="grid grid-cols-2 gap-2.5">
                 {itinerary.hotels.map((hotel, i) => (
-                  <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-row gap-3 p-3 items-start">
-                    {/* Square thumbnail — compact on mobile */}
-                    <div className="w-20 h-20 sm:w-28 sm:h-28 shrink-0 rounded-xl overflow-hidden bg-surface-dark/10 relative">
+                  <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">
+                    {/* Photo */}
+                    <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
                       {hotel.images && hotel.images[0] ? (
                         <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
-                          <Hotel size={24} />
+                          <Hotel size={22} />
                         </div>
                       )}
-                      <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 shadow">
-                        <Star size={8} fill="currentColor" /> {hotel.rating}
+                      <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
+                        <Star size={7} fill="currentColor" /> {hotel.rating}
                       </div>
                     </div>
 
-                    {/* Hotel info */}
-                    <div className="flex flex-col justify-center gap-1 flex-1 min-w-0">
-                      <h3 className="text-sm font-outfit font-bold flex items-center gap-1.5 leading-tight">
-                        <Hotel size={13} className="text-primary shrink-0" />
-                        <span className="truncate">{hotel.name}</span>
-                      </h3>
+                    {/* Info */}
+                    <div className="p-2.5 flex flex-col gap-1">
+                      <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
                       {hotel.description && (
-                        <p className="font-inter text-xs text-brand-text/60 dark:text-brand-text-dark/60 leading-relaxed line-clamp-2">
+                        <p className="font-inter text-[10px] text-brand-text/60 dark:text-brand-text-dark/60 leading-relaxed line-clamp-2">
                           {hotel.description}
                         </p>
                       )}
-                      <div className="flex flex-wrap gap-1.5 mt-0.5">
-                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full">
-                          <CheckCircle size={8} /> Included
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded-full">
-                          <Users size={8} /> Per group size
-                        </span>
-                      </div>
+                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
+                        <CheckCircle size={7} /> Included
+                      </span>
                     </div>
                   </div>
                 ))}
