@@ -68,7 +68,7 @@ export default function UnifiedHero({
 
         {subtitle && (
           <p
-            className="text-sm sm:text-base md:text-lg lg:text-xl font-edu text-white/95 max-w-2xl mx-auto drop-shadow-md leading-loose mb-8 animate-fade-up"
+            className="text-xs sm:text-sm md:text-base lg:text-xl font-edu text-white/95 max-w-2xl mx-auto drop-shadow-md leading-relaxed mb-8 animate-fade-up px-2"
             style={{ animationDelay: '100ms', animationFillMode: 'both', fontOpticalSizing: 'auto', fontWeight: 500 }}
           >
             {subtitle}

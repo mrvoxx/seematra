@@ -6,6 +6,7 @@ import Navbar from '@/components/global/Navbar';
 import Footer from '@/components/global/Footer';
 import SocialFAB from '@/components/global/SocialFAB';
 import ClientWhatsAppSticky from '@/components/global/ClientWhatsAppSticky';
+import MobileBottomNav from '@/components/global/MobileBottomNav';
 import { Toaster } from 'react-hot-toast';
 import { Poppins, Edu_NSW_ACT_Cursive, Boldonse } from 'next/font/google';
 
@@ -149,10 +150,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AuthProvider>
           <Navbar />
           <ClientWhatsAppSticky />
-          <main className="min-h-screen">{children}</main>
+          <main className="min-h-screen pb-16 md:pb-0">{children}</main>
           <Footer />
+          <MobileBottomNav />
           <SocialFAB />
-          <Toaster position="bottom-right" />
+          <Toaster position="bottom-right" toastOptions={{ style: { marginBottom: '72px' } }} />
         </AuthProvider>
       </body>
     </html>

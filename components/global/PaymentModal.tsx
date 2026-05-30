@@ -27,11 +27,12 @@ function getTierVehicle(pricingTiers: IPricingTier[] | undefined, groupSize: Gro
 }
 
 export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 'success'>( 1);
   const [pickupPoint, setPickupPoint] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [tourDate, setTourDate] = useState('');
   const [groupSize, setGroupSize] = useState<GroupSize>(2);
+  const [confirmedBookingId, setConfirmedBookingId] = useState('');
   
   // Payment selection
   const [paymentMode, setPaymentMode] = useState<'full' | 'advance_40' | 'reservation_500'>('advance_40');
@@ -98,7 +99,9 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
             const verifyData = await verifyRes.json();
             if (!verifyRes.ok) throw new Error(verifyData.error || 'Payment verification failed');
 
-            toast.success('Payment successful! Booking confirmed.');
+            toast.success('Payment confirmed! Booking saved.');
+            setConfirmedBookingId(bookingId);
+            setStep('success');
             onSuccess(bookingId);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
@@ -127,6 +130,56 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* ── Success State ───────────────────────────────────── */}
+      {step === 'success' && (
+        <div className="flex flex-col items-center gap-5 text-center py-2 animate-fade-in">
+          <div className="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center">
+            <CheckCircle2 size={32} className="text-green-500" />
+          </div>
+          <div>
+            <h3 className="font-outfit font-bold text-xl mb-1">Booking Confirmed! 🎉</h3>
+            <p className="text-sm font-inter text-brand-text/65 dark:text-brand-text-dark/65">
+              Your adventure is locked in. Here's what happens next:
+            </p>
+          </div>
+          <div className="w-full space-y-3 text-left">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-green-500/8 border border-green-500/20">
+              <span className="text-green-500 mt-0.5 shrink-0">✓</span>
+              <div>
+                <p className="text-sm font-bold">WhatsApp confirmation</p>
+                <p className="text-xs text-brand-text/60 dark:text-brand-text-dark/60">Our team will message you on <strong>{contactPhone}</strong> within 2 hours with full itinerary details.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-primary/8 border border-primary/20">
+              <span className="text-primary mt-0.5 shrink-0">✓</span>
+              <div>
+                <p className="text-sm font-bold">Booking ID saved</p>
+                <p className="text-xs text-brand-text/60 dark:text-brand-text-dark/60">Check your <strong>My Bookings</strong> tab anytime to view status, make balance payment, or get support.</p>
+              </div>
+            </div>
+            {paymentMode !== 'full' && (
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-amber-500/8 border border-amber-500/20">
+                <span className="text-amber-500 mt-0.5 shrink-0">ℹ</span>
+                <div>
+                  <p className="text-sm font-bold">Balance payment due</p>
+                  <p className="text-xs text-brand-text/60 dark:text-brand-text-dark/60">
+                    {paymentMode === 'advance_40' ? 'Remaining 60% is due 3 days before the trip.' : 'Full balance due on arrival before trip starts.'}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+          <a
+            href={`https://wa.me/qr/IP26U77IWO5GO1?text=Hi!%20I%20just%20booked%20${encodeURIComponent(itinerary.title)}.%20My%20booking%20ID%20is%20${confirmedBookingId}.`}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25D366] text-white font-outfit font-bold text-sm hover:opacity-90 transition-all"
+          >
+            <MessageCircle size={16} /> Chat with us on WhatsApp
+          </a>
+          <button onClick={onClose} className="btn-secondary w-full py-2.5 text-sm">Close</button>
+        </div>
+      )}
       {step === 1 && (
         <div className="animate-fade-in space-y-5">
           <h3 className="font-outfit font-bold text-lg border-b border-brand-border dark:border-brand-border-dark pb-2">
@@ -271,30 +324,36 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
             <h4 className="font-poppins font-semibold text-sm mb-3">Select Payment Method</h4>
             <div className="space-y-2">
 
-              <label className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'full' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
-                <input type="radio" name="payment" className="mt-0.5 accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'full'} onChange={() => setPaymentMode('full')} />
+              <label className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'full' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
+                <input type="radio" name="payment" className="accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'full'} onChange={() => setPaymentMode('full')} />
                 <div className="flex-1 min-w-0">
-                  <span className="font-semibold block text-sm">Full Payment (100%)</span>
-                  <span className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 block">Pay total amount now for instant confirmation.</span>
-                  <span className="mt-1 text-sm font-bold text-primary block">₹{totalAmount.toLocaleString('en-IN')}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-sm">Full Payment</span>
+                    <span className="text-sm font-bold text-primary shrink-0">₹{totalAmount.toLocaleString('en-IN')}</span>
+                  </div>
+                  <span className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">Instant confirmation, no balance due.</span>
                 </div>
               </label>
 
-              <label className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'advance_40' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
-                <input type="radio" name="payment" className="mt-0.5 accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'advance_40'} onChange={() => setPaymentMode('advance_40')} />
+              <label className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'advance_40' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
+                <input type="radio" name="payment" className="accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'advance_40'} onChange={() => setPaymentMode('advance_40')} />
                 <div className="flex-1 min-w-0">
-                  <span className="font-semibold block text-sm">40% Advance Payment</span>
-                  <span className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 block">Secure your booking. Pay the 60% balance 3 days before trip.</span>
-                  <span className="mt-1 text-sm font-bold text-primary block">₹{Math.ceil(totalAmount * 0.4).toLocaleString('en-IN')}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-sm">40% Advance</span>
+                    <span className="text-sm font-bold text-primary shrink-0">₹{Math.ceil(totalAmount * 0.4).toLocaleString('en-IN')}</span>
+                  </div>
+                  <span className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">Balance due 3 days before trip.</span>
                 </div>
               </label>
 
-              <label className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'reservation_500' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
-                <input type="radio" name="payment" className="mt-0.5 accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'reservation_500'} onChange={() => { setPaymentMode('reservation_500'); setDisclaimerAccepted(false); }} />
+              <label className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${paymentMode === 'reservation_500' ? 'bg-primary/8 ring-1 ring-primary/40' : 'hover:bg-surface/80 dark:hover:bg-surface-dark/80'}`}>
+                <input type="radio" name="payment" className="accent-primary w-4 h-4 shrink-0 cursor-pointer" checked={paymentMode === 'reservation_500'} onChange={() => { setPaymentMode('reservation_500'); setDisclaimerAccepted(false); }} />
                 <div className="flex-1 min-w-0">
-                  <span className="font-semibold block text-sm">Pay on Arrival (₹500 Reservation)</span>
-                  <span className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 block">Lock your price today. Pay the entire balance when you arrive.</span>
-                  <span className="mt-1 text-sm font-bold text-primary block">₹500</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-sm">Pay on Arrival</span>
+                    <span className="text-sm font-bold text-primary shrink-0">₹500</span>
+                  </div>
+                  <span className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">Lock price now, pay balance on arrival.</span>
                 </div>
               </label>
 
@@ -321,6 +380,12 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
               <ShieldCheck size={13} className="text-green-500" />
               Secure 256-bit encrypted checkout via Razorpay
             </div>
+
+            {/* Cancellation policy link */}
+            <p className="text-center text-[11px] text-brand-text/45 dark:text-brand-text-dark/45 font-inter">
+              By paying you agree to our{' '}
+              <a href="/cancellation" target="_blank" className="underline hover:text-primary transition-colors">Cancellation &amp; Refund Policy</a>
+            </p>
 
             <div className="flex justify-between items-center gap-3">
               <div className="flex gap-2">

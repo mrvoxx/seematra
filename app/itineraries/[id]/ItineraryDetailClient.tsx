@@ -3,31 +3,33 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { IItinerary } from '@/types';
-import { Clock, MapPin, CheckCircle, XCircle, Navigation, Hotel, Star, Users, Car, ChevronDown } from 'lucide-react';
+import { Clock, MapPin, CheckCircle, XCircle, Navigation, Hotel, Star, Users, Car, ChevronDown, LogIn } from 'lucide-react';
 import Modal from '@/components/global/Modal';
 import PaymentModal from '@/components/global/PaymentModal';
 import RoadmapTimeline from '@/components/global/RoadmapTimeline';
 import UnifiedHero from '@/components/global/UnifiedHero';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 import SocialVideoEmbed from '@/components/global/SocialVideoEmbed';
 import FullWidthRecommendations from '@/components/global/FullWidthRecommendations';
 
 const MapView = dynamic(() => import('@/components/global/MapView'), {
   ssr: false,
-  loading: () => <div className="h-[400px] w-full bg-surface-dark/10 animate-pulse rounded-xl" />
+  loading: () => <div className="h-[400px] w-full bg-surface-dark/10 animate-pulse rounded-xl" />,
 });
 
 export default function ItineraryDetailClient({ itinerary }: { itinerary: IItinerary }) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen]   = useState(false);
   const { status } = useSession();
   const router = useRouter();
 
   const handleBookNowClick = () => {
     if (status === 'unauthenticated') {
-      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+      setIsLoginModalOpen(true);
     } else {
       setIsPaymentModalOpen(true);
     }
@@ -312,72 +314,90 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
 
 
 
-          {/* Accommodations */}
+          {/* Accommodations — 2×2 grid per group size */}
           {itinerary.hotels && itinerary.hotels.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-xl font-boldonse font-normal leading-snug mb-4 border-l-4 border-primary pl-4">Accommodations</h2>
+              <h2 className="text-xl font-boldonse font-normal leading-snug mb-2 border-l-4 border-primary pl-4">Accommodations</h2>
+              <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-5 pl-1">
+                Rooms arranged based on your group size — confirmed at booking.
+              </p>
 
-              {/* Per-booking room arrangement callout */}
-              <div className="mb-5 flex flex-wrap gap-3">
-                {pricingTiers.length > 0 ? (
-                  pricingTiers.map(tier => (
-                    <div
-                      key={tier.persons}
-                      className="flex items-center gap-2 px-3 py-2 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 text-xs font-inter"
-                    >
-                      <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                        <Users size={12} className="text-primary" />
+              {pricingTiers.length > 0 ? (
+                /* 2×2 grid: one card per group size showing hotel + room count */
+                <div className="grid grid-cols-2 gap-3">
+                  {pricingTiers.map(tier => {
+                    const hotel = itinerary.hotels![0]; // primary hotel
+                    const roomLabel = tier.persons === 1
+                      ? '1 Single Room'
+                      : tier.persons === 2
+                      ? '1 Double Room'
+                      : `${Math.ceil(tier.persons / 2)} Rooms`;
+                    return (
+                      <div key={tier.persons} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden hover:border-primary/40 transition-colors">
+                        {/* Hotel photo */}
+                        <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
+                          {hotel.images && hotel.images[0] ? (
+                            <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
+                              <Hotel size={22} />
+                            </div>
+                          )}
+                          {/* Group size overlay badge */}
+                          <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                            <Users size={8} />{tier.persons}P
+                          </div>
+                          {hotel.rating && (
+                            <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
+                              <Star size={7} fill="currentColor" /> {hotel.rating}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Info */}
+                        <div className="p-2.5 flex flex-col gap-1">
+                          <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
+                          <div className="flex items-center gap-1 text-[10px] text-primary font-bold">
+                            <Hotel size={9} className="shrink-0" />
+                            {roomLabel}
+                          </div>
+                          <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
+                            <CheckCircle size={7} /> Included
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-bold">{tier.persons} {tier.persons === 1 ? 'Person' : 'Persons'}</span>
-                        <span className="text-brand-text/50 dark:text-brand-text-dark/50 ml-1.5">→</span>
-                        <span className="ml-1.5 text-brand-text/70 dark:text-brand-text-dark/70">
-                          {tier.persons === 1 ? '1 single room' : tier.persons === 2 ? '1 double room' : `${Math.ceil(tier.persons / 2)} rooms`}
+                    );
+                  })}
+                </div>
+              ) : (
+                /* Fallback when no pricing tiers: plain hotel grid */
+                <div className="grid grid-cols-2 gap-2.5">
+                  {itinerary.hotels.map((hotel, i) => (
+                    <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">
+                      <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
+                        {hotel.images && hotel.images[0] ? (
+                          <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
+                            <Hotel size={22} />
+                          </div>
+                        )}
+                        {hotel.rating && (
+                          <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
+                            <Star size={7} fill="currentColor" /> {hotel.rating}
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-2.5 flex flex-col gap-1">
+                        <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
+                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
+                          <CheckCircle size={7} /> Included
                         </span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 text-xs font-inter text-brand-text/70 dark:text-brand-text-dark/70">
-                    <Hotel size={13} className="text-primary" />
-                    Rooms arranged per group — confirmed at booking
-                  </div>
-                )}
-              </div>
-
-              {/* Hotels — 2-col grid on mobile */}
-              <div className="grid grid-cols-2 gap-2.5">
-                {itinerary.hotels.map((hotel, i) => (
-                  <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">
-                    {/* Photo */}
-                    <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
-                      {hotel.images && hotel.images[0] ? (
-                        <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
-                          <Hotel size={22} />
-                        </div>
-                      )}
-                      <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
-                        <Star size={7} fill="currentColor" /> {hotel.rating}
-                      </div>
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-2.5 flex flex-col gap-1">
-                      <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
-                      {hotel.description && (
-                        <p className="font-inter text-[10px] text-brand-text/60 dark:text-brand-text-dark/60 leading-relaxed line-clamp-2">
-                          {hotel.description}
-                        </p>
-                      )}
-                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
-                        <CheckCircle size={7} /> Included
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </section>
           )}
 
@@ -464,8 +484,8 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
         </section>
       </div>
 
-      {/* Mobile Fixed Book Now Button */}
-      <div className="fixed bottom-4 right-4 z-40 block lg:hidden pointer-events-none">
+      {/* Mobile Fixed Book Now Button — sits above bottom nav bar */}
+      <div className="fixed bottom-20 right-4 z-40 block lg:hidden pointer-events-none">
         <button
           onClick={handleBookNowClick}
           className="btn-primary shadow-xl shadow-primary/40 px-6 py-3 text-sm rounded-full font-bold animate-bounce hover:animate-none pointer-events-auto"
@@ -487,6 +507,63 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           }}
           onClose={() => setIsPaymentModalOpen(false)}
         />
+      </Modal>
+
+      {/* ── Login Prompt Modal ───────────────────────────────────── */}
+      <Modal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        title="Sign in to Book"
+      >
+        <div className="flex flex-col items-center gap-5 py-2">
+          {/* Icon */}
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <LogIn size={28} className="text-primary" />
+          </div>
+
+          <div className="text-center">
+            <h3 className="font-outfit font-bold text-lg mb-1">One step away!</h3>
+            <p className="font-inter text-sm text-brand-text/65 dark:text-brand-text-dark/65 leading-relaxed">
+              Sign in to securely book <strong className="text-brand-text dark:text-brand-text-dark">{itinerary.title}</strong>.<br />
+              Your trip details will be saved automatically.
+            </p>
+          </div>
+
+          {/* Google Sign In */}
+          <button
+            onClick={() => signIn('google', { callbackUrl: window.location.href })}
+            className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-xl border-2 border-brand-border dark:border-brand-border-dark bg-surface dark:bg-surface-dark hover:border-primary/50 transition-all font-outfit font-semibold text-sm"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
+
+          <div className="flex items-center gap-3 w-full">
+            <div className="flex-1 h-px bg-brand-border dark:bg-brand-border-dark" />
+            <span className="text-xs text-brand-text/40 font-inter">or</span>
+            <div className="flex-1 h-px bg-brand-border dark:bg-brand-border-dark" />
+          </div>
+
+          <Link
+            href={`/login?callbackUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname : '')}`}
+            className="btn-secondary w-full text-center py-2.5 text-sm"
+            onClick={() => setIsLoginModalOpen(false)}
+          >
+            Sign in with Email
+          </Link>
+
+          <p className="text-[11px] text-brand-text/40 font-inter text-center">
+            By continuing you agree to our{' '}
+            <Link href="/terms" className="underline hover:text-primary">Terms</Link>
+            {' '}&{' '}
+            <Link href="/privacy" className="underline hover:text-primary">Privacy Policy</Link>
+          </p>
+        </div>
       </Modal>
     </div>
   );
