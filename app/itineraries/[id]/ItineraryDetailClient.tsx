@@ -235,58 +235,52 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
 
                 {/* Per-group-size vehicle assignment table */}
                 {pricingTiers.some(t => t.vehicle) ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {pricingTiers.filter(t => t.vehicle).map(tier => {
-                      // Find matching vehicle details from vehicles array
                       const vehicleDetail = vehicles.find(
                         v => v.name?.toLowerCase() === tier.vehicle?.toLowerCase()
                       ) || vehicles[0];
                       return (
                         <div
                           key={tier.persons}
-                          className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 hover:border-primary/40 transition-colors"
+                          className="flex items-center gap-3 p-3 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 hover:border-primary/40 transition-colors"
                         >
-                          {/* Group size badge */}
-                          <div className="flex items-center gap-3 shrink-0">
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center shrink-0">
-                              <Users size={14} className="text-primary mb-0.5" />
-                              <span className="text-primary font-bold font-outfit text-sm leading-none">{tier.persons}</span>
-                            </div>
-                            <div>
-                              <div className="text-xs font-bold text-brand-text/50 uppercase tracking-wider">Group of</div>
-                              <div className="text-sm font-bold">{tier.persons} {tier.persons === 1 ? 'Person' : 'Persons'}</div>
-                            </div>
+                          {/* Group size pill — always compact */}
+                          <div className="flex items-center gap-1.5 shrink-0 bg-primary/10 rounded-lg px-2 py-1.5">
+                            <Users size={11} className="text-primary" />
+                            <span className="text-primary font-bold font-outfit text-xs leading-none">{tier.persons}P</span>
                           </div>
 
-                          {/* Arrow */}
-                          <div className="hidden sm:flex text-brand-text/20 text-lg shrink-0">→</div>
+                          <span className="text-brand-text/30 text-xs shrink-0">→</span>
 
-                          {/* Vehicle info */}
-                          <div className="flex items-center gap-4 flex-1">
-                            {vehicleDetail?.image ? (
-                              <img
-                                src={vehicleDetail.image}
-                                alt={tier.vehicle!}
-                                className="w-24 h-14 object-cover rounded-xl shrink-0 shadow-sm"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                              />
-                            ) : (
-                              <div className="w-24 h-14 rounded-xl bg-secondary/10 flex items-center justify-center shrink-0">
-                                <Car size={28} className="text-secondary/50" />
+                          {/* Vehicle thumbnail — small fixed size */}
+                          {vehicleDetail?.image ? (
+                            <img
+                              src={vehicleDetail.image}
+                              alt={tier.vehicle!}
+                              className="w-16 h-10 object-cover rounded-lg shrink-0 shadow-sm"
+                              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            />
+                          ) : (
+                            <div className="w-16 h-10 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                              <Car size={18} className="text-secondary/50" />
+                            </div>
+                          )}
+
+                          {/* Vehicle name + capacity */}
+                          <div className="flex-1 min-w-0">
+                            <div className="font-outfit font-bold text-sm truncate">{tier.vehicle}</div>
+                            {vehicleDetail?.capacity && (
+                              <div className="text-[10px] text-brand-text/50 font-inter">
+                                Seats {vehicleDetail.capacity}
                               </div>
                             )}
-                            <div>
-                              <div className="font-outfit font-bold text-base">{tier.vehicle}</div>
-                              {vehicleDetail?.capacity && (
-                                <div className="text-xs text-brand-text/50 font-inter mt-0.5 flex items-center gap-1">
-                                  <Users size={10} /> Seats up to {vehicleDetail.capacity} persons
-                                </div>
-                              )}
-                              <div className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-                                <CheckCircle size={9} /> Included in package
-                              </div>
-                            </div>
                           </div>
+
+                          {/* Included tag — hidden on very small screens */}
+                          <span className="hidden xs:inline-flex items-center gap-1 text-[10px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full shrink-0">
+                            <CheckCircle size={8} /> Included
+                          </span>
                         </div>
                       );
                     })}
@@ -350,36 +344,40 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                 )}
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-3">
                 {itinerary.hotels.map((hotel, i) => (
-                  <div key={i} className="card p-5 border border-brand-border dark:border-brand-border-dark flex flex-col md:flex-row gap-5">
-                    <div className="h-44 md:h-auto md:w-56 shrink-0 rounded-xl overflow-hidden bg-surface-dark/10 relative">
+                  <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-row gap-3 p-3 items-start">
+                    {/* Square thumbnail — compact on mobile */}
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 shrink-0 rounded-xl overflow-hidden bg-surface-dark/10 relative">
                       {hotel.images && hotel.images[0] ? (
                         <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
-                          <Hotel size={36} />
+                        <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
+                          <Hotel size={24} />
                         </div>
                       )}
-                      <div className="absolute top-3 left-3 badge-primary flex items-center gap-1 shadow-lg">
-                        <Star size={10} fill="currentColor" /> {hotel.rating}
+                      <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 shadow">
+                        <Star size={8} fill="currentColor" /> {hotel.rating}
                       </div>
                     </div>
-                    <div className="flex flex-col flex-1 justify-center gap-2">
-                      <h3 className="text-base font-outfit font-bold flex items-center gap-2">
-                        <Hotel size={16} className="text-primary shrink-0" /> {hotel.name}
+
+                    {/* Hotel info */}
+                    <div className="flex flex-col justify-center gap-1 flex-1 min-w-0">
+                      <h3 className="text-sm font-outfit font-bold flex items-center gap-1.5 leading-tight">
+                        <Hotel size={13} className="text-primary shrink-0" />
+                        <span className="truncate">{hotel.name}</span>
                       </h3>
                       {hotel.description && (
-                        <p className="font-inter text-sm text-brand-text/70 dark:text-brand-text-dark/70 leading-relaxed">
+                        <p className="font-inter text-xs text-brand-text/60 dark:text-brand-text-dark/60 leading-relaxed line-clamp-2">
                           {hotel.description}
                         </p>
                       )}
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
-                          <CheckCircle size={9} /> Included in package
+                      <div className="flex flex-wrap gap-1.5 mt-0.5">
+                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full">
+                          <CheckCircle size={8} /> Included
                         </span>
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">
-                          <Users size={9} /> Rooms as per group size
+                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded-full">
+                          <Users size={8} /> Per group size
                         </span>
                       </div>
                     </div>
