@@ -49,8 +49,8 @@ export default function UnifiedHero({
 
       {/* Layer 3: Overlays for Depth & Readability */}
       <div className="absolute inset-0 z-[-1] pointer-events-none w-full h-full">
-        <div className="absolute inset-0 bg-black/50 dark:bg-black/70 transition-colors" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-surface dark:via-black/20 dark:to-surface-dark" />
+        <div className="absolute inset-0 bg-black/25 dark:bg-black/50 transition-colors" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-surface dark:via-black/15 dark:to-surface-dark" />
       </div>
 
       {/* ─── Standard Tailwind Entry ─── */}

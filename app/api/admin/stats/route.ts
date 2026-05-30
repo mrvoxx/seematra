@@ -18,12 +18,15 @@ export async function GET() {
     const User = (await import('@/models/User')).default;
 
     const [totalBookings, totalItineraries, totalBlogs, totalUsers, recentBookings, revenue] = await Promise.all([
-      Booking.countDocuments(),
+      Booking.countDocuments({ paymentStatus: { $in: ['PARTIAL_PAID', 'COMPLETED', 'RESERVED'] } }),
       Itinerary.countDocuments(),
       Blog.countDocuments(),
       User.countDocuments({ role: 'user' }),
       Booking.find().sort({ createdAt: -1 }).limit(5).populate('itinerary', 'title thumbnail').populate('user', 'name email').lean(),
-      Booking.aggregate([{ $group: { _id: null, total: { $sum: '$amountPaidOnline' } } }]),
+      Booking.aggregate([
+        { $match: { paymentStatus: { $in: ['PARTIAL_PAID', 'COMPLETED', 'RESERVED'] } } },
+        { $group: { _id: null, total: { $sum: '$amountPaidOnline' } } }
+      ]),
     ]);
 
     return NextResponse.json({

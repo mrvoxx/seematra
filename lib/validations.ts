@@ -84,6 +84,7 @@ export const ItinerarySchema = z.object({
     .object({ lat: z.number(), lng: z.number() })
     .optional(),
   isRecommended: z.boolean().default(false),
+  hasDiscount: z.boolean().default(false),
   active: z.boolean().default(true),
 });
 

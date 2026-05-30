@@ -38,6 +38,7 @@ export default function AdminDashboardClient() {
   const [adminReviews, setAdminReviews] = useState<any[]>([]);
   const [showAddReview, setShowAddReview] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, title: '', comment: '', userName: '', userLocation: '' });
+  const [bookingSubTab, setBookingSubTab] = useState<'pending_payments' | 'all_paid'>('pending_payments');
 
   async function markCompleted(bookingId: string) {
     try {
@@ -270,53 +271,103 @@ export default function AdminDashboardClient() {
 
             {/* ══ BOOKINGS TAB ══ */}
             {activeTab === 'bookings' && (
-              <div className="bg-brand-card dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark rounded-2xl p-6 animate-fade-up">
-                <h2 className="text-xl font-outfit font-bold mb-4">All Bookings <span className="text-sm font-inter text-brand-text/50">({bookings.length})</span></h2>
-                {loading ? <LoadingSpinner /> : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                      <thead className="bg-surface dark:bg-surface-dark border-b border-brand-border dark:border-brand-border-dark">
-                        <tr>
-                          {['ID', 'User', 'Itinerary', 'Status', 'Payment', 'Paid', 'Balance', 'Action'].map(h => (
-                            <th key={h} className="px-3 py-3 text-xs font-bold text-brand-text/50 uppercase tracking-wider">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {bookings.map(b => {
-                          const user = b.user as any;
-                          const it = b.itinerary as any;
-                          return (
-                            <tr key={b._id as string} className="border-b border-brand-border dark:border-brand-border-dark hover:bg-surface/50 dark:hover:bg-surface-dark/50">
-                              <td className="px-3 py-3 font-mono text-xs">{String(b._id).substr(-6)}</td>
-                              <td className="px-3 py-3"><div className="font-bold text-xs">{user?.name || 'N/A'}</div><div className="text-xs opacity-60">{user?.email}</div></td>
-                              <td className="px-3 py-3 text-xs max-w-[140px] truncate">{it?.title || 'Unknown'}</td>
-                              <td className="px-3 py-3">
-                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${statusColor[b.bookingStatus as string] || ''}`}>
-                                  {b.bookingStatus}
-                                </span>
-                              </td>
-                              <td className="px-3 py-3 text-xs font-bold">{b.paymentStatus}</td>
-                              <td className="px-3 py-3 text-primary font-bold text-xs">₹{b.amountPaidOnline?.toLocaleString()}</td>
-                              <td className="px-3 py-3 text-xs">₹{b.balanceDue?.toLocaleString()}</td>
-                              <td className="px-3 py-3">
-                                {b.bookingStatus !== 'completed' && b.bookingStatus !== 'cancelled' && (
-                                  <button
-                                    onClick={() => markCompleted(b._id as string)}
-                                    className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold px-2 py-1 rounded-lg hover:bg-green-200 transition-colors whitespace-nowrap flex items-center gap-1"
-                                  >
-                                    <CheckCircle2 size={12} /> Complete
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                    {bookings.length === 0 && <p className="text-center py-12 text-brand-text/40">No bookings yet.</p>}
-                  </div>
-                )}
+              <div className="space-y-4 animate-fade-up">
+                {/* Sub-tabs for pending vs paid */}
+                <div className="flex gap-2 border-b border-brand-border dark:border-brand-border-dark pb-0">
+                  {(['pending_payments', 'all_paid'] as const).map(subTab => {
+                    const pendingCount = bookings.filter(b => b.paymentStatus === 'PENDING').length;
+                    const paidCount = bookings.filter(b => ['RESERVED','PARTIAL_PAID','COMPLETED'].includes(b.paymentStatus as string)).length;
+                    const isActive = (subTab === 'pending_payments' ? bookingSubTab === 'pending_payments' : bookingSubTab === 'all_paid');
+                    return (
+                      <button
+                        key={subTab}
+                        onClick={() => setBookingSubTab(subTab)}
+                        className={`px-4 py-2.5 text-sm font-bold font-outfit rounded-t-xl border border-b-0 transition-all relative -mb-px ${isActive ? 'bg-brand-card dark:bg-brand-card-dark border-brand-border dark:border-brand-border-dark text-brand-text dark:text-brand-text-dark' : 'bg-surface/50 dark:bg-surface-dark/50 border-transparent text-brand-text/50 dark:text-brand-text-dark/50 hover:text-primary'}`}
+                      >
+                        {subTab === 'pending_payments' ? (
+                          <span className="flex items-center gap-2">
+                            <Clock size={13} className="text-amber-500" />
+                            Pending Payments
+                            {pendingCount > 0 && <span className="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{pendingCount}</span>}
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            <CheckCircle2 size={13} className="text-green-500" />
+                            Paid Bookings
+                            {paidCount > 0 && <span className="bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{paidCount}</span>}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="bg-brand-card dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark rounded-2xl p-6">
+                  {loading ? <LoadingSpinner /> : (() => {
+                    const filtered = bookingSubTab === 'pending_payments'
+                      ? bookings.filter(b => b.paymentStatus === 'PENDING')
+                      : bookings.filter(b => ['RESERVED','PARTIAL_PAID','COMPLETED'].includes(b.paymentStatus as string));
+                    
+                    const subLabel = bookingSubTab === 'pending_payments' ? 'Pending Payments' : 'Paid Bookings';
+                    return (
+                      <>
+                        <h2 className="text-lg font-outfit font-bold mb-4">{subLabel} <span className="text-sm font-inter text-brand-text/50">({filtered.length})</span></h2>
+                        {bookingSubTab === 'pending_payments' && filtered.length > 0 && (
+                          <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl text-xs text-amber-800 dark:text-amber-300 font-inter">
+                            ⚠️ These bookings have been initiated but payment has not been verified yet. They do not count towards revenue.
+                          </div>
+                        )}
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm text-left">
+                            <thead className="bg-surface dark:bg-surface-dark border-b border-brand-border dark:border-brand-border-dark">
+                              <tr>
+                                {['ID', 'User', 'Itinerary', 'Status', 'Payment', 'Paid', 'Balance', 'Action'].map(h => (
+                                  <th key={h} className="px-3 py-3 text-xs font-bold text-brand-text/50 uppercase tracking-wider">{h}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filtered.map(b => {
+                                const user = b.user as any;
+                                const it = b.itinerary as any;
+                                return (
+                                  <tr key={b._id as string} className="border-b border-brand-border dark:border-brand-border-dark hover:bg-surface/50 dark:hover:bg-surface-dark/50">
+                                    <td className="px-3 py-3 font-mono text-xs">{String(b._id).substr(-6)}</td>
+                                    <td className="px-3 py-3"><div className="font-bold text-xs">{user?.name || 'N/A'}</div><div className="text-xs opacity-60">{user?.email}</div></td>
+                                    <td className="px-3 py-3 text-xs max-w-[140px] truncate">{it?.title || 'Unknown'}</td>
+                                    <td className="px-3 py-3">
+                                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${statusColor[b.bookingStatus as string] || ''}`}>
+                                        {b.bookingStatus}
+                                      </span>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                      <span className={`text-xs font-bold ${b.paymentStatus === 'PENDING' ? 'text-amber-600 dark:text-amber-400' : b.paymentStatus === 'COMPLETED' ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                                        {b.paymentStatus}
+                                      </span>
+                                    </td>
+                                    <td className="px-3 py-3 text-primary font-bold text-xs">₹{b.amountPaidOnline?.toLocaleString()}</td>
+                                    <td className="px-3 py-3 text-xs">₹{b.balanceDue?.toLocaleString()}</td>
+                                    <td className="px-3 py-3">
+                                      {b.bookingStatus !== 'completed' && b.bookingStatus !== 'cancelled' && b.paymentStatus !== 'PENDING' && (
+                                        <button
+                                          onClick={() => markCompleted(b._id as string)}
+                                          className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold px-2 py-1 rounded-lg hover:bg-green-200 transition-colors whitespace-nowrap flex items-center gap-1"
+                                        >
+                                          <CheckCircle2 size={12} /> Complete
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                          {filtered.length === 0 && <p className="text-center py-12 text-brand-text/40">No {bookingSubTab === 'pending_payments' ? 'pending payments' : 'paid bookings'} found.</p>}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
               </div>
             )}
 

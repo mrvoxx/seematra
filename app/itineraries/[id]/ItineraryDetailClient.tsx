@@ -55,7 +55,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
 
   const PricingCardContent = () => (
     <div className="card p-6 md:p-8 animate-fade-left shadow-xl border-t-4 border-t-primary w-full">
-      <h3 className="font-outfit font-bold text-2xl mb-2">Book Your Journey</h3>
+      <h3 className="font-outfit font-bold text-lg mb-2">Book Your Journey</h3>
       <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-6">Experience {itinerary.title} with local experts.</p>
 
       {/* Group Pricing Table */}
@@ -207,7 +207,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
         {/* Left Column: Content */}
         <div className="flex-1">
           <section className="mb-12">
-            <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Overview</h2>
+            <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Overview</h2>
             <div
               className="prose dark:prose-invert max-w-none font-inter text-brand-text/80 dark:text-brand-text-dark/80"
               dangerouslySetInnerHTML={{ __html: itinerary.description }}
@@ -224,34 +224,93 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
 
 
 
-          {/* Transportation */}
-          {vehicles.length > 0 && (
+          {/* Transportation — per group size assignment */}
+          {(vehicles.length > 0 || pricingTiers.some(t => t.vehicle)) && (
             <div className="mb-12">
               <section>
-                <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Transport Included</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {vehicles.map(v => (
-                    <div key={v.name} className="card p-4 text-center flex flex-col items-center justify-center gap-2">
-                      <Navigation className="text-secondary" />
-                      <div className="text-xl font-bold font-outfit uppercase mt-2">{v.name}</div>
-                      <div className="text-xs text-brand-text/50">Capacity: {v.capacity}</div>
-                      {v.image ? (
-                        <img
-                          src={v.image}
-                          alt={v.name}
-                          className="mt-4 rounded-lg w-full object-cover h-32"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div className="mt-4 rounded-lg w-full h-32 bg-secondary/10 flex items-center justify-center">
-                          <Navigation size={32} className="text-secondary/40" />
+                <h2 className="text-xl font-boldonse font-normal leading-snug mb-4 border-l-4 border-primary pl-4">Transport Included</h2>
+                <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-5 pl-1">
+                  Your transport is arranged based on your group size — the vehicle assigned at the time of booking.
+                </p>
+
+                {/* Per-group-size vehicle assignment table */}
+                {pricingTiers.some(t => t.vehicle) ? (
+                  <div className="space-y-3">
+                    {pricingTiers.filter(t => t.vehicle).map(tier => {
+                      // Find matching vehicle details from vehicles array
+                      const vehicleDetail = vehicles.find(
+                        v => v.name?.toLowerCase() === tier.vehicle?.toLowerCase()
+                      ) || vehicles[0];
+                      return (
+                        <div
+                          key={tier.persons}
+                          className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 hover:border-primary/40 transition-colors"
+                        >
+                          {/* Group size badge */}
+                          <div className="flex items-center gap-3 shrink-0">
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center shrink-0">
+                              <Users size={14} className="text-primary mb-0.5" />
+                              <span className="text-primary font-bold font-outfit text-sm leading-none">{tier.persons}</span>
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-brand-text/50 uppercase tracking-wider">Group of</div>
+                              <div className="text-sm font-bold">{tier.persons} {tier.persons === 1 ? 'Person' : 'Persons'}</div>
+                            </div>
+                          </div>
+
+                          {/* Arrow */}
+                          <div className="hidden sm:flex text-brand-text/20 text-lg shrink-0">→</div>
+
+                          {/* Vehicle info */}
+                          <div className="flex items-center gap-4 flex-1">
+                            {vehicleDetail?.image ? (
+                              <img
+                                src={vehicleDetail.image}
+                                alt={tier.vehicle!}
+                                className="w-24 h-14 object-cover rounded-xl shrink-0 shadow-sm"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                              />
+                            ) : (
+                              <div className="w-24 h-14 rounded-xl bg-secondary/10 flex items-center justify-center shrink-0">
+                                <Car size={28} className="text-secondary/50" />
+                              </div>
+                            )}
+                            <div>
+                              <div className="font-outfit font-bold text-base">{tier.vehicle}</div>
+                              {vehicleDetail?.capacity && (
+                                <div className="text-xs text-brand-text/50 font-inter mt-0.5 flex items-center gap-1">
+                                  <Users size={10} /> Seats up to {vehicleDetail.capacity} persons
+                                </div>
+                              )}
+                              <div className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
+                                <CheckCircle size={9} /> Included in package
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Fallback: show vehicle cards if no tier mapping exists */
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {vehicles.map(v => (
+                      <div key={v.name} className="card p-4 text-center flex flex-col items-center justify-center gap-2">
+                        <Navigation className="text-secondary" />
+                        <div className="text-base font-bold font-outfit uppercase mt-2">{v.name}</div>
+                        <div className="text-xs text-brand-text/50">Seats: {v.capacity}</div>
+                        {v.image ? (
+                          <img src={v.image} alt={v.name} className="mt-3 rounded-lg w-full object-cover h-28"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        ) : (
+                          <div className="mt-3 rounded-lg w-full h-28 bg-secondary/10 flex items-center justify-center">
+                            <Navigation size={28} className="text-secondary/40" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </section>
             </div>
           )}
@@ -261,31 +320,68 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           {/* Accommodations */}
           {itinerary.hotels && itinerary.hotels.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Accommodations</h2>
-              <div className="space-y-6">
+              <h2 className="text-xl font-boldonse font-normal leading-snug mb-4 border-l-4 border-primary pl-4">Accommodations</h2>
+
+              {/* Per-booking room arrangement callout */}
+              <div className="mb-5 flex flex-wrap gap-3">
+                {pricingTiers.length > 0 ? (
+                  pricingTiers.map(tier => (
+                    <div
+                      key={tier.persons}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 text-xs font-inter"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <Users size={12} className="text-primary" />
+                      </div>
+                      <div>
+                        <span className="font-bold">{tier.persons} {tier.persons === 1 ? 'Person' : 'Persons'}</span>
+                        <span className="text-brand-text/50 dark:text-brand-text-dark/50 ml-1.5">→</span>
+                        <span className="ml-1.5 text-brand-text/70 dark:text-brand-text-dark/70">
+                          {tier.persons === 1 ? '1 single room' : tier.persons === 2 ? '1 double room' : `${Math.ceil(tier.persons / 2)} rooms`}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 text-xs font-inter text-brand-text/70 dark:text-brand-text-dark/70">
+                    <Hotel size={13} className="text-primary" />
+                    Rooms arranged per group — confirmed at booking
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-5">
                 {itinerary.hotels.map((hotel, i) => (
-                  <div key={i} className="card p-6 border border-brand-border dark:border-brand-border-dark flex flex-col md:flex-row gap-6">
-                    <div className="h-48 md:h-auto md:w-64 shrink-0 rounded-xl overflow-hidden bg-surface-dark/10 relative">
+                  <div key={i} className="card p-5 border border-brand-border dark:border-brand-border-dark flex flex-col md:flex-row gap-5">
+                    <div className="h-44 md:h-auto md:w-56 shrink-0 rounded-xl overflow-hidden bg-surface-dark/10 relative">
                       {hotel.images && hotel.images[0] ? (
                         <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
-                          <Hotel size={40} />
+                          <Hotel size={36} />
                         </div>
                       )}
-                      <div className="absolute top-4 left-4 badge-primary flex items-center gap-1 shadow-lg">
-                        <Star size={12} fill="currentColor" /> {hotel.rating}
+                      <div className="absolute top-3 left-3 badge-primary flex items-center gap-1 shadow-lg">
+                        <Star size={10} fill="currentColor" /> {hotel.rating}
                       </div>
                     </div>
-                    <div className="flex flex-col flex-1 justify-center">
-                      <h3 className="text-xl font-outfit font-bold mb-2 flex items-center gap-2">
-                        <Hotel size={20} className="text-primary" /> {hotel.name}
+                    <div className="flex flex-col flex-1 justify-center gap-2">
+                      <h3 className="text-base font-outfit font-bold flex items-center gap-2">
+                        <Hotel size={16} className="text-primary shrink-0" /> {hotel.name}
                       </h3>
                       {hotel.description && (
                         <p className="font-inter text-sm text-brand-text/70 dark:text-brand-text-dark/70 leading-relaxed">
                           {hotel.description}
                         </p>
                       )}
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">
+                          <CheckCircle size={9} /> Included in package
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                          <Users size={9} /> Rooms as per group size
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -295,14 +391,14 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
 
           {/* Roadmap */}
           <section className="mb-12 relative">
-            <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Itinerary Roadmap</h2>
+            <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Itinerary Roadmap</h2>
             <RoadmapTimeline points={itinerary.roadmap} />
           </section>
 
           {/* Journey Preview */}
           {itinerary.video && (
             <section className="mb-12">
-              <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Journey Preview</h2>
+              <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Journey Preview</h2>
               <SocialVideoEmbed url={itinerary.video} />
             </section>
           )}
@@ -310,7 +406,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           {/* Inclusions */}
           {itinerary.inclusions && itinerary.inclusions.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">What's Included</h2>
+              <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">What's Included</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {itinerary.inclusions.map((inc, i) => (
                   <div key={i} className="flex items-start gap-3 bg-surface/50 dark:bg-surface-dark/50 p-4 rounded-xl border border-brand-border dark:border-brand-border-dark">
@@ -325,7 +421,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           {/* Exclusions */}
           {exclusions.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-red-400 pl-4">What's Not Included</h2>
+              <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-red-400 pl-4">What's Not Included</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {exclusions.map((exc, i) => (
                   <div key={i} className="flex items-start gap-3 bg-surface/50 dark:bg-surface-dark/50 p-4 rounded-xl border border-red-200 dark:border-red-900/40">
@@ -340,14 +436,14 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           {/* Interactive Route Map */}
           {mapPins.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-3xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Route Map</h2>
+              <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Route Map</h2>
               <MapView pins={mapPins} height="h-[500px]" interactive={false} />
             </section>
           )}
 
           {/* Bottom CTA */}
           <section className="mb-12 mt-12 bg-primary/10 dark:bg-primary/5 rounded-2xl p-8 border border-primary/20 text-center flex flex-col items-center">
-            <h2 className="text-3xl font-boldonse font-normal leading-snug mb-4">Ready to start your journey?</h2>
+            <h2 className="text-xl font-boldonse font-normal leading-snug mb-4">Ready to start your journey?</h2>
             <p className="font-inter text-brand-text/70 dark:text-brand-text-dark/70 mb-6 max-w-lg">
               Secure your spot today with a simple 40% advance payment. Limited slots available for upcoming dates!
             </p>
