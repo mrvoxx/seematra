@@ -227,7 +227,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
               dangerouslySetInnerHTML={{ __html: itinerary.description }}
             />
             {/* Mobile Pricing Section */}
-            <div className="mt-12 block lg:hidden">
+            <div className="mt-12 mb-24 block lg:hidden">
               <PricingCardContent />
               <div className="flex flex-col items-center justify-center mt-8 text-brand-text/50 dark:text-brand-text-dark/50 animate-bounce">
                 <span className="text-xs uppercase tracking-widest font-semibold mb-2">Scroll to see Roadmap</span>
@@ -236,169 +236,182 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
             </div>
           </section>
 
+               {/* Transport + Accommodation — side-by-side on desktop, stacked on mobile */}
+          {((vehicles.length > 0 || pricingTiers.some(t => t.vehicle)) || (itinerary.hotels && itinerary.hotels.length > 0)) && (
+            <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
+              {/* ── Transport ────────────────────────────────── */}
+              {(vehicles.length > 0 || pricingTiers.some(t => t.vehicle)) && (
+                <section>
+                  <h2 className="text-xl font-boldonse font-normal leading-snug mb-2 border-l-4 border-primary pl-4">Transport Included</h2>
+                  <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-4 pl-1">
+                    Vehicle assigned at booking based on group size.
+                  </p>
 
-          {/* Transportation — per group size assignment */}
-          {(vehicles.length > 0 || pricingTiers.some(t => t.vehicle)) && (
-            <div className="mb-12">
-              <section>
-                <h2 className="text-xl font-boldonse font-normal leading-snug mb-4 border-l-4 border-primary pl-4">Transport Included</h2>
-                <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-5 pl-1">
-                  Your transport is arranged based on your group size — the vehicle assigned at the time of booking.
-                </p>
-
-                {/* Per-group-size vehicle assignment — 2-col grid on mobile */}
-                {pricingTiers.some(t => t.vehicle) ? (
-                  <div className="grid grid-cols-2 gap-2">
-                    {pricingTiers.filter(t => t.vehicle).map(tier => {
-                      const vehicleDetail = vehicles.find(
-                        v => v.name?.toLowerCase() === tier.vehicle?.toLowerCase()
-                      ) || vehicles[0];
-                      return (
-                        <div
-                          key={tier.persons}
-                          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60 hover:border-primary/40 transition-colors text-center"
-                        >
-                          {/* Vehicle thumbnail */}
-                          {vehicleDetail?.image ? (
-                            <img
-                              src={vehicleDetail.image}
-                              alt={tier.vehicle!}
-                              className="w-full h-14 object-cover rounded-lg shadow-sm"
-                              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                            />
-                          ) : (
-                            <div className="w-full h-14 rounded-lg bg-secondary/10 flex items-center justify-center">
-                              <Car size={22} className="text-secondary/50" />
+                  {pricingTiers.some(t => t.vehicle) ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {pricingTiers.filter(t => t.vehicle).map(tier => {
+                        const vehicleDetail = vehicles.find(
+                          v => v.name?.toLowerCase() === tier.vehicle?.toLowerCase()
+                        ) || vehicles[0];
+                        return (
+                          <div
+                            key={tier.persons}
+                            className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden hover:border-primary/40 transition-colors"
+                          >
+                            {/* Full vehicle photo — matches accommodation style */}
+                            <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
+                              {vehicleDetail?.image ? (
+                                <img
+                                  src={vehicleDetail.image}
+                                  alt={tier.vehicle!}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-surface dark:bg-surface-dark">
+                                  <Car size={28} className="text-brand-text/20" />
+                                </div>
+                              )}
+                              {/* Group size badge — top right */}
+                              <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                                <Users size={8} />{tier.persons}P
+                              </div>
+                              {/* Vehicle type badge — top left */}
+                              <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
+                                <Car size={7} /> {(tier.vehicle ?? '').split(' ')[0]}
+                              </div>
                             </div>
-                          )}
 
-                          {/* Group size pill + name */}
-                          <div className="flex flex-col items-center gap-0.5">
-                            <div className="flex items-center gap-1 bg-primary/10 rounded-md px-2 py-0.5">
-                              <Users size={9} className="text-primary" />
-                              <span className="text-primary font-bold font-outfit text-[10px]">{tier.persons}P</span>
+                            {/* Info body */}
+                            <div className="p-2.5 flex flex-col gap-1">
+                              <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{tier.vehicle}</h3>
+                              {vehicleDetail?.capacity && (
+                                <div className="flex items-center gap-1 text-[10px] text-primary font-bold">
+                                  <Users size={9} className="shrink-0" />
+                                  Seats {vehicleDetail.capacity}
+                                </div>
+                              )}
+                              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
+                                <CheckCircle size={7} /> Included
+                              </span>
                             </div>
-                            <div className="font-outfit font-bold text-xs leading-tight">{tier.vehicle}</div>
-                            {vehicleDetail?.capacity && (
-                              <div className="text-[9px] text-brand-text/50">Seats {vehicleDetail.capacity}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    /* Fallback vehicle list */
+                    <div className="grid grid-cols-2 gap-2">
+                      {vehicles.map(v => (
+                        <div key={v.name} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">
+                          <div className="relative w-full h-24 bg-surface-dark/10">
+                            {v.image ? (
+                              <img src={v.image} alt={v.name} className="w-full h-full object-cover"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-surface dark:bg-surface-dark">
+                                <Car size={28} className="text-brand-text/20" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-2.5 flex flex-col gap-1">
+                            <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{v.name}</h3>
+                            {v.capacity && (
+                              <div className="text-[10px] text-primary font-bold flex items-center gap-1">
+                                <Users size={9} />Seats {v.capacity}
+                              </div>
                             )}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  /* Fallback: show vehicle cards if no tier mapping exists */
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {vehicles.map(v => (
-                      <div key={v.name} className="card p-4 text-center flex flex-col items-center justify-center gap-2">
-                        <Navigation className="text-secondary" />
-                        <div className="text-base font-bold font-outfit uppercase mt-2">{v.name}</div>
-                        <div className="text-xs text-brand-text/50">Seats: {v.capacity}</div>
-                        {v.image ? (
-                          <img src={v.image} alt={v.name} className="mt-3 rounded-lg w-full object-cover h-28"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                        ) : (
-                          <div className="mt-3 rounded-lg w-full h-28 bg-secondary/10 flex items-center justify-center">
-                            <Navigation size={28} className="text-secondary/40" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </section>
-            </div>
-          )}
-
-
-
-          {/* Accommodations — 2×2 grid per group size */}
-          {itinerary.hotels && itinerary.hotels.length > 0 && (
-            <section className="mb-12">
-              <h2 className="text-xl font-boldonse font-normal leading-snug mb-2 border-l-4 border-primary pl-4">Accommodations</h2>
-              <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-5 pl-1">
-                Rooms arranged based on your group size — confirmed at booking.
-              </p>
-
-              {pricingTiers.length > 0 ? (
-                /* 2×2 grid: one card per group size showing hotel + room count */
-                <div className="grid grid-cols-2 gap-3">
-                  {pricingTiers.map(tier => {
-                    const hotel = itinerary.hotels![0]; // primary hotel
-                    const roomLabel = tier.persons === 1
-                      ? '1 Single Room'
-                      : tier.persons === 2
-                      ? '1 Double Room'
-                      : `${Math.ceil(tier.persons / 2)} Rooms`;
-                    return (
-                      <div key={tier.persons} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden hover:border-primary/40 transition-colors">
-                        {/* Hotel photo */}
-                        <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
-                          {hotel.images && hotel.images[0] ? (
-                            <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
-                              <Hotel size={22} />
-                            </div>
-                          )}
-                          {/* Group size overlay badge */}
-                          <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
-                            <Users size={8} />{tier.persons}P
-                          </div>
-                          {hotel.rating && (
-                            <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
-                              <Star size={7} fill="currentColor" /> {hotel.rating}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Info */}
-                        <div className="p-2.5 flex flex-col gap-1">
-                          <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
-                          <div className="flex items-center gap-1 text-[10px] text-primary font-bold">
-                            <Hotel size={9} className="shrink-0" />
-                            {roomLabel}
-                          </div>
-                          <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
-                            <CheckCircle size={7} /> Included
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                /* Fallback when no pricing tiers: plain hotel grid */
-                <div className="grid grid-cols-2 gap-2.5">
-                  {itinerary.hotels.map((hotel, i) => (
-                    <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">
-                      <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
-                        {hotel.images && hotel.images[0] ? (
-                          <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
-                            <Hotel size={22} />
-                          </div>
-                        )}
-                        {hotel.rating && (
-                          <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
-                            <Star size={7} fill="currentColor" /> {hotel.rating}
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-2.5 flex flex-col gap-1">
-                        <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
-                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
-                          <CheckCircle size={7} /> Included
-                        </span>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  )}
+                </section>
               )}
-            </section>
+
+              {/* ── Accommodations ──────────────────────────── */}
+              {itinerary.hotels && itinerary.hotels.length > 0 && (
+                <section>
+                  <h2 className="text-xl font-boldonse font-normal leading-snug mb-2 border-l-4 border-primary pl-4">Accommodations</h2>
+                  <p className="text-sm font-inter text-brand-text/60 dark:text-brand-text-dark/60 mb-4 pl-1">
+                    Rooms arranged by group size — confirmed at booking.
+                  </p>
+
+                  {pricingTiers.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {pricingTiers.map(tier => {
+                        const hotel = itinerary.hotels![0];
+                        const roomLabel = tier.persons === 1
+                          ? '1 Single Room'
+                          : tier.persons === 2
+                          ? '1 Double Room'
+                          : `${Math.ceil(tier.persons / 2)} Rooms`;
+                        return (
+                          <div key={tier.persons} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden hover:border-primary/40 transition-colors">
+                            <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
+                              {hotel.images && hotel.images[0] ? (
+                                <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
+                                  <Hotel size={22} />
+                                </div>
+                              )}
+                              <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                                <Users size={8} />{tier.persons}P
+                              </div>
+                              {hotel.rating && (
+                                <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
+                                  <Star size={7} fill="currentColor" /> {hotel.rating}
+                                </div>
+                              )}
+                            </div>
+                            <div className="p-2.5 flex flex-col gap-1">
+                              <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
+                              <div className="flex items-center gap-1 text-[10px] text-primary font-bold">
+                                <Hotel size={9} className="shrink-0" />
+                                {roomLabel}
+                              </div>
+                              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
+                                <CheckCircle size={7} /> Included
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      {itinerary.hotels.map((hotel, i) => (
+                        <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">
+                          <div className="relative w-full h-24 shrink-0 bg-surface-dark/10">
+                            {hotel.images && hotel.images[0] ? (
+                              <img src={hotel.images[0]} alt={hotel.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-brand-text/30 bg-surface dark:bg-surface-dark">
+                                <Hotel size={22} />
+                              </div>
+                            )}
+                            {hotel.rating && (
+                              <div className="absolute top-1.5 left-1.5 badge-primary flex items-center gap-0.5 text-[8px] px-1.5 py-0.5 shadow">
+                                <Star size={7} fill="currentColor" /> {hotel.rating}
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-2.5 flex flex-col gap-1">
+                            <h3 className="text-xs font-outfit font-bold leading-tight line-clamp-1">{hotel.name}</h3>
+                            <span className="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 dark:text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full w-fit mt-0.5">
+                              <CheckCircle size={7} /> Included
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+
+            </div>
           )}
 
           {/* Roadmap */}

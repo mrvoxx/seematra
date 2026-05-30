@@ -4,7 +4,7 @@
 
 export default function SocialFAB() {
   return (
-    <div className="fixed bottom-4 left-4 lg:bottom-6 lg:left-6 z-[60] flex flex-col gap-2 lg:gap-3 pointer-events-none">
+    <div className="fixed bottom-20 left-4 lg:bottom-6 lg:left-6 z-[60] flex flex-col gap-2 lg:gap-3 pointer-events-none">
       {/* YouTube */}
       <a
         href="https://youtube.com"
