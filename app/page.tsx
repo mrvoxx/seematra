@@ -17,7 +17,7 @@ export const revalidate = 3600;
 export default async function Home() {
   await connectDB();
 
-  const [rawItins, rawBlogs, rawReviews] = await Promise.all([
+  const [rawItins, rawBlogs, rawReviews, rawFamilyItins, rawCoupleItins, rawAllItins] = await Promise.all([
     Itinerary.find({ isRecommended: true, active: true }).limit(6).lean() as any,
     Blog.find({ isRecommended: true }).limit(4).lean() as any,
     Review.find({ isHidden: false })
@@ -27,7 +27,8 @@ export default async function Home() {
       .limit(16)
       .lean() as any,
     Itinerary.find({ active: true, $or: [{ genres: 'Family' }, { tags: { $in: ['Family', 'Kids'] } }] }).limit(6).lean() as any,
-    Itinerary.find({ active: true, $or: [{ genres: 'Romantic' }, { tags: { $in: ['Couple', 'Romantic'] } }] }).limit(6).lean() as any,
+    Itinerary.find({ active: true, $or: [{ genres: 'Couple' }, { tags: { $in: ['Couple', 'Romantic'] } }] }).limit(6).lean() as any,
+    Itinerary.find({ active: true }).sort({ createdAt: -1 }).limit(6).lean() as any,
   ]);
 
   const recommendedItineraries = rawItins.map((it: any) => ({
@@ -68,13 +69,19 @@ export default async function Home() {
         { _id: 'd8', name: 'Meera Nair', location: 'Kochi', rating: 5, title: 'Solo trekker approved!', comment: 'First solo Himalayan trek and Seematra made it completely stress-free. Local guide was knowledgeable and caring.', images: [], isVerified: true, itineraryTitle: null },
       ];
 
-  const [rawFamilyItins, rawCoupleItins] = await Promise.all([
-    Itinerary.find({ active: true, $or: [{ genres: 'Family' }, { tags: { $in: ['Family', 'Kids'] } }] }).limit(6).lean() as any,
-    Itinerary.find({ active: true, $or: [{ genres: 'Romantic' }, { tags: { $in: ['Couple', 'Romantic'] } }] }).limit(6).lean() as any,
-  ]);
+  const serializeItin = (it: any): IItinerary => ({
+    ...it,
+    _id: it._id.toString(),
+    createdAt: it.createdAt?.toISOString(),
+    updatedAt: it.updatedAt?.toISOString(),
+  });
 
-  const familyItineraries = rawFamilyItins.map((it: any) => ({ ...it, _id: it._id.toString(), createdAt: it.createdAt?.toISOString(), updatedAt: it.updatedAt?.toISOString() })) as IItinerary[];
-  const coupleItineraries = rawCoupleItins.map((it: any) => ({ ...it, _id: it._id.toString(), createdAt: it.createdAt?.toISOString(), updatedAt: it.updatedAt?.toISOString() })) as IItinerary[];
+  const familyItineraries  = rawFamilyItins.map(serializeItin) as IItinerary[];
+  const coupleItineraries  = rawCoupleItins.map(serializeItin) as IItinerary[];
+  const allItineraries     = rawAllItins.map(serializeItin) as IItinerary[];
+
+  // Weekend's Best: prefer recommended, fall back to recent active
+  const heroItineraries = recommendedItineraries.length > 0 ? recommendedItineraries : allItineraries;
 
   return (
     <div className="bg-surface dark:bg-surface-dark min-h-screen">
@@ -132,8 +139,8 @@ export default async function Home() {
           </div>
 
           <ErrorBoundary label="Itineraries" compact>
-            {recommendedItineraries.length > 0 ? (
-              <ItinerarySwiper itineraries={recommendedItineraries} />
+            {heroItineraries.length > 0 ? (
+              <ItinerarySwiper itineraries={heroItineraries} />
             ) : (
               <ItinerarySwiperSkeleton count={3} />
             )}
@@ -316,7 +323,7 @@ export default async function Home() {
               <Link href="/itineraries?genre=Family" className="btn-secondary text-sm shrink-0 self-start sm:self-auto">All Family Trips →</Link>
             </div>
             <ErrorBoundary label="Family Itineraries" compact>
-              <ItinerarySwiper itineraries={familyItineraries.length > 0 ? familyItineraries : recommendedItineraries} />
+              <ItinerarySwiper itineraries={familyItineraries.length > 0 ? familyItineraries : heroItineraries} />
             </ErrorBoundary>
           </div>
 
@@ -330,10 +337,10 @@ export default async function Home() {
                 </div>
                 <h2 className="section-title">Couple Escapes</h2>
               </div>
-              <Link href="/itineraries?genre=Romantic" className="btn-secondary text-sm shrink-0 self-start sm:self-auto">All Couple Trips →</Link>
+              <Link href="/itineraries?genre=Couple" className="btn-secondary text-sm shrink-0 self-start sm:self-auto">All Couple Trips →</Link>
             </div>
             <ErrorBoundary label="Couple Itineraries" compact>
-              <ItinerarySwiper itineraries={coupleItineraries.length > 0 ? coupleItineraries : recommendedItineraries} />
+              <ItinerarySwiper itineraries={coupleItineraries.length > 0 ? coupleItineraries : heroItineraries} />
             </ErrorBoundary>
           </div>
 

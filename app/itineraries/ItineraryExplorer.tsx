@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useItineraryStore } from '@/store/itineraryStore';
 import ItineraryCard from '@/components/global/ItineraryCard';
@@ -15,50 +15,34 @@ export default function ItineraryExplorer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { filtered, setItineraries, setGenre } = useItineraryStore();
-
-  // Sync URL search param ?genre=X with state store
-  useEffect(() => {
-    if (genreParam) {
-      setGenre(genreParam);
-    }
-  }, [genreParam, setGenre]);
+  // Track if we've already applied the URL genre param to avoid infinite loops
+  const genreApplied = useRef(false);
 
   const fetchItineraries = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 12000);
 
       let res: Response;
       try {
-        res = await fetch('/api/itineraries', {
+        res = await fetch('/api/itineraries?limit=50', {
           method: 'GET',
           headers: { 'Accept': 'application/json' },
           signal: controller.signal,
-          next: { revalidate: 300 }, // Cache for 5 minutes — reduces DB hits by ~90%
         });
       } finally {
         clearTimeout(timeout);
       }
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
 
       const raw = await res.text();
-
       let json: any;
-      try {
-        json = JSON.parse(raw);
-      } catch (parseErr) {
-        throw new Error('Invalid JSON from server');
-      }
+      try { json = JSON.parse(raw); } catch { throw new Error('Invalid JSON from server'); }
 
-      // The API returns { success: true, data: { data: [...], total, page } }
-      // api.get() unwraps to data.data = { data: [...], total }
-      // We do a direct fetch so we get the full shape: json = { success, data: { data: [...] } }
+      // API returns { success: true, data: { data: [...], total, page } }
       const outer = json?.data;
       const items: IItinerary[] = Array.isArray(outer)
         ? outer
@@ -66,17 +50,24 @@ export default function ItineraryExplorer() {
           ? outer.data
           : [];
 
-      setItineraries(items);
+      // Apply URL genre param AFTER data is loaded — avoids filtering against empty array
+      if (genreParam && !genreApplied.current) {
+        genreApplied.current = true;
+        setItineraries(items);          // load all first
+        setGenre(genreParam);           // then filter — both state + filtered update atomically
+      } else {
+        setItineraries(items);
+      }
 
     } catch (err: any) {
       const msg = err.name === 'AbortError'
-        ? 'Request timed out (12s). Check your network.'
+        ? 'Request timed out. Check your network.'
         : err.message || 'Unknown error';
       setError(msg);
     } finally {
       setLoading(false);
     }
-  }, [setItineraries]);
+  }, [setItineraries, setGenre, genreParam]);
 
   useEffect(() => {
     fetchItineraries();
@@ -97,10 +88,17 @@ export default function ItineraryExplorer() {
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <div style={{ width: 48, height: 48, border: '4px solid #E87F2440', borderTop: '4px solid #E87F24', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-            <p className="text-sm font-inter text-brand-text/50">Loading itineraries…</p>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pb-20">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl bg-brand-card dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark overflow-hidden animate-pulse">
+                <div className="h-52 bg-brand-border/40 dark:bg-brand-border-dark/40" />
+                <div className="p-5 flex flex-col gap-3">
+                  <div className="h-4 bg-brand-border/40 dark:bg-brand-border-dark/40 rounded w-3/4" />
+                  <div className="h-3 bg-brand-border/30 dark:bg-brand-border-dark/30 rounded w-1/2" />
+                  <div className="h-3 bg-brand-border/30 dark:bg-brand-border-dark/30 rounded w-2/3" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-16 rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-800 flex flex-col items-center gap-4 px-4">
@@ -109,10 +107,8 @@ export default function ItineraryExplorer() {
             <button
               onClick={fetchItineraries}
               className="btn-primary flex items-center gap-2 mt-2"
-              style={{ touchAction: 'manipulation' }}
             >
-              <RefreshCw size={16} />
-              Try Again
+              <RefreshCw size={16} /> Try Again
             </button>
           </div>
         ) : filtered.length > 0 ? (
@@ -125,10 +121,18 @@ export default function ItineraryExplorer() {
           <div className="text-center py-20 bg-surface dark:bg-surface-dark rounded-xl border border-brand-border dark:border-brand-border-dark flex flex-col items-center gap-4">
             <Package size={40} className="opacity-30" />
             <p className="text-brand-text/50 dark:text-brand-text-dark/50 font-inter">
-              No experiences found. Try adjusting your filters.
+              No experiences found for these filters.
             </p>
-            <button onClick={fetchItineraries} className="btn-outline text-sm" style={{ touchAction: 'manipulation' }}>
-              Reload
+            <button
+              onClick={() => {
+                useItineraryStore.getState().setGenre('All');
+                useItineraryStore.getState().setLocation('All');
+                useItineraryStore.getState().setBudget(null);
+                useItineraryStore.getState().setSearch('');
+              }}
+              className="btn-outline text-sm"
+            >
+              Clear Filters
             </button>
           </div>
         )}
