@@ -34,6 +34,7 @@ export interface IPricingTier {
   persons: 1 | 2 | 4 | 6;
   totalPrice: number;   // flat total (not per-person)
   vehicle?: string;     // vehicle assigned for this group size
+  hotelIndex?: number;  // index into hotels[] for accommodation per group size
 }
 
 // ─── Hotel / Accommodation ────────────────────────────────────────────────────
@@ -42,7 +43,6 @@ export interface IHotel {
   name: string;
   rating: string;
   images: string[];
-  description?: string;
   contactNumber?: string;
 }
 

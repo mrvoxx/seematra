@@ -12,6 +12,7 @@ export interface IPricingTier {
   persons: 1 | 2 | 4 | 6;
   totalPrice: number;
   vehicle?: string;
+  hotelIndex?: number;
 }
 
 export interface IRoadmapPoint {
@@ -79,6 +80,7 @@ const PricingTierSchema = new Schema(
     persons: { type: Number, required: true, enum: [1, 2, 4, 6] },
     totalPrice: { type: Number, required: true, min: 0 },
     vehicle: { type: String },
+    hotelIndex: { type: Number, default: 0 },
   },
   { _id: false },
 );
@@ -88,7 +90,6 @@ const HotelSchema = new Schema(
     name: { type: String, required: true },
     rating: { type: String, required: true },
     images: [{ type: String }],
-    description: { type: String },
     contactNumber: { type: String },
   },
   { _id: false },

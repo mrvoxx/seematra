@@ -5,15 +5,22 @@ import toast from 'react-hot-toast';
 import { api } from '@/lib/services/api';
 
 const TIER_OPTIONS = [1, 2, 4, 6] as const;
+const TIER_LABELS: Record<number, string> = {
+  1: '1 Person (Solo)',
+  2: '2 Persons (Couple)',
+  4: '4 Persons (Group)',
+  6: '6 Persons (Group+)',
+};
 
 type PricingTier = {
   persons: 1 | 2 | 4 | 6;
   totalPrice: number;
-  vehicle: string;
+  vehicle: string;     // transport name for this group size
+  hotelIndex: number;  // which hotel from hotels[] for this group size (index)
 };
 
 const defaultTiers = (): PricingTier[] =>
-  TIER_OPTIONS.map((p) => ({ persons: p, totalPrice: 0, vehicle: '' }));
+  TIER_OPTIONS.map((p) => ({ persons: p, totalPrice: 0, vehicle: '', hotelIndex: 0 }));
 
 export default function ItineraryForm({
   onSuccess,
@@ -25,6 +32,17 @@ export default function ItineraryForm({
   const isEditing = Boolean(initial?._id);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showDescPreview, setShowDescPreview] = useState(false);
+
+  // Merge saved tiers with default structure (add hotelIndex if missing)
+  const mergeTiers = (saved: any[]): PricingTier[] => {
+    return TIER_OPTIONS.map((p) => {
+      const found = saved?.find((t: any) => t.persons === p);
+      return found
+        ? { persons: p, totalPrice: found.totalPrice ?? 0, vehicle: found.vehicle ?? '', hotelIndex: found.hotelIndex ?? 0 }
+        : { persons: p, totalPrice: 0, vehicle: '', hotelIndex: 0 };
+    });
+  };
 
   const [formData, setFormData] = useState({
     title: initial?.title ?? '',
@@ -36,7 +54,7 @@ export default function ItineraryForm({
     tags: (initial?.tags ?? []) as string[],
     inclusions: (initial?.inclusions ?? []) as string[],
     exclusions: (initial?.exclusions ?? []) as string[],
-    pricingTiers: (initial?.pricingTiers?.length ? initial.pricingTiers : defaultTiers()) as PricingTier[],
+    pricingTiers: mergeTiers(initial?.pricingTiers ?? []) as PricingTier[],
     vehicles: (initial?.vehicles ?? []) as any[],
     hotels: (initial?.hotels ?? []) as any[],
     roadmap: (initial?.roadmap ?? []) as any[],
@@ -110,7 +128,7 @@ export default function ItineraryForm({
       ...prev,
       hotels: [
         ...prev.hotels,
-        { name: '', rating: '3 Star', images: [], description: '', contactNumber: '' },
+        { name: '', rating: '3 Star', images: [], contactNumber: '' },
       ],
     }));
 
@@ -124,10 +142,12 @@ export default function ItineraryForm({
     e.preventDefault();
     setLoading(true);
     try {
-      // Filter tiers to only include ones with a price set
+      // Filter tiers to only include ones with a price set; strip hotelIndex before saving
       const payload = {
         ...formData,
-        pricingTiers: formData.pricingTiers.filter((t) => t.totalPrice > 0),
+        pricingTiers: formData.pricingTiers
+          .filter((t) => t.totalPrice > 0)
+          .map(({ hotelIndex, ...rest }) => rest),
       };
       if (isEditing) {
         await api.put(`/itineraries/${initial._id}`, payload);
@@ -166,10 +186,40 @@ export default function ItineraryForm({
           {formData.thumbnail && <img src={formData.thumbnail} alt="cover" className="h-16 rounded mt-1 mb-2 object-cover" />}
           <input type="file" accept="image/*" onChange={e => handleUpload(e, 'thumbnail')} disabled={uploading} className="input-field py-2" />
         </div>
+
+        {/* HTML Description with Preview */}
         <div className="md:col-span-2">
-          <label className="block text-sm font-bold mb-1">Description <span className="text-brand-text/40 font-normal">(HTML supported)</span></label>
-          <textarea required className="input-field h-24" placeholder="<p>Describe the experience…</p>" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-bold">
+              Description <span className="text-brand-text/40 font-normal">(HTML tags supported: &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;br&gt;, etc.)</span>
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowDescPreview(v => !v)}
+              className="text-xs font-bold text-primary hover:underline px-2 py-1 rounded-lg hover:bg-primary/10 transition-colors"
+            >
+              {showDescPreview ? '✏️ Edit' : '👁️ Preview HTML'}
+            </button>
+          </div>
+          {showDescPreview ? (
+            <div
+              className="prose dark:prose-invert max-w-none border border-brand-border dark:border-brand-border-dark rounded-xl p-4 bg-surface dark:bg-brand-card-dark min-h-[96px] text-sm"
+              dangerouslySetInnerHTML={{ __html: formData.description || '<p class="opacity-40 italic">Nothing to preview yet…</p>' }}
+            />
+          ) : (
+            <textarea
+              required
+              className="input-field h-28 font-mono text-sm"
+              placeholder="<p>Describe the experience…</p>&#10;<ul><li>Point 1</li><li>Point 2</li></ul>"
+              value={formData.description}
+              onChange={e => setFormData({...formData, description: e.target.value})}
+            />
+          )}
+          <p className="text-[11px] text-brand-text/40 mt-1 font-inter">
+            Tip: Use &lt;p&gt; for paragraphs, &lt;strong&gt; for bold, &lt;ul&gt;&lt;li&gt; for bullet lists, &lt;br/&gt; for line breaks.
+          </p>
         </div>
+
         <div className="md:col-span-2">
           <label className="block text-sm font-bold mb-1">Video URL <span className="text-brand-text/40 font-normal">(Instagram Reels / Facebook / YouTube) — Optional</span></label>
           <input type="text" className="input-field" placeholder="https://www.instagram.com/reel/..." value={formData.video} onChange={e => setFormData({...formData, video: e.target.value})} />
@@ -230,21 +280,47 @@ export default function ItineraryForm({
         </div>
       </div>
 
-      {/* ─── Pricing Tiers ─── */}
+      {/* ─── Group Pricing + Transport + Accommodation per tier ─── */}
       <div className="border-t border-brand-border dark:border-brand-border-dark pt-6">
-        <div className="mb-4">
-          <h3 className="font-bold font-outfit text-xl">Group Pricing</h3>
-          <p className="text-sm text-brand-text/50 mt-1">Set the <strong>total package price</strong> for each group size. Leave at ₹0 to use the base price above.</p>
+        <div className="mb-5">
+          <h3 className="font-bold font-outfit text-xl">Group Pricing, Transport & Accommodation</h3>
+          <p className="text-sm text-brand-text/50 mt-1">
+            Set the <strong>total package price</strong>, the <strong>assigned vehicle</strong>, and the <strong>hotel</strong> for each group size. Leave price at ₹0 to disable a tier.
+          </p>
         </div>
+
+        {/* Vehicle + Hotel reference strip */}
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          {/* Vehicles quick-ref */}
+          <div className="p-3 rounded-xl border border-dashed border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-brand-text/40 mb-2">Your Vehicles</p>
+            {formData.vehicles.length === 0
+              ? <p className="text-xs text-brand-text/30 italic">No vehicles added below yet.</p>
+              : formData.vehicles.map((v, i) => (
+                  <p key={i} className="text-xs font-bold text-primary">🚗 {v.name} {v.capacity ? `(Seats ${v.capacity})` : ''}</p>
+                ))}
+          </div>
+          {/* Hotels quick-ref */}
+          <div className="p-3 rounded-xl border border-dashed border-brand-border dark:border-brand-border-dark bg-surface/60 dark:bg-surface-dark/60">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-brand-text/40 mb-2">Your Hotels (by index)</p>
+            {formData.hotels.length === 0
+              ? <p className="text-xs text-brand-text/30 italic">No hotels added below yet.</p>
+              : formData.hotels.map((h, i) => (
+                  <p key={i} className="text-xs font-bold text-primary">🏨 #{i}: {h.name || <span className="text-brand-text/30">Unnamed</span>} {h.rating ? `· ${h.rating}` : ''}</p>
+                ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {formData.pricingTiers.map((tier, idx) => (
             <div key={tier.persons} className="p-4 rounded-xl border border-brand-border dark:border-brand-border-dark bg-surface/50 dark:bg-surface-dark/50">
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-4">
                 <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded-full">
-                  👤 × {tier.persons} {tier.persons === 1 ? 'Person' : 'Persons'}
+                  👤 {TIER_LABELS[tier.persons]}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-3">
+                {/* Price */}
                 <div>
                   <label className="text-xs font-bold block mb-1">Total Price (₹)</label>
                   <input
@@ -256,15 +332,52 @@ export default function ItineraryForm({
                     onChange={e => updateTier(idx, 'totalPrice', Number(e.target.value))}
                   />
                 </div>
+                {/* Vehicle for this group size */}
                 <div>
-                  <label className="text-xs font-bold block mb-1">Vehicle / Transport</label>
-                  <input
-                    type="text"
-                    className="input-field py-2 text-sm"
-                    placeholder="e.g. Innova Crysta"
-                    value={tier.vehicle}
-                    onChange={e => updateTier(idx, 'vehicle', e.target.value)}
-                  />
+                  <label className="text-xs font-bold block mb-1">
+                    🚗 Vehicle / Transport <span className="text-brand-text/40 font-normal">(type name exactly as added below)</span>
+                  </label>
+                  {formData.vehicles.length > 0 ? (
+                    <select
+                      className="input-field py-2 text-sm"
+                      value={tier.vehicle}
+                      onChange={e => updateTier(idx, 'vehicle', e.target.value)}
+                    >
+                      <option value="">— None / Not assigned —</option>
+                      {formData.vehicles.map((v, vi) => (
+                        <option key={vi} value={v.name}>{v.name} {v.capacity ? `(Seats ${v.capacity})` : ''}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      className="input-field py-2 text-sm"
+                      placeholder="e.g. Innova Crysta (add vehicles below first)"
+                      value={tier.vehicle}
+                      onChange={e => updateTier(idx, 'vehicle', e.target.value)}
+                    />
+                  )}
+                </div>
+                {/* Hotel for this group size */}
+                <div>
+                  <label className="text-xs font-bold block mb-1">
+                    🏨 Accommodation <span className="text-brand-text/40 font-normal">(assign hotel from list below)</span>
+                  </label>
+                  {formData.hotels.length > 0 ? (
+                    <select
+                      className="input-field py-2 text-sm"
+                      value={tier.hotelIndex}
+                      onChange={e => updateTier(idx, 'hotelIndex', Number(e.target.value))}
+                    >
+                      {formData.hotels.map((h, hi) => (
+                        <option key={hi} value={hi}>#{hi}: {h.name || 'Unnamed'} {h.rating ? `· ${h.rating}` : ''}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-xs text-brand-text/40 italic p-2 border border-dashed border-brand-border dark:border-brand-border-dark rounded-lg">
+                      Add hotels below first, then assign here.
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -275,7 +388,10 @@ export default function ItineraryForm({
       {/* ─── Vehicles ─── */}
       <div className="border-t border-brand-border dark:border-brand-border-dark pt-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold font-outfit text-xl">Vehicles / Transport</h3>
+          <div>
+            <h3 className="font-bold font-outfit text-xl">Vehicles / Transport</h3>
+            <p className="text-xs text-brand-text/50 mt-0.5">Define the vehicles available for this package. Assign them to group sizes above.</p>
+          </div>
           <button type="button" onClick={addVehicle} className="btn-secondary py-1 px-3 text-xs">+ Add Vehicle</button>
         </div>
         {formData.vehicles.length === 0 && (
@@ -287,7 +403,9 @@ export default function ItineraryForm({
               <div>
                 <label className="text-xs font-bold block mb-1">Vehicle Name</label>
                 <input className="input-field py-2 text-sm" placeholder="e.g. Innova Crysta / Tempo Traveller" value={v.name} onChange={e => {
-                  const arr = [...formData.vehicles]; arr[i] = {...arr[i], name: e.target.value}; setFormData({...formData, vehicles: arr});
+                  const arr = [...formData.vehicles]; arr[i] = {...arr[i], name: e.target.value};
+                  // Also update pricingTiers that reference old name
+                  setFormData({...formData, vehicles: arr});
                 }} />
               </div>
               <div>
@@ -313,7 +431,10 @@ export default function ItineraryForm({
       {/* ─── Accommodations ─── */}
       <div className="border-t border-brand-border dark:border-brand-border-dark pt-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold font-outfit text-xl">Accommodations</h3>
+          <div>
+            <h3 className="font-bold font-outfit text-xl">Accommodations</h3>
+            <p className="text-xs text-brand-text/50 mt-0.5">Add hotels for this package. Assign each to a group size in the pricing section above.</p>
+          </div>
           <button type="button" onClick={addHotel} className="btn-secondary py-1 px-3 text-xs">+ Add Hotel</button>
         </div>
         {formData.hotels.length === 0 && (
@@ -321,8 +442,14 @@ export default function ItineraryForm({
         )}
         {formData.hotels.map((h, i) => (
           <div key={i} className="p-4 border border-brand-border dark:border-brand-border-dark rounded-xl mb-4 bg-surface/50 dark:bg-surface-dark/50">
+            {/* Hotel index badge */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">🏨 Hotel #{i}</span>
+              <button type="button" onClick={() => setFormData(p => ({...p, hotels: p.hotels.filter((_, hi) => hi !== i)}))}
+                className="text-xs text-red-400 hover:text-red-600 font-bold transition-colors">Remove Hotel</button>
+            </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="col-span-2 lg:col-span-1">
+              <div className="col-span-2 lg:col-span-2">
                 <label className="text-xs font-bold block mb-1">Hotel Name</label>
                 <input required className="input-field py-2 text-sm" placeholder="e.g. The Himalayan Retreat" value={h.name} onChange={e => {
                   const arr = [...formData.hotels]; arr[i] = {...arr[i], name: e.target.value}; setFormData({...formData, hotels: arr});
@@ -330,23 +457,17 @@ export default function ItineraryForm({
               </div>
               <div>
                 <label className="text-xs font-bold block mb-1">Star Rating / Type</label>
-                <input required className="input-field py-2 text-sm" placeholder="e.g. 4 Star, Best Value" value={h.rating} onChange={e => {
+                <input required className="input-field py-2 text-sm" placeholder="e.g. 4 Star" value={h.rating} onChange={e => {
                   const arr = [...formData.hotels]; arr[i] = {...arr[i], rating: e.target.value}; setFormData({...formData, hotels: arr});
                 }} />
               </div>
-              <div>
+              <div className="col-span-2 lg:col-span-1">
                 <label className="text-xs font-bold block mb-1 relative group">
                   Contact Number <span className="text-red-400">🔒</span>
                   <div className="absolute left-0 bottom-full mb-1 w-48 p-2 bg-black text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">Visible to Admin ONLY</div>
                 </label>
-                <input type="text" className="input-field py-2 text-sm" placeholder="e.g. +91 9876543210" value={h.contactNumber} onChange={e => {
+                <input type="text" className="input-field py-2 text-sm" placeholder="+91 9876543210" value={h.contactNumber} onChange={e => {
                   const arr = [...formData.hotels]; arr[i] = {...arr[i], contactNumber: e.target.value}; setFormData({...formData, hotels: arr});
-                }} />
-              </div>
-              <div className="col-span-2 lg:col-span-3">
-                <label className="text-xs font-bold block mb-1">Hotel Description (optional)</label>
-                <textarea className="input-field py-2 text-sm h-16 mb-4" placeholder="Describe the hotel atmosphere or amenities..." value={h.description} onChange={e => {
-                  const arr = [...formData.hotels]; arr[i] = {...arr[i], description: e.target.value}; setFormData({...formData, hotels: arr});
                 }} />
               </div>
               <div className="col-span-2 lg:col-span-3">
@@ -366,10 +487,6 @@ export default function ItineraryForm({
                   </div>
                 )}
                 <input type="file" accept="image/*" onChange={e => handleUpload(e, 'hotels', i, 'images')} disabled={uploading} className="input-field py-1 text-sm" />
-              </div>
-              <div className="col-span-2 lg:col-span-3 flex justify-end">
-                <button type="button" onClick={() => setFormData(p => ({...p, hotels: p.hotels.filter((_, hi) => hi !== i)}))}
-                  className="text-xs text-red-400 hover:text-red-600 font-bold transition-colors">Remove Hotel</button>
               </div>
             </div>
           </div>

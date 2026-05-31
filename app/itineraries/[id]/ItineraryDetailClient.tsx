@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import { IItinerary } from '@/types';
-import { Clock, MapPin, CheckCircle, XCircle, Navigation, Hotel, Star, Users, Car, ChevronDown, LogIn } from 'lucide-react';
+import { Clock, MapPin, CheckCircle, XCircle, Navigation, Hotel, Star, Users, Car, ChevronDown, LogIn } from 'lucide-react';
 import Modal from '@/components/global/Modal';
 import PaymentModal from '@/components/global/PaymentModal';
 import RoadmapTimeline from '@/components/global/RoadmapTimeline';
@@ -223,7 +223,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
           <section className="mb-12">
             <h2 className="text-xl font-boldonse font-normal leading-snug mb-6 border-l-4 border-primary pl-4">Overview</h2>
             <div
-              className="prose dark:prose-invert max-w-none font-inter text-brand-text/80 dark:text-brand-text-dark/80"
+              className="iti-desc prose dark:prose-invert max-w-none"
               dangerouslySetInnerHTML={{ __html: itinerary.description }}
             />
             {/* Mobile Pricing Section */}
@@ -341,7 +341,10 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                   {pricingTiers.length > 0 ? (
                     <div className="grid grid-cols-2 gap-2">
                       {pricingTiers.map(tier => {
-                        const hotel = itinerary.hotels![0];
+                        // Use hotelIndex from tier if set, else fall back to hotel[0]
+                        const hotelIdx = (tier as any).hotelIndex ?? 0;
+                        const hotel = itinerary.hotels![hotelIdx] ?? itinerary.hotels![0];
+                        if (!hotel) return null;
                         const roomLabel = tier.persons === 1
                           ? '1 Single Room'
                           : tier.persons === 2
@@ -381,6 +384,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
                       })}
                     </div>
                   ) : (
+                    /* Fallback: show all hotels when no pricing tiers defined */
                     <div className="grid grid-cols-2 gap-2">
                       {itinerary.hotels.map((hotel, i) => (
                         <div key={i} className="card border border-brand-border dark:border-brand-border-dark flex flex-col overflow-hidden">

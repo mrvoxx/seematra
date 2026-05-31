@@ -285,3 +285,52 @@
 .scroll-container::-webkit-scrollbar {
   display: none;
 }
+
+/* ─── Itinerary HTML Description (prose override) ────────────────────────── */
+/* Ensures dangerouslySetInnerHTML description renders with brand colors */
+.iti-desc {
+  @apply text-brand-text/80 dark:text-brand-text-dark/80 font-poppins;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+.iti-desc p {
+  @apply mb-4;
+}
+
+.iti-desc strong, .iti-desc b {
+  @apply font-bold text-brand-text dark:text-brand-text-dark;
+}
+
+.iti-desc em, .iti-desc i {
+  @apply italic;
+}
+
+.iti-desc ul {
+  @apply list-disc pl-5 mb-4 space-y-1;
+}
+
+.iti-desc ol {
+  @apply list-decimal pl-5 mb-4 space-y-1;
+}
+
+.iti-desc li {
+  @apply text-brand-text/80 dark:text-brand-text-dark/80;
+}
+
+.iti-desc h2, .iti-desc h3, .iti-desc h4 {
+  @apply font-bold text-brand-text dark:text-brand-text-dark mb-2 mt-4;
+}
+
+.iti-desc h2 { @apply text-lg; }
+.iti-desc h3 { @apply text-base; }
+
+.iti-desc a {
+  @apply text-primary underline hover:opacity-80;
+}
+
+.iti-desc br {
+  display: block;
+  content: '';
+  margin-bottom: 0.5rem;
+}
