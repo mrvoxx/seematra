@@ -7,11 +7,11 @@ export default function SocialFAB() {
     <div className="fixed bottom-20 left-4 lg:bottom-6 lg:left-6 z-[60] flex flex-col gap-2 lg:gap-3 pointer-events-none">
       {/* YouTube */}
       <a
-        href="https://youtube.com"
+        href="https://youtube.com/@seematratravel"
         target="_blank"
         rel="noreferrer"
         className="w-10 h-10 lg:w-12 lg:h-12 bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 hover:-translate-y-1 transition-all duration-300 pointer-events-auto"
-        aria-label="Visit YouTube"
+        aria-label="Seematra on YouTube"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 lg:w-[22px] lg:h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/>

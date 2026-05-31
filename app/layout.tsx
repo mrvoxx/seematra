@@ -125,6 +125,7 @@ const organizationJsonLd = {
   sameAs: [
     'https://www.facebook.com/seematra',
     'https://www.instagram.com/seematra6?igsh=MTB4eGJlYTU5N2RkeA==',
+    'https://www.youtube.com/@seematratravel',
   ],
 };
 
