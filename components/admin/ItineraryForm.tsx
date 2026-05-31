@@ -142,12 +142,10 @@ export default function ItineraryForm({
     e.preventDefault();
     setLoading(true);
     try {
-      // Filter tiers to only include ones with a price set; strip hotelIndex before saving
+      // Filter tiers to only include ones with a price set; keep hotelIndex so hotel assignment is saved
       const payload = {
         ...formData,
-        pricingTiers: formData.pricingTiers
-          .filter((t) => t.totalPrice > 0)
-          .map(({ hotelIndex, ...rest }) => rest),
+        pricingTiers: formData.pricingTiers.filter((t) => t.totalPrice > 0),
       };
       if (isEditing) {
         await api.put(`/itineraries/${initial._id}`, payload);
