@@ -12,7 +12,7 @@ export default function Footer() {
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 group">
               <Image 
-                src="/logo.png" 
+                src="https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png" 
                 alt="Seematra Logo" 
                 width={150}
                 height={40}
