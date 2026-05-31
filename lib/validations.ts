@@ -49,6 +49,7 @@ export const PricingTierSchema = z.object({
   persons: z.union([z.literal(1), z.literal(2), z.literal(4), z.literal(6)]),
   totalPrice: z.number().min(0, 'Price must be positive'),
   vehicle: z.string().optional().or(z.literal('')),
+  hotelIndex: z.number().int().min(0).optional().default(0),
 });
 
 // ─── Hotel ────────────────────────────────────────────────────────────────────
@@ -57,7 +58,6 @@ export const HotelSchema = z.object({
   name: z.string().min(1, 'Hotel name is required'),
   rating: z.string().min(1, 'Rating is required (e.g. 4 Star, Best Value)'),
   images: z.array(z.string()).default([]),
-  description: z.string().optional(),
   contactNumber: z.string().optional(),
 });
 
