@@ -32,7 +32,9 @@ const boldonse = Boldonse({
 });
 
 // ─── Site-wide Metadata ───────────────────────────────────────────────────────
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://seematra.com';
+// Hardcoded to production domain — never rely on env vars for canonical/OG URLs
+const BASE_URL = 'https://seematra.com';
+const OG_IMAGE = 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1779136945/seematra/backgrounds/uttrakhand.jpg';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -73,7 +75,7 @@ export const metadata: Metadata = {
       'Book the best Uttarakhand itineraries online. Adventure, spiritual, family & luxury packages by Seematra — your trusted Himalayan travel partner.',
     images: [
       {
-        url: `${BASE_URL}/og-image.jpg`,
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
         alt: 'Seematra – Uttarakhand Travel Packages',
@@ -85,7 +87,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Seematra | Premium Uttarakhand Tour Packages',
     description: 'Book curated Himalayan adventures with Seematra. Adventure, spiritual, family & luxury Uttarakhand itineraries.',
-    images: [`${BASE_URL}/og-image.jpg`],
+    images: [OG_IMAGE],
     creator: '@seematra',
   },
 
@@ -94,9 +96,6 @@ export const metadata: Metadata = {
 
   manifest: '/manifest.json',
 
-  verification: {
-    google: 'your-google-site-verification-code', // Replace after verifying with Google Search Console
-  },
 };
 
 export const viewport = {

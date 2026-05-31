@@ -12,12 +12,15 @@ import { ItinerarySwiperSkeleton, BlogSwiperSkeleton } from '@/components/global
 import { ShieldCheck, Compass, MapPin, CheckCircle, MessageCircle } from 'lucide-react';
 import { IItinerary, IBlog } from '@/types';
 
-export const revalidate = 3600;
+export const revalidate = 60; // revalidate every 60s so stale empty cache clears quickly
 
 export default async function Home() {
-  await connectDB();
+  let rawItins: any[] = [], rawBlogs: any[] = [], rawReviews: any[] = [],
+      rawFamilyItins: any[] = [], rawCoupleItins: any[] = [], rawAllItins: any[] = [];
 
-  const [rawItins, rawBlogs, rawReviews, rawFamilyItins, rawCoupleItins, rawAllItins] = await Promise.all([
+  try {
+    await connectDB();
+    [rawItins, rawBlogs, rawReviews, rawFamilyItins, rawCoupleItins, rawAllItins] = await Promise.all([
     Itinerary.find({ isRecommended: true, active: true }).limit(6).lean() as any,
     Blog.find({ isRecommended: true }).limit(4).lean() as any,
     Review.find({ isHidden: false })
@@ -29,7 +32,11 @@ export default async function Home() {
     Itinerary.find({ active: true, $or: [{ genres: 'Family' }, { tags: { $in: ['Family', 'Kids'] } }] }).limit(6).lean() as any,
     Itinerary.find({ active: true, $or: [{ genres: 'Couple' }, { tags: { $in: ['Couple', 'Romantic'] } }] }).limit(6).lean() as any,
     Itinerary.find({ active: true }).sort({ createdAt: -1 }).limit(6).lean() as any,
-  ]);
+    ]);
+  } catch (err) {
+    console.error('[Home] DB fetch failed:', err);
+    // Arrays remain empty — page renders with fallback reviews only
+  }
 
   const recommendedItineraries = rawItins.map((it: any) => ({
     ...it,
