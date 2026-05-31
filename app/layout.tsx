@@ -89,14 +89,8 @@ export const metadata: Metadata = {
     creator: '@seematra',
   },
 
-  icons: {
-    icon: [
-      { url: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png', sizes: '16x16', type: 'image/png' },
-    ],
-    shortcut: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png',
-    apple: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png',
-  },
+  // favicon: app/icon.png is automatically picked up by Next.js App Router
+  // No need to specify icons manually when using the file convention
 
   manifest: '/manifest.json',
 
