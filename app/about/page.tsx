@@ -5,6 +5,7 @@ import { Heart, Star, Compass } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'About Seematra | Curating Himalayan Experiences',
   description: 'Learn about Seematra, your premier travel partner in Uttarakhand. Meet the experts behind our adventure, spiritual, and luxury tours.',
+  alternates: { canonical: 'https://seematra.com/about' },
 };
 
 export default function AboutPage() {
@@ -124,3 +125,4 @@ export default function AboutPage() {
     </div>
   );
 }
+

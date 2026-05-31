@@ -12,7 +12,8 @@ import { ItinerarySwiperSkeleton, BlogSwiperSkeleton } from '@/components/global
 import { ShieldCheck, Compass, MapPin, CheckCircle, MessageCircle } from 'lucide-react';
 import { IItinerary, IBlog } from '@/types';
 
-export const revalidate = 60; // revalidate every 60s so stale empty cache clears quickly
+export const dynamic = 'force-dynamic'; // always SSR fresh — DB data changes frequently
+export const revalidate = 0;
 
 export default async function Home() {
   let rawItins: any[] = [], rawBlogs: any[] = [], rawReviews: any[] = [],

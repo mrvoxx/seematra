@@ -6,6 +6,7 @@ import LoadingSpinner from '@/components/global/LoadingSpinner';
 export const metadata: Metadata = {
   title: 'Explore Itineraries | Seematra',
   description: 'Browse our curated catalog of Uttarakhand travel experiences across Adventure, Spiritual, Family, and Luxury genres.',
+  alternates: { canonical: 'https://seematra.com/itineraries' },
 };
 
 export default function ItinerariesPage() {
@@ -19,4 +20,5 @@ export default function ItinerariesPage() {
     </Suspense>
   );
 }
+
 

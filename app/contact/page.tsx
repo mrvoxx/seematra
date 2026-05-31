@@ -5,6 +5,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Contact Support | Seematra',
   description: 'Get in touch with the Seematra support team for any queries or assistance.',
+  alternates: { canonical: 'https://seematra.com/contact' },
 };
 
 export default function ContactPage() {
@@ -98,3 +99,4 @@ export default function ContactPage() {
     </div>
   );
 }
+

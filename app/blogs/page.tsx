@@ -6,11 +6,13 @@ import BlogExplorer from './BlogExplorer';
 import UnifiedHero from '@/components/global/UnifiedHero';
 
 export const metadata: Metadata = {
-  title: 'Travel Guides & Stories | Seematra',
+  title: 'Travel Guides & Blogs',
   description: 'Read our expert travel guides, itineraries, and stories about exploring Uttarakhand safely and beautifully.',
+  alternates: { canonical: 'https://seematra.com/blogs' },
 };
 
-export const revalidate = 1800; // ISR 30 mins
+export const dynamic = 'force-dynamic'; // always SSR fresh — DB data changes frequently
+export const revalidate = 0;
 
 export default async function BlogsPage() {
   await connectDB();

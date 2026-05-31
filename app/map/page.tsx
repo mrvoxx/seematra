@@ -9,6 +9,7 @@ import Itinerary from '@/models/Itinerary';
 export const metadata: Metadata = {
   title: 'Interactive Travel Map | Seematra',
   description: 'Explore Uttarakhand destinations on our interactive travel map. See pins for all our adventure, spiritual, and luxury tour packages.',
+  alternates: { canonical: 'https://seematra.com/map' },
 };
 
 export const revalidate = 3600; // SSG
@@ -74,3 +75,4 @@ export default async function MapPage() {
     </div>
   );
 }
+

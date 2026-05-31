@@ -63,7 +63,8 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
 
-  alternates: { canonical: BASE_URL },
+  // Root canonical for homepage — inner pages declare their own via metadata export
+  alternates: { canonical: 'https://seematra.com' },
 
   openGraph: {
     type: 'website',
