@@ -35,7 +35,7 @@ export default function ItineraryCard({ itinerary, priority = false, index = 0 }
       className="flex flex-col h-full"
     >
       {/* Thumbnail Container */}
-      <div className="relative h-44 lg:h-72 w-full shrink-0 overflow-hidden">
+      <div className="relative h-48 md:h-60 w-full shrink-0 overflow-hidden">
         <FavoriteButton itemId={itinerary._id as string} itemType="itinerary" />
         {itinerary.isRecommended && (
           <div className="absolute bottom-3 left-3 lg:bottom-4 lg:left-4 z-20 flex items-center gap-1.5 bg-accent/90 dark:bg-accent-dark/90 backdrop-blur-md text-white font-bold font-outfit text-[8px] lg:text-[10px] uppercase tracking-wider px-2 py-1 lg:px-3 lg:py-1.5 rounded-full shadow-xl border border-white/20 animate-pulse-subtle max-w-[45%] truncate">

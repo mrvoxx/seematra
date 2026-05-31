@@ -51,9 +51,9 @@ export default function GenreFilter() {
           <button
             key={label}
             onClick={() => setGenre(label)}
-            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-full font-outfit font-semibold text-xs transition-all duration-200 shrink-0 ${
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-full font-outfit font-semibold text-xs transition-colors duration-200 shrink-0 ${
               activeGenre === label
-                ? 'bg-primary text-white shadow-md scale-105'
+                ? 'bg-primary text-white shadow-md'
                 : 'bg-surface dark:bg-surface-dark text-brand-text/70 dark:text-brand-text-dark/70 hover:bg-primary/10 hover:text-primary border border-brand-border dark:border-brand-border-dark'
             }`}
           >

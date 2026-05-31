@@ -60,7 +60,7 @@ export default async function MapPage() {
               <span className="text-xs sm:text-sm text-white/80 uppercase tracking-wider font-medium">Curated Itineraries</span>
             </div>
             <div className="bg-white/5 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 shadow-xl hidden sm:block">
-              <span className="block text-xl sm:text-2xl font-outfit font-bold text-primary">200+</span>
+              <span className="block text-xl sm:text-2xl font-outfit font-bold text-primary">100+</span>
               <span className="text-xs sm:text-sm text-white/80 uppercase tracking-wider font-medium">Happy Travellers</span>
             </div>
           </div>
