@@ -91,11 +91,11 @@ export const metadata: Metadata = {
 
   icons: {
     icon: [
-      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.png', sizes: '16x16', type: 'image/png' },
+      { url: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png', sizes: '16x16', type: 'image/png' },
     ],
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    shortcut: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png',
+    apple: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png',
   },
 
   manifest: '/manifest.json',
@@ -117,7 +117,7 @@ const organizationJsonLd = {
   '@type': 'TravelAgency',
   name: 'Seematra',
   url: BASE_URL,
-  logo: `${BASE_URL}/logo.png`,
+  logo: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png',
   description: 'Premium Uttarakhand tour packages and travel itineraries by local Himalayan experts.',
   address: {
     '@type': 'PostalAddress',

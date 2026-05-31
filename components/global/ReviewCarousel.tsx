@@ -114,16 +114,25 @@ export default function ReviewCarousel({ reviews, direction = 'left', speed = 'n
                   </div>
                 </div>
 
-                {/* Stars */}
-                <div className="flex items-center gap-1 mb-3">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      size={12}
-                      fill={s <= review.rating ? '#F59E0B' : 'none'}
-                      className={s <= review.rating ? 'text-amber-400' : 'text-brand-border dark:text-brand-border-dark'}
-                    />
-                  ))}
+                {/* Stars — supports half ratings like 3.5, 4.5 */}
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[1, 2, 3, 4, 5].map((s) => {
+                    const full = s <= Math.floor(review.rating);
+                    const half = !full && s === Math.ceil(review.rating) && review.rating % 1 !== 0;
+                    return (
+                      <span key={s} className="relative inline-block" style={{ width: 13, height: 13 }}>
+                        {/* grey base */}
+                        <Star size={13} fill="none" className="text-brand-border dark:text-brand-border-dark absolute inset-0" />
+                        {full && <Star size={13} fill="#F59E0B" className="text-amber-400 absolute inset-0" />}
+                        {half && (
+                          <span className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
+                            <Star size={13} fill="#F59E0B" className="text-amber-400" />
+                          </span>
+                        )}
+                      </span>
+                    );
+                  })}
+                  <span className="text-[10px] font-bold text-brand-text/50 dark:text-brand-text-dark/50 ml-1">{review.rating}</span>
                 </div>
                 
                 {/* Comment */}
