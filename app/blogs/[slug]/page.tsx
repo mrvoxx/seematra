@@ -99,7 +99,7 @@ export default async function BlogDetailPage(props: Props) {
       {/* ══════════════════════════════════════════════════════════════
           CINEMATIC HERO — full viewport width, tall, dark-bottom
       ══════════════════════════════════════════════════════════════ */}
-      <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+      <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden mt-[54px] lg:mt-[64px]">
         {/* Background photo */}
         <img
           src={blog.thumbnail}
@@ -112,7 +112,7 @@ export default async function BlogDetailPage(props: Props) {
         />
 
         {/* ── Breadcrumb trail (top-left) ── */}
-        <div className="absolute top-5 left-4 sm:left-8 md:left-14 flex items-center gap-1.5 text-white/60 text-xs font-inter">
+        <div className="absolute top-6 left-4 sm:left-8 md:left-14 flex items-center gap-1.5 text-white/60 text-xs font-inter z-10">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <ChevronRight size={12} />
           <Link href="/blogs" className="hover:text-white transition-colors">Guides</Link>
