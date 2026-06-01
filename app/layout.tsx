@@ -133,6 +133,26 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <MobileBottomNav />
           <SocialFAB />
           <Toaster position="bottom-right" toastOptions={{ style: { marginBottom: '72px' } }} />
+          
+          {/* PWA Service Worker Registration */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').then(
+                      function(registration) {
+                        console.log('ServiceWorker registration successful');
+                      },
+                      function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                      }
+                    );
+                  });
+                }
+              `,
+            }}
+          />
         </AuthProvider>
       </body>
     </html>

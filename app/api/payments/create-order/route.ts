@@ -135,6 +135,15 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       disclaimerAccepted: disclaimerAccepted ?? false,
     });
 
+    // Fire and forget push notification to admins
+    import('@/lib/push').then(({ sendAdminPushNotification }) => {
+      sendAdminPushNotification(
+        'New Booking Pending',
+        `A user is attempting to book an itinerary (₹${totalAmount}). Payment is pending.`,
+        `/admin/bookings`
+      ).catch(console.error);
+    });
+
     // Labels for the payment screen
     const paymentLabels: Record<string, string> = {
       full:            'Full Payment',
