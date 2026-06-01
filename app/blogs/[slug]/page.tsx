@@ -5,7 +5,7 @@ import Blog from '@/models/Blog';
 import Itinerary from '@/models/Itinerary';
 import { IBlog, IItinerary } from '@/types';
 import { blogJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
-import { Calendar, User, BookOpen, ArrowRight } from 'lucide-react';
+import { Calendar, User, BookOpen, ArrowRight, Clock, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import TravelRoadmap from '@/components/global/TravelRoadmap';
 import Link from 'next/link';
@@ -58,7 +58,6 @@ export default async function BlogDetailPage(props: Props) {
   const rawBlog = await Blog.findOne({ slug: params.slug }).lean() as any;
   if (!rawBlog) notFound();
 
-  // Fetch linked itinerary if present
   let linkedItinerary: IItinerary | null = null;
   if (rawBlog.relatedItinerary) {
     const rawIt = await Itinerary.findById(rawBlog.relatedItinerary).lean() as any;
@@ -84,110 +83,176 @@ export default async function BlogDetailPage(props: Props) {
     tags: rawBlog.tags ?? [],
   } as IBlog;
 
-  const jsonLdArticle = blogJsonLd(blog, `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}`);
+  const jsonLdArticle   = blogJsonLd(blog, `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}`);
   const jsonLdBreadcrumb = breadcrumbJsonLd([
-    { name: 'Home', url: process.env.NEXT_PUBLIC_APP_URL ?? '/' },
+    { name: 'Home',           url: process.env.NEXT_PUBLIC_APP_URL ?? '/' },
     { name: 'Blogs & Guides', url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs` },
-    { name: blog.title, url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}` },
+    { name: blog.title,       url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}` },
   ]);
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
+      {/* ── Structured Data ── */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
-      {/* ─── Hero Image ─── */}
-      <div className="relative w-full h-[55vh] md:h-[65vh] overflow-hidden">
-        <img src={blog.thumbnail} alt={blog.title} className="w-full h-full object-cover scale-105" />
-        {/* Dark gradient — heavier at bottom so white title is always readable */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
-        {/* Title block at the bottom */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 md:px-14 pb-8 md:pb-12">
-          <div className="flex flex-wrap gap-2 mb-3">
-            {blog.tags.map(tag => (
-              <span key={tag} className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-md bg-white/15 border border-white/20 text-white">{tag}</span>
-            ))}
-          </div>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-outfit font-extrabold text-white leading-tight max-w-4xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}>
+      {/* ══════════════════════════════════════════════════════════════
+          CINEMATIC HERO — full viewport width, tall, dark-bottom
+      ══════════════════════════════════════════════════════════════ */}
+      <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+        {/* Background photo */}
+        <img
+          src={blog.thumbnail}
+          alt={blog.title}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Four-stop gradient: barely dark top → open mid → dark bottom */}
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.15) 65%, rgba(0,0,0,0.2) 100%)' }}
+        />
+
+        {/* ── Breadcrumb trail (top-left) ── */}
+        <div className="absolute top-5 left-4 sm:left-8 md:left-14 flex items-center gap-1.5 text-white/60 text-xs font-inter">
+          <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <ChevronRight size={12} />
+          <Link href="/blogs" className="hover:text-white transition-colors">Guides</Link>
+          <ChevronRight size={12} />
+          <span className="text-white/40 line-clamp-1 max-w-[160px]">{blog.title}</span>
+        </div>
+
+        {/* ── Title block — pinned to hero bottom ── */}
+        <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 md:px-14 pb-10 md:pb-14">
+          {/* Tag pills */}
+          {blog.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {blog.tags.map(tag => (
+                <span key={tag}
+                  className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full text-white"
+                  style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Main title — always white with shadow */}
+          <h1
+            className="text-2xl sm:text-3xl md:text-[2.6rem] lg:text-5xl font-outfit font-extrabold text-white leading-[1.15] max-w-4xl"
+            style={{ textShadow: '0 2px 24px rgba(0,0,0,0.7)' }}
+          >
             {blog.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 mt-3 text-white/70 text-xs font-inter">
-            <span className="flex items-center gap-1.5"><User size={12} /> {blog.author}</span>
+
+          {/* Author / date row */}
+          <div className="flex flex-wrap items-center gap-4 mt-4 text-white/65 text-xs font-inter">
+            <span className="flex items-center gap-1.5">
+              <User size={12} />
+              {blog.author}
+            </span>
+            <span className="w-px h-3 bg-white/30 hidden sm:block" />
             <span className="flex items-center gap-1.5">
               <Calendar size={12} />
-              <time dateTime={blog.publishedAt}>{format(new Date(blog.publishedAt), 'MMMM d, yyyy')}</time>
+              <time dateTime={blog.publishedAt}>
+                {format(new Date(blog.publishedAt), 'MMMM d, yyyy')}
+              </time>
             </span>
+            {linkedItinerary && (
+              <>
+                <span className="w-px h-3 bg-white/30 hidden sm:block" />
+                <span className="flex items-center gap-1.5">
+                  <Clock size={12} />
+                  {linkedItinerary.duration}
+                </span>
+              </>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ─── Floating Book Now — desktop only, fixed bottom-right ─── */}
+      {/* ══════════════════════════════════════════════════════════════
+          MOBILE STICKY CTA BAR (when linked itinerary exists)
+      ══════════════════════════════════════════════════════════════ */}
       {linkedItinerary && (
-        <>
-          {/* Desktop sticky card */}
-          <div className="hidden lg:flex fixed right-6 bottom-8 z-50 flex-col items-end gap-2">
-            <div className="flex flex-col bg-white dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark shadow-2xl rounded-2xl overflow-hidden w-[200px]">
-              {linkedItinerary.thumbnail && (
-                <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-24 object-cover" />
-              )}
-              <div className="p-3">
-                <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 mb-1">{linkedItinerary.title}</p>
-                <p className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">
-                  {linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
-                </p>
-              </div>
-            </div>
-            <Link
-              href={`/itineraries/${linkedItinerary._id}`}
-              className="flex items-center gap-2 bg-primary text-white font-outfit font-bold text-sm px-5 py-3 rounded-xl shadow-2xl shadow-primary/40 hover:shadow-primary/60 hover:scale-105 active:scale-95 transition-all duration-200 w-full justify-center"
-            >
-              <BookOpen size={15} /> Book This Trip <ArrowRight size={13} />
-            </Link>
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-50 flex items-center gap-3 px-4 py-3
+          bg-white/95 dark:bg-brand-card-dark/95 backdrop-blur-md
+          border-t border-brand-border dark:border-brand-border-dark
+          shadow-[0_-6px_30px_rgba(0,0,0,0.14)]">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-1">
+              {linkedItinerary.title}
+            </p>
+            <p className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">
+              {linkedItinerary.duration}
+              {' · '}
+              <span className="font-bold text-primary">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
+            </p>
           </div>
-
-          {/* Mobile sticky bottom bar */}
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-brand-card-dark border-t border-brand-border dark:border-brand-border-dark px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-4px_24px_rgba(0,0,0,0.12)]">
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-1">{linkedItinerary.title}</p>
-              <p className="text-[11px] text-brand-text/50">{linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span></p>
-            </div>
-            <Link
-              href={`/itineraries/${linkedItinerary._id}`}
-              className="shrink-0 flex items-center gap-1.5 bg-primary text-white font-outfit font-bold text-xs px-4 py-2.5 rounded-lg shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all"
-            >
-              <BookOpen size={13} /> Book Now
-            </Link>
-          </div>
-        </>
+          <Link
+            href={`/itineraries/${linkedItinerary._id}`}
+            style={{ backgroundColor: 'var(--color-primary-dyn)', color: '#fff' }}
+            className="shrink-0 flex items-center gap-1.5 text-xs font-outfit font-bold px-4 py-2.5 rounded-xl shadow-lg hover:opacity-90 transition-all"
+          >
+            <BookOpen size={13} /> Book Now
+          </Link>
+        </div>
       )}
 
-      {/*
-        SHARED LAYOUT SHELL
-        clamp(16px, 5vw, 80px) → 92-95% width on mobile, 75-85% on large desktop
-        All inner sections share this same horizontal rhythm.
-      */}
-      {/* Add bottom padding on mobile to clear the sticky CTA bar */}
-      <div className="w-full py-10 md:py-16 px-4 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 pb-24 lg:pb-16">
-        {/* ─── 2-column: Article + Sidebar ─── */}
-        <div className="flex flex-col lg:flex-row gap-10 xl:gap-14">
+      {/* ══════════════════════════════════════════════════════════════
+          DESKTOP FLOATING BOOK-NOW CARD (right side, sticky)
+      ══════════════════════════════════════════════════════════════ */}
+      {linkedItinerary && (
+        <div className="hidden lg:flex fixed right-6 bottom-8 z-50 flex-col gap-0 w-[210px] rounded-2xl overflow-hidden shadow-2xl border border-brand-border dark:border-brand-border-dark">
+          {linkedItinerary.thumbnail && (
+            <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-[115px] object-cover" />
+          )}
+          <div className="bg-white dark:bg-brand-card-dark px-3 pt-2.5 pb-1">
+            <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 mb-1 leading-snug">
+              {linkedItinerary.title}
+            </p>
+            <p className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">
+              {linkedItinerary.duration}
+              {' · '}
+              <span className="font-bold text-primary">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
+            </p>
+          </div>
+          <Link
+            href={`/itineraries/${linkedItinerary._id}`}
+            style={{ backgroundColor: 'var(--color-primary-dyn)', color: '#fff' }}
+            className="w-full flex items-center justify-center gap-2 py-3 font-outfit font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
+          >
+            <BookOpen size={14} /> Book This Trip <ArrowRight size={13} />
+          </Link>
+        </div>
+      )}
 
-          {/* LEFT: Main article */}
+      {/* ══════════════════════════════════════════════════════════════
+          MAIN CONTENT AREA
+          • px scales: 16px mobile → 56px desktop → 80px 2xl
+          • pb-24 lg:pb-12 clears the mobile sticky CTA
+      ══════════════════════════════════════════════════════════════ */}
+      <div className="w-full px-4 sm:px-8 md:px-10 lg:px-14 xl:px-20 2xl:px-24 pt-10 pb-28 lg:pb-16">
+
+        {/* ── 2-column grid: 70% article + 30% sidebar ── */}
+        <div className="flex flex-col lg:flex-row gap-10 xl:gap-16">
+
+          {/* ════════ LEFT COLUMN — ARTICLE ════════ */}
           <article className="flex-1 min-w-0">
 
+            {/* HTML blog content */}
             {blog.content && (
               <BlogContent
                 html={blog.content}
-                className="blog-article-content w-full text-brand-text/85 dark:text-brand-text-dark/85 font-inter text-base md:text-[1.05rem] leading-[1.85]"
+                className="blog-article-content w-full font-inter text-[0.975rem] md:text-base leading-[1.9] text-brand-text/85 dark:text-brand-text-dark/85"
               />
             )}
 
+            {/* Legacy section blocks */}
             {blog.sections && blog.sections.length > 0 && (
-              <div className="mt-14 space-y-16">
+              <div className="mt-14 space-y-14">
                 {blog.sections.map((section, idx) => (
-                  <section key={idx} className="space-y-6">
+                  <section key={idx} className="space-y-5">
                     {section.header && (
-                      <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark border-b-2 border-primary/20 pb-2">
+                      <h2 className="text-xl md:text-2xl font-outfit font-bold text-brand-text dark:text-brand-text-dark pb-2 border-b border-brand-border dark:border-brand-border-dark">
                         {section.header}
                       </h2>
                     )}
@@ -195,11 +260,11 @@ export default async function BlogDetailPage(props: Props) {
                       <img
                         src={section.image}
                         alt={section.header || `Section ${idx + 1}`}
-                        className="w-full rounded-2xl object-cover max-h-[560px]"
+                        className="w-full rounded-2xl object-cover max-h-[500px]"
                       />
                     )}
                     {section.paragraph && (
-                      <p className="font-inter text-brand-text/80 dark:text-brand-text-dark/80 leading-[1.85] text-base md:text-lg whitespace-pre-wrap">
+                      <p className="font-inter text-brand-text/80 dark:text-brand-text-dark/80 leading-[1.9] text-base whitespace-pre-wrap">
                         {section.paragraph}
                       </p>
                     )}
@@ -208,19 +273,22 @@ export default async function BlogDetailPage(props: Props) {
               </div>
             )}
 
+            {/* FAQ accordion */}
             {blog.faqs && blog.faqs.length > 0 && (
-              <div className="mt-16 border-t-2 border-brand-border dark:border-brand-border-dark pt-12">
-                <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark mb-8">
+              <div className="mt-16 pt-12 border-t border-brand-border dark:border-brand-border-dark">
+                <h2 className="text-xl md:text-2xl font-outfit font-bold text-brand-text dark:text-brand-text-dark mb-6">
                   Frequently Asked Questions
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {blog.faqs.map((faq, idx) => (
-                    <details key={idx} className="group bg-surface/50 dark:bg-surface-dark/50 border border-brand-border dark:border-brand-border-dark rounded-xl overflow-hidden">
-                      <summary className="flex items-center justify-between p-5 cursor-pointer font-outfit font-bold text-base md:text-lg text-brand-text dark:text-brand-text-dark select-none">
-                        {faq.question}
-                        <span className="text-primary transform group-open:rotate-180 transition-transform duration-300 shrink-0 ml-3">▼</span>
+                    <details key={idx}
+                      className="group border border-brand-border dark:border-brand-border-dark rounded-xl overflow-hidden bg-brand-card dark:bg-brand-card-dark"
+                    >
+                      <summary className="flex items-center justify-between px-5 py-4 cursor-pointer font-outfit font-semibold text-sm md:text-base text-brand-text dark:text-brand-text-dark select-none list-none">
+                        <span>{faq.question}</span>
+                        <span className="text-primary ml-3 shrink-0 transform group-open:rotate-180 transition-transform duration-300">▾</span>
                       </summary>
-                      <div className="px-5 pb-5 text-brand-text/80 dark:text-brand-text-dark/80 font-inter leading-relaxed text-sm md:text-base whitespace-pre-wrap">
+                      <div className="px-5 pb-5 text-brand-text/75 dark:text-brand-text-dark/75 font-inter text-sm leading-relaxed whitespace-pre-wrap border-t border-brand-border dark:border-brand-border-dark pt-3">
                         {faq.answer}
                       </div>
                     </details>
@@ -231,38 +299,64 @@ export default async function BlogDetailPage(props: Props) {
 
           </article>
 
-          {/* RIGHT: Sticky Sidebar */}
-          <aside className="w-full lg:w-[300px] xl:w-[340px] 2xl:w-[380px] shrink-0">
-            <div className="sticky top-28 space-y-10">
+          {/* ════════ RIGHT COLUMN — SIDEBAR ════════ */}
+          <aside className="w-full lg:w-[280px] xl:w-[300px] 2xl:w-[320px] shrink-0">
+            <div className="lg:sticky lg:top-24 space-y-8">
+
+              {/* Social video (if present) */}
               {blog.videoUrl && (
-                <div className="animate-fade-left">
-                  <h3 className="font-outfit font-bold text-xl mb-4 border-l-4 border-primary pl-3">Watch Experience</h3>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-brand-text/40 dark:text-brand-text-dark/40 mb-3 pl-0.5">
+                    Watch
+                  </p>
                   <SocialVideoEmbed url={blog.videoUrl} />
                 </div>
               )}
+
+              {/* Recommendations */}
               <SidebarRecommendations currentBlogId={blog._id} />
+
             </div>
           </aside>
 
         </div>
 
-        {/* Roadmap — same shell, below 2-col */}
+        {/* ── Itinerary Roadmap (full width, below 2-col) ── */}
         {linkedItinerary && linkedItinerary.roadmap.length > 0 && (
-          <div className="mt-16 border-t-2 border-brand-border dark:border-brand-border-dark pt-12">
+          <div className="mt-20 pt-14 border-t border-brand-border dark:border-brand-border-dark">
             <TravelRoadmap
               roadmap={linkedItinerary.roadmap}
               itineraryTitle={linkedItinerary.title}
             />
-            <div className="text-center mt-16">
-              <p className="text-brand-text/60 dark:text-brand-text-dark/60 font-inter mb-4">Ready to experience this journey?</p>
-              <Link
-                href={`/itineraries/${linkedItinerary._id}`}
-                className="btn-primary text-lg px-10 py-4 inline-flex items-center gap-3"
-              >
-                <BookOpen size={20} />
-                Book This Itinerary · ₹{linkedItinerary.price?.toLocaleString('en-IN')}
-                <ArrowRight size={18} />
-              </Link>
+            {/* CTA banner below roadmap */}
+            <div className="mt-14 rounded-2xl overflow-hidden relative">
+              {linkedItinerary.thumbnail && (
+                <img
+                  src={linkedItinerary.thumbnail}
+                  alt={linkedItinerary.title}
+                  className="w-full h-52 md:h-64 object-cover"
+                />
+              )}
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.4) 100%)' }} />
+              <div className="absolute inset-0 flex flex-col items-start justify-center px-8 md:px-14">
+                <p className="text-white/60 text-xs font-inter mb-2 uppercase tracking-widest">Featured Journey</p>
+                <h3 className="text-white font-outfit font-extrabold text-xl md:text-2xl mb-1 max-w-lg leading-snug">
+                  {linkedItinerary.title}
+                </h3>
+                <p className="text-white/70 text-sm font-inter mb-5">
+                  {linkedItinerary.duration} · Starting from{' '}
+                  <span className="text-white font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
+                </p>
+                <Link
+                  href={`/itineraries/${linkedItinerary._id}`}
+                  style={{ backgroundColor: 'var(--color-primary-dyn)', color: '#fff' }}
+                  className="inline-flex items-center gap-2.5 font-outfit font-bold text-sm md:text-base px-7 py-3.5 rounded-xl shadow-xl hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                >
+                  <BookOpen size={17} />
+                  Book This Itinerary
+                  <ArrowRight size={15} />
+                </Link>
+              </div>
             </div>
           </div>
         )}
