@@ -23,7 +23,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const data = await Blog.findOne({ slug: params.slug }).lean() as any;
   if (!data) return { title: 'Not Found | Seematra' };
 
-  const description = data.content.substring(0, 160).replace(/<[^>]*>?/gm, '');
+  const description = (data.content || '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]*>/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160);
 
   return {
     title: `${data.title} – Seematra Uttarakhand Travel Guides`,
@@ -138,7 +144,7 @@ export default async function BlogDetailPage(props: Props) {
       )}
 
       {/* ─── Main 2-column layout ─── */}
-      <div className="container mx-auto px-4 lg:px-8 py-12 max-w-7xl flex flex-col lg:flex-row gap-12">
+      <div className="w-full px-4 md:px-10 xl:px-20 py-14 flex flex-col lg:flex-row gap-10 xl:gap-16">
 
         {/* ── Left: Article content ── */}
         <article className="flex-1 min-w-0">
@@ -203,7 +209,7 @@ export default async function BlogDetailPage(props: Props) {
         </article>
 
         {/* ── Right: Sticky sidebar ── */}
-        <aside className="w-full lg:w-[340px] shrink-0">
+        <aside className="w-full lg:w-[320px] xl:w-[360px] shrink-0">
           <div className="sticky top-28 space-y-10">
             {/* Social Video Embed */}
             {blog.videoUrl && (

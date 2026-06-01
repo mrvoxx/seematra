@@ -15,8 +15,15 @@ interface Props {
 }
 
 export default function BlogCard({ blog, index = 0 }: Props) {
-  // Strip HTML for excerpt
-  const excerpt = (blog.content ?? '').replace(/<[^>]*>?/gm, '').slice(0, 150) + '...';
+  // Strip HTML and CSS for clean excerpt
+  const rawText = (blog.content ?? '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')  // remove <style>…</style> blocks
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // remove <script>…</script> blocks
+    .replace(/<[^>]*>/gm, '')                          // strip remaining HTML tags
+    .replace(/&[a-z]+;/gi, ' ')                        // strip HTML entities
+    .replace(/\s+/g, ' ')                              // collapse whitespace
+    .trim();
+  const excerpt = rawText.length > 140 ? rawText.slice(0, 140) + '…' : rawText;
 
   return (
     <Link href={`/blogs/${blog.slug}`} className="card group flex flex-col h-full overflow-hidden relative block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
