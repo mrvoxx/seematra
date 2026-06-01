@@ -98,7 +98,7 @@ export default async function BlogDetailPage(props: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
       {/* ─── Hero Image ─── */}
-      <div className="relative w-full h-[50vh] overflow-hidden">
+      <div className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
         <img src={blog.thumbnail} alt={blog.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-surface dark:to-surface-dark" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pb-8">
@@ -107,7 +107,7 @@ export default async function BlogDetailPage(props: Props) {
               <span key={tag} className="badge-primary backdrop-blur-sm">{tag}</span>
             ))}
           </div>
-          <h1 className="text-3xl md:text-5xl font-outfit font-extrabold text-white drop-shadow-lg max-w-4xl leading-tight">
+          <h1 className="text-3xl md:text-5xl font-outfit font-extrabold text-white drop-shadow-lg max-w-5xl leading-tight">
             {blog.title}
           </h1>
           <div className="flex items-center gap-6 mt-4 text-white/80 text-sm font-inter">
@@ -143,92 +143,95 @@ export default async function BlogDetailPage(props: Props) {
         </div>
       )}
 
-      {/* ─── Main 2-column layout ─── */}
-      <div className="w-full px-4 md:px-10 xl:px-20 py-14 flex flex-col lg:flex-row gap-10 xl:gap-16">
+      {/*
+        SHARED LAYOUT SHELL
+        clamp(16px, 5vw, 80px) → 92-95% width on mobile, 75-85% on large desktop
+        All inner sections share this same horizontal rhythm.
+      */}
+      <div
+        className="w-full py-12 md:py-16"
+        style={{ paddingLeft: 'clamp(16px, 5vw, 80px)', paddingRight: 'clamp(16px, 5vw, 80px)' }}
+      >
+        {/* ─── 2-column: Article + Sidebar ─── */}
+        <div className="flex flex-col lg:flex-row gap-10 xl:gap-14">
 
-        {/* ── Left: Article content ── */}
-        <article className="flex-1 min-w-0">
+          {/* LEFT: Main article */}
+          <article className="flex-1 min-w-0">
 
-          {/* HTML Content */}
-          {blog.content && (
-            <BlogContent
-              html={blog.content}
-              className="prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none font-inter text-brand-text/80 dark:text-brand-text-dark/80 prose-headings:font-outfit prose-headings:font-bold prose-headings:text-primary prose-strong:text-primary prose-img:rounded-xl prose-a:text-primary hover:prose-a:text-primary-dark"
-            />
-          )}
+            {blog.content && (
+              <BlogContent
+                html={blog.content}
+                className="blog-article-content w-full text-brand-text/85 dark:text-brand-text-dark/85 font-inter text-base md:text-[1.05rem] leading-[1.85]"
+              />
+            )}
 
-          {/* Dynamic Sections */}
-          {blog.sections && blog.sections.length > 0 && (
-            <div className="mt-12 space-y-16">
-              {blog.sections.map((section, idx) => (
-                <section key={idx} className="space-y-6">
-                  {section.header && (
-                    <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark">
-                      {section.header}
-                    </h2>
-                  )}
-                  {section.image && (
-                    <img
-                      src={section.image}
-                      alt={section.header || `Section ${idx + 1}`}
-                      className="w-full rounded-2xl object-cover max-h-[500px]"
-                    />
-                  )}
-                  {section.paragraph && (
-                    <p className="font-inter text-brand-text/80 dark:text-brand-text-dark/80 leading-relaxed text-lg whitespace-pre-wrap">
-                      {section.paragraph}
-                    </p>
-                  )}
-                </section>
-              ))}
-            </div>
-          )}
-
-          {/* Dynamic FAQs */}
-          {blog.faqs && blog.faqs.length > 0 && (
-            <div className="mt-16 border-t border-brand-border dark:border-brand-border-dark pt-12">
-              <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark mb-8">
-                Frequently Asked Questions
-              </h2>
-              <div className="space-y-4">
-                {blog.faqs.map((faq, idx) => (
-                  <details key={idx} className="group bg-surface/50 dark:bg-surface-dark/50 border border-brand-border dark:border-brand-border-dark rounded-xl overflow-hidden">
-                    <summary className="flex items-center justify-between p-5 cursor-pointer font-outfit font-bold text-lg text-brand-text dark:text-brand-text-dark select-none">
-                      {faq.question}
-                      <span className="text-primary transform group-open:rotate-180 transition-transform duration-300">▼</span>
-                    </summary>
-                    <div className="p-5 pt-0 text-brand-text/80 dark:text-brand-text-dark/80 font-inter leading-relaxed whitespace-pre-wrap">
-                      {faq.answer}
-                    </div>
-                  </details>
+            {blog.sections && blog.sections.length > 0 && (
+              <div className="mt-14 space-y-16">
+                {blog.sections.map((section, idx) => (
+                  <section key={idx} className="space-y-6">
+                    {section.header && (
+                      <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark border-b-2 border-primary/20 pb-2">
+                        {section.header}
+                      </h2>
+                    )}
+                    {section.image && (
+                      <img
+                        src={section.image}
+                        alt={section.header || `Section ${idx + 1}`}
+                        className="w-full rounded-2xl object-cover max-h-[560px]"
+                      />
+                    )}
+                    {section.paragraph && (
+                      <p className="font-inter text-brand-text/80 dark:text-brand-text-dark/80 leading-[1.85] text-base md:text-lg whitespace-pre-wrap">
+                        {section.paragraph}
+                      </p>
+                    )}
+                  </section>
                 ))}
               </div>
-            </div>
-          )}
+            )}
 
-        </article>
-
-        {/* ── Right: Sticky sidebar ── */}
-        <aside className="w-full lg:w-[320px] xl:w-[360px] shrink-0">
-          <div className="sticky top-28 space-y-10">
-            {/* Social Video Embed */}
-            {blog.videoUrl && (
-              <div className="animate-fade-left">
-                <h3 className="font-outfit font-bold text-xl mb-4 border-l-4 border-primary pl-3">Watch Experience</h3>
-                <SocialVideoEmbed url={blog.videoUrl} />
+            {blog.faqs && blog.faqs.length > 0 && (
+              <div className="mt-16 border-t-2 border-brand-border dark:border-brand-border-dark pt-12">
+                <h2 className="text-2xl md:text-3xl font-outfit font-bold text-brand-text dark:text-brand-text-dark mb-8">
+                  Frequently Asked Questions
+                </h2>
+                <div className="space-y-3">
+                  {blog.faqs.map((faq, idx) => (
+                    <details key={idx} className="group bg-surface/50 dark:bg-surface-dark/50 border border-brand-border dark:border-brand-border-dark rounded-xl overflow-hidden">
+                      <summary className="flex items-center justify-between p-5 cursor-pointer font-outfit font-bold text-base md:text-lg text-brand-text dark:text-brand-text-dark select-none">
+                        {faq.question}
+                        <span className="text-primary transform group-open:rotate-180 transition-transform duration-300 shrink-0 ml-3">▼</span>
+                      </summary>
+                      <div className="px-5 pb-5 text-brand-text/80 dark:text-brand-text-dark/80 font-inter leading-relaxed text-sm md:text-base whitespace-pre-wrap">
+                        {faq.answer}
+                      </div>
+                    </details>
+                  ))}
+                </div>
               </div>
             )}
-            {/* Sidebar Recommendations */}
-            <SidebarRecommendations currentBlogId={blog._id} />
-          </div>
-        </aside>
 
-      </div>
+          </article>
 
-      {/* ─── Animated Roadmap (full width, below 2-col) ─── */}
-      {linkedItinerary && linkedItinerary.roadmap.length > 0 && (
-        <div className="container mx-auto px-4 lg:px-8 pb-16 max-w-5xl">
-          <div className="border-t border-brand-border dark:border-brand-border-dark pt-12">
+          {/* RIGHT: Sticky Sidebar */}
+          <aside className="w-full lg:w-[300px] xl:w-[340px] 2xl:w-[380px] shrink-0">
+            <div className="sticky top-28 space-y-10">
+              {blog.videoUrl && (
+                <div className="animate-fade-left">
+                  <h3 className="font-outfit font-bold text-xl mb-4 border-l-4 border-primary pl-3">Watch Experience</h3>
+                  <SocialVideoEmbed url={blog.videoUrl} />
+                </div>
+              )}
+              <SidebarRecommendations currentBlogId={blog._id} />
+            </div>
+          </aside>
+
+        </div>
+
+        {/* Roadmap — same shell, below 2-col */}
+        {linkedItinerary && linkedItinerary.roadmap.length > 0 && (
+          <div className="mt-16 border-t-2 border-brand-border dark:border-brand-border-dark pt-12">
             <TravelRoadmap
               roadmap={linkedItinerary.roadmap}
               itineraryTitle={linkedItinerary.title}
@@ -245,9 +248,9 @@ export default async function BlogDetailPage(props: Props) {
               </Link>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
     </>
   );
 }
-

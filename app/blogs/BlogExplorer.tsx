@@ -21,7 +21,7 @@ export default function BlogExplorer({ initialBlogs }: Props) {
   }, [initialBlogs, searchQuery]);
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-12">
+    <div className="blog-listing-grid py-12">
       {/* Search Bar */}
       <div className="animate-fade-up mb-10 z-20 relative max-w-md mx-auto lg:mx-0 lg:ml-auto">
         <div className="relative">
@@ -39,7 +39,7 @@ export default function BlogExplorer({ initialBlogs }: Props) {
       </div>
 
       {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-up">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 animate-fade-up">
           {filtered.map((blog) => (
             <BlogCard key={blog.slug} blog={blog} />
           ))}
