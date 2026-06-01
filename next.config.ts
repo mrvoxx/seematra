@@ -11,7 +11,7 @@ const CSP = [
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' https://fonts.gstatic.com`,
   `img-src * data: blob: 'unsafe-inline'`,
-  `connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://api.msg91.com`,
+  `connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://api.msg91.com https://res.cloudinary.com https://*.tile.openstreetmap.org`,
   `frame-src https://api.razorpay.com https://checkout.razorpay.com`,
   `object-src 'none'`,
   `base-uri 'self'`,
