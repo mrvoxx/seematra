@@ -98,49 +98,68 @@ export default async function BlogDetailPage(props: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
       {/* ─── Hero Image ─── */}
-      <div className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
-        <img src={blog.thumbnail} alt={blog.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-surface dark:to-surface-dark" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pb-8">
-          <div className="flex flex-wrap gap-2 justify-center mb-4">
+      <div className="relative w-full h-[55vh] md:h-[65vh] overflow-hidden">
+        <img src={blog.thumbnail} alt={blog.title} className="w-full h-full object-cover scale-105" />
+        {/* Dark gradient — heavier at bottom so white title is always readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+        {/* Title block at the bottom */}
+        <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 md:px-14 pb-8 md:pb-12">
+          <div className="flex flex-wrap gap-2 mb-3">
             {blog.tags.map(tag => (
-              <span key={tag} className="badge-primary backdrop-blur-sm">{tag}</span>
+              <span key={tag} className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-md bg-white/15 border border-white/20 text-white">{tag}</span>
             ))}
           </div>
-          <h1 className="text-3xl md:text-5xl font-outfit font-extrabold text-white drop-shadow-lg max-w-5xl leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-outfit font-extrabold text-white leading-tight max-w-4xl" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}>
             {blog.title}
           </h1>
-          <div className="flex items-center gap-6 mt-4 text-white/80 text-sm font-inter">
-            <span className="flex items-center gap-1.5"><User size={14} /> {blog.author}</span>
+          <div className="flex flex-wrap items-center gap-4 mt-3 text-white/70 text-xs font-inter">
+            <span className="flex items-center gap-1.5"><User size={12} /> {blog.author}</span>
             <span className="flex items-center gap-1.5">
-              <Calendar size={14} />
+              <Calendar size={12} />
               <time dateTime={blog.publishedAt}>{format(new Date(blog.publishedAt), 'MMMM d, yyyy')}</time>
             </span>
           </div>
         </div>
       </div>
 
-      {/* ─── Floating Book Now (fixed, right side) ─── */}
+      {/* ─── Floating Book Now — desktop only, fixed bottom-right ─── */}
       {linkedItinerary && (
-        <div className="fixed right-4 md:right-8 bottom-8 z-50 flex flex-col items-end gap-3">
-          <div className="hidden md:flex flex-col items-end gap-1 bg-surface dark:bg-surface-dark border border-brand-border dark:border-brand-border-dark shadow-xl rounded-2xl p-4 max-w-[220px]">
-            {linkedItinerary.thumbnail && (
-              <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-24 object-cover rounded-xl mb-2" />
-            )}
-            <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 text-right">{linkedItinerary.title}</p>
-            <p className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 text-right">
-              {linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
-            </p>
+        <>
+          {/* Desktop sticky card */}
+          <div className="hidden lg:flex fixed right-6 bottom-8 z-50 flex-col items-end gap-2">
+            <div className="flex flex-col bg-white dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark shadow-2xl rounded-2xl overflow-hidden w-[200px]">
+              {linkedItinerary.thumbnail && (
+                <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-24 object-cover" />
+              )}
+              <div className="p-3">
+                <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 mb-1">{linkedItinerary.title}</p>
+                <p className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">
+                  {linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
+                </p>
+              </div>
+            </div>
+            <Link
+              href={`/itineraries/${linkedItinerary._id}`}
+              className="flex items-center gap-2 bg-primary text-white font-outfit font-bold text-sm px-5 py-3 rounded-xl shadow-2xl shadow-primary/40 hover:shadow-primary/60 hover:scale-105 active:scale-95 transition-all duration-200 w-full justify-center"
+            >
+              <BookOpen size={15} /> Book This Trip <ArrowRight size={13} />
+            </Link>
           </div>
-          <Link
-            href={`/itineraries/${linkedItinerary._id}`}
-            className="flex items-center gap-2 bg-primary text-surface px-6 py-3.5 rounded-full font-outfit font-bold shadow-xl shadow-primary/30 hover:bg-primary/90 hover:scale-105 transition-all duration-200 text-sm"
-          >
-            <BookOpen size={16} />
-            Book Now
-            <ArrowRight size={14} />
-          </Link>
-        </div>
+
+          {/* Mobile sticky bottom bar */}
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-brand-card-dark border-t border-brand-border dark:border-brand-border-dark px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-4px_24px_rgba(0,0,0,0.12)]">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-1">{linkedItinerary.title}</p>
+              <p className="text-[11px] text-brand-text/50">{linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span></p>
+            </div>
+            <Link
+              href={`/itineraries/${linkedItinerary._id}`}
+              className="shrink-0 flex items-center gap-1.5 bg-primary text-white font-outfit font-bold text-xs px-4 py-2.5 rounded-lg shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all"
+            >
+              <BookOpen size={13} /> Book Now
+            </Link>
+          </div>
+        </>
       )}
 
       {/*
@@ -148,10 +167,8 @@ export default async function BlogDetailPage(props: Props) {
         clamp(16px, 5vw, 80px) → 92-95% width on mobile, 75-85% on large desktop
         All inner sections share this same horizontal rhythm.
       */}
-      <div
-        className="w-full py-12 md:py-16"
-        style={{ paddingLeft: 'clamp(16px, 5vw, 80px)', paddingRight: 'clamp(16px, 5vw, 80px)' }}
-      >
+      {/* Add bottom padding on mobile to clear the sticky CTA bar */}
+      <div className="w-full py-10 md:py-16 px-4 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 pb-24 lg:pb-16">
         {/* ─── 2-column: Article + Sidebar ─── */}
         <div className="flex flex-col lg:flex-row gap-10 xl:gap-14">
 

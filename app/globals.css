@@ -356,6 +356,28 @@
 .blog-article-content {
   width: 100%;
   max-width: none;
+  /* Reset any inherited indent that AI-generated HTML might include */
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Ensure AI-generated wrapper divs don't add extra margin */
+.blog-article-content > div {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Mobile sticky CTA safe spacing */
+@media (max-width: 1023px) {
+  .blog-sticky-bar-safe {
+    padding-bottom: 80px;
+  }
 }
 
 /* Images inside blog content — always full width of column */

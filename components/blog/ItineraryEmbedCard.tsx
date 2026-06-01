@@ -120,7 +120,7 @@ export default function ItineraryEmbedCard({ itineraryId }: Props) {
           </div>
           <Link
             href={`/itineraries/${data._id}`}
-            className="shrink-0 flex items-center gap-1.5 bg-primary text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg shadow-primary/30 hover:bg-primary/90 hover:scale-105 transition-all duration-200"
+            className="shrink-0 flex items-center gap-1.5 bg-white text-primary text-xs font-bold px-3.5 py-2 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all duration-200"
           >
             <BookOpen size={12} /> Book Now <ArrowRight size={11} />
           </Link>
@@ -206,15 +206,14 @@ export default function ItineraryEmbedCard({ itineraryId }: Props) {
       )}
 
       {/* ── Footer CTA ── */}
-      <div className="px-5 pb-5 flex items-center justify-between gap-4 border-t border-brand-border dark:border-brand-border-dark pt-4">
-        <p className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 font-inter">
-          {roadmap.length} days · Includes transport, hotel & guide
-        </p>
+      <div className="px-4 pb-4 pt-3 border-t border-brand-border dark:border-brand-border-dark bg-surface/40 dark:bg-surface-dark/40">
         <Link
           href={`/itineraries/${data._id}`}
-          className="flex items-center gap-2 text-sm font-bold font-outfit text-primary hover:text-primary/80 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-primary text-white font-outfit font-bold text-sm py-3 rounded-xl shadow-lg shadow-primary/30 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
         >
-          View Full Itinerary <ArrowRight size={14} />
+          <BookOpen size={15} />
+          View Full Itinerary · {roadmap.length} Days
+          <ArrowRight size={14} />
         </Link>
       </div>
     </div>
