@@ -121,7 +121,7 @@ export default function SidebarRecommendations({ currentBlogId, currentItinerary
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                  <h4 className="absolute bottom-0 left-0 right-0 px-3 pb-3 text-[12px] font-outfit font-bold text-white line-clamp-2 leading-snug">
+                  <h4 className="absolute bottom-0 left-0 right-0 px-3 pb-3 text-[12px] font-outfit font-bold text-white line-clamp-2 overflow-hidden text-ellipsis leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                     {blog.title}
                   </h4>
                 </div>

@@ -198,32 +198,10 @@ export default async function BlogDetailPage(props: Props) {
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          DESKTOP FLOATING BOOK-NOW CARD (right side, sticky)
+          DESKTOP FLOATING BOOK-NOW CARD
+          Removed: Overlapped the sidebar on smaller screens. 
+          The sidebar already contains a CTA banner.
       ══════════════════════════════════════════════════════════════ */}
-      {linkedItinerary && (
-        <div className="hidden lg:flex fixed right-6 bottom-8 z-50 flex-col gap-0 w-[210px] rounded-2xl overflow-hidden shadow-2xl border border-brand-border dark:border-brand-border-dark">
-          {linkedItinerary.thumbnail && (
-            <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-[115px] object-cover" />
-          )}
-          <div className="bg-white dark:bg-brand-card-dark px-3 pt-2.5 pb-1">
-            <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 mb-1 leading-snug">
-              {linkedItinerary.title}
-            </p>
-            <p className="text-[11px] text-brand-text/50 dark:text-brand-text-dark/50">
-              {linkedItinerary.duration}
-              {' · '}
-              <span className="font-bold text-primary">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
-            </p>
-          </div>
-          <Link
-            href={`/itineraries/${linkedItinerary._id}`}
-            style={{ backgroundColor: 'var(--color-primary-dyn)', color: '#fff' }}
-            className="w-full flex items-center justify-center gap-2 py-3 font-outfit font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
-          >
-            <BookOpen size={14} /> Book This Trip <ArrowRight size={13} />
-          </Link>
-        </div>
-      )}
 
       {/* ══════════════════════════════════════════════════════════════
           MAIN CONTENT AREA
