@@ -7,6 +7,7 @@ import Footer from '@/components/global/Footer';
 import SocialFAB from '@/components/global/SocialFAB';
 import ClientWhatsAppSticky from '@/components/global/ClientWhatsAppSticky';
 import MobileBottomNav from '@/components/global/MobileBottomNav';
+import InstallPWA from '@/components/global/InstallPWA';
 import { Toaster } from 'react-hot-toast';
 import { Poppins, Edu_NSW_ACT_Cursive, Boldonse } from 'next/font/google';
 
@@ -133,6 +134,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <MobileBottomNav />
           <SocialFAB />
           <Toaster position="bottom-right" toastOptions={{ style: { marginBottom: '72px' } }} />
+          <InstallPWA />
           
           {/* PWA Service Worker Registration */}
           <script
