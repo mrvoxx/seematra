@@ -92,8 +92,16 @@ export const metadata: Metadata = {
     creator: '@seematra',
   },
 
-  // favicon: app/icon.png is automatically picked up by Next.js App Router
-  // No need to specify icons manually when using the file convention
+  icons: {
+    icon: [
+      { url: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png' },
+      { url: '/favicon.ico' },
+    ],
+    shortcut: ['https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png'],
+    apple: [
+      { url: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png' },
+    ],
+  },
 
   manifest: '/manifest.json',
 
