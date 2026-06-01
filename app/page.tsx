@@ -11,6 +11,14 @@ import ErrorBoundary from '@/components/global/ErrorBoundary';
 import { ItinerarySwiperSkeleton, BlogSwiperSkeleton } from '@/components/global/SkeletonCard';
 import { ShieldCheck, Compass, MapPin, CheckCircle, MessageCircle } from 'lucide-react';
 import { IItinerary, IBlog } from '@/types';
+import { generatePageMetadata } from '@/lib/seo';
+import { generateOrganizationSchema } from '@/lib/jsonld';
+
+export const metadata = generatePageMetadata({
+  title: 'Premium Uttarakhand Tour Packages & Travel Itineraries',
+  description: 'Explore the best Uttarakhand tour packages with Seematra. Adventure, spiritual, family & luxury itineraries curated by local Himalayan experts. Book online instantly.',
+  slug: '/',
+});
 
 export const dynamic = 'force-dynamic'; // always SSR fresh — DB data changes frequently
 export const revalidate = 0;
@@ -93,6 +101,11 @@ export default async function Home() {
 
   return (
     <div className="bg-surface dark:bg-surface-dark min-h-screen">
+      {/* ── Organization Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationSchema()) }}
+      />
 
       {/* ═══════════════════════════════════════════════════════════════
           STAGE 1 — HOOK

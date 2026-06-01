@@ -14,7 +14,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 import SocialVideoEmbed from '@/components/global/SocialVideoEmbed';
-import FullWidthRecommendations from '@/components/global/FullWidthRecommendations';
 
 const MapView = dynamic(() => import('@/components/global/MapView'), {
   ssr: false,
@@ -494,12 +493,7 @@ export default function ItineraryDetailClient({ itinerary }: { itinerary: IItine
         </div>
       </div>
 
-      {/* Full Width Recommendations placed outside the grid so cards can expand completely */}
-      <div className="container mx-auto px-4 lg:px-8 pb-20">
-        <section className="mt-16 pt-12 border-t border-brand-border dark:border-brand-border-dark">
-          <FullWidthRecommendations currentItineraryId={itinerary._id} />
-        </section>
-      </div>
+      {/* Removed FullWidthRecommendations; it is now rendered server-side in page.tsx for SEO internal linking */}
 
       {/* Mobile Fixed Book Now Button — sits above bottom nav bar */}
       <div className="fixed bottom-20 right-4 z-40 block lg:hidden pointer-events-none">

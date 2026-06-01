@@ -4,7 +4,12 @@ import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import Itinerary from '@/models/Itinerary';
 import { IBlog, IItinerary } from '@/types';
-import { blogJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import { generateArticleMetadata } from '@/lib/seo';
+import {
+  generateArticleSchema,
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+} from '@/lib/jsonld';
 import { Calendar, User, BookOpen, ArrowRight, Clock, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import TravelRoadmap from '@/components/global/TravelRoadmap';
@@ -13,6 +18,7 @@ import SocialVideoEmbed from '@/components/global/SocialVideoEmbed';
 import SidebarRecommendations from '@/components/global/SidebarRecommendations';
 import BlogContent from '@/components/blog/BlogContent';
 import { stripHtml } from '@/lib/utils';
+import BlogCard from '@/components/global/BlogCard';
 
 export const revalidate = 3600;
 
@@ -24,26 +30,15 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const data = await Blog.findOne({ slug: params.slug }).lean() as any;
   if (!data) return { title: 'Not Found | Seematra' };
 
-  const description = stripHtml(data.content || '').slice(0, 160);
+  const description = stripHtml(data.content || '').slice(0, 155);
 
-  return {
-    title: `${data.title} – Seematra Uttarakhand Travel Guides`,
+  return generateArticleMetadata({
+    title: `${data.title} – Travel Guides`,
     description,
+    slug: `/blogs/${data.slug}`,
+    image: data.thumbnail,
     keywords: ['Uttarakhand travel', 'Uttarakhand itinerary', ...(data.tags ?? []), 'Seematra', 'Himalayan journey'],
-    openGraph: {
-      title: data.title,
-      description,
-      images: [{ url: data.thumbnail, width: 1200, height: 630, alt: data.title }],
-      type: 'article',
-      locale: 'en_IN',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: data.title,
-      description,
-      images: [data.thumbnail],
-    },
-  };
+  });
 }
 
 export default async function BlogDetailPage(props: Props) {
@@ -70,6 +65,14 @@ export default async function BlogDetailPage(props: Props) {
     }
   }
 
+  // Fetch Related Blogs for "Continue Reading"
+  const relatedBlogsRaw = await Blog.find({
+    _id: { $ne: rawBlog._id },
+  })
+    .limit(3)
+    .sort({ createdAt: -1 })
+    .lean() as any[];
+
   const blog = {
     ...rawBlog,
     _id: rawBlog._id.toString(),
@@ -78,18 +81,29 @@ export default async function BlogDetailPage(props: Props) {
     tags: rawBlog.tags ?? [],
   } as IBlog;
 
-  const jsonLdArticle   = blogJsonLd(blog, `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}`);
-  const jsonLdBreadcrumb = breadcrumbJsonLd([
-    { name: 'Home',           url: process.env.NEXT_PUBLIC_APP_URL ?? '/' },
-    { name: 'Blogs & Guides', url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs` },
-    { name: blog.title,       url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}` },
+  const relatedBlogs = relatedBlogsRaw.map(b => ({
+    ...b,
+    _id: b._id.toString(),
+    createdAt: b.createdAt?.toISOString(),
+    publishedAt: b.publishedAt?.toISOString(),
+  })) as IBlog[];
+
+  const jsonLdArticle = generateArticleSchema(blog);
+  const jsonLdBreadcrumb = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Guides', url: '/blogs' },
+    { name: blog.title, url: `/blogs/${blog.slug}` },
   ]);
+  const jsonLdFaq = blog.faqs ? generateFAQSchema(blog.faqs) : null;
 
   return (
     <>
       {/* ── Structured Data ── */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+      {jsonLdFaq && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
+      )}
 
       {/* ══════════════════════════════════════════════════════════════
           CINEMATIC HERO — full viewport width, tall, dark-bottom
@@ -148,7 +162,7 @@ export default async function BlogDetailPage(props: Props) {
             <span className="flex items-center gap-1.5">
               <Calendar size={12} />
               <time dateTime={blog.publishedAt}>
-                {format(new Date(blog.publishedAt), 'MMMM d, yyyy')}
+                {format(new Date(blog.publishedAt!), 'MMMM d, yyyy')}
               </time>
             </span>
             {linkedItinerary && (
@@ -193,15 +207,7 @@ export default async function BlogDetailPage(props: Props) {
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          DESKTOP FLOATING BOOK-NOW CARD
-          Removed: Overlapped the sidebar on smaller screens. 
-          The sidebar already contains a CTA banner.
-      ══════════════════════════════════════════════════════════════ */}
-
-      {/* ══════════════════════════════════════════════════════════════
           MAIN CONTENT AREA
-          • px scales: 16px mobile → 56px desktop → 80px 2xl
-          • pb-24 lg:pb-12 clears the mobile sticky CTA
       ══════════════════════════════════════════════════════════════ */}
       <div className="w-full px-4 sm:px-8 md:px-10 lg:px-14 xl:px-20 2xl:px-24 pt-10 pb-28 lg:pb-16">
 
@@ -217,33 +223,6 @@ export default async function BlogDetailPage(props: Props) {
                 html={blog.content}
                 className="blog-article-content w-full font-inter text-[0.975rem] md:text-base leading-[1.9] text-brand-text/85 dark:text-brand-text-dark/85"
               />
-            )}
-
-            {/* Legacy section blocks */}
-            {blog.sections && blog.sections.length > 0 && (
-              <div className="mt-14 space-y-14">
-                {blog.sections.map((section, idx) => (
-                  <section key={idx} className="space-y-5">
-                    {section.header && (
-                      <h2 className="text-xl md:text-2xl font-outfit font-bold text-brand-text dark:text-brand-text-dark pb-2 border-b border-brand-border dark:border-brand-border-dark">
-                        {section.header}
-                      </h2>
-                    )}
-                    {section.image && (
-                      <img
-                        src={section.image}
-                        alt={section.header || `Section ${idx + 1}`}
-                        className="w-full rounded-2xl object-cover max-h-[500px]"
-                      />
-                    )}
-                    {section.paragraph && (
-                      <p className="font-inter text-brand-text/80 dark:text-brand-text-dark/80 leading-[1.9] text-base whitespace-pre-wrap">
-                        {section.paragraph}
-                      </p>
-                    )}
-                  </section>
-                ))}
-              </div>
             )}
 
             {/* FAQ accordion */}
@@ -275,7 +254,6 @@ export default async function BlogDetailPage(props: Props) {
           {/* ════════ RIGHT COLUMN — SIDEBAR ════════ */}
           <aside className="w-full lg:w-[280px] xl:w-[300px] 2xl:w-[320px] shrink-0">
             <div className="lg:sticky lg:top-24 space-y-8">
-
               {/* Social video (if present) */}
               {blog.videoUrl && (
                 <div>
@@ -285,10 +263,8 @@ export default async function BlogDetailPage(props: Props) {
                   <SocialVideoEmbed url={blog.videoUrl} />
                 </div>
               )}
-
               {/* Recommendations */}
               <SidebarRecommendations currentBlogId={blog._id} />
-
             </div>
           </aside>
 
@@ -335,6 +311,22 @@ export default async function BlogDetailPage(props: Props) {
         )}
 
       </div>
+
+      {/* ── Continue Reading (Internal Linking SEO) ── */}
+      {relatedBlogs.length > 0 && (
+        <div className="w-full bg-brand-border/20 dark:bg-brand-border-dark/20 border-t border-brand-border dark:border-brand-border-dark mt-8">
+          <section className="container mx-auto px-4 lg:px-8 py-16">
+            <h2 className="text-3xl font-outfit font-bold mb-8 border-l-4 border-primary pl-4">
+              Continue Reading
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {relatedBlogs.map((b) => (
+                <BlogCard key={b._id} blog={b} />
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
     </>
   );
 }

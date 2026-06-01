@@ -63,8 +63,8 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
 
-  // Root canonical for homepage — inner pages declare their own via metadata export
-  alternates: { canonical: 'https://seematra.com' },
+  // Root canonical for homepage is removed; pages must define their own canonical
+  // inner pages declare their own via metadata export
 
   openGraph: {
     type: 'website',
@@ -109,41 +109,12 @@ export const viewport = {
   initialScale: 1,
 };
 
-// ─── Organization JSON-LD ─────────────────────────────────────────────────────
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'TravelAgency',
-  name: 'Seematra',
-  url: BASE_URL,
-  logo: 'https://res.cloudinary.com/ddthsmqk8/image/upload/v1780223863/seematra/brand/logo.png',
-  description: 'Premium Uttarakhand tour packages and travel itineraries by local Himalayan experts.',
-  address: {
-    '@type': 'PostalAddress',
-    addressRegion: 'Uttarakhand',
-    addressCountry: 'IN',
-  },
-  areaServed: {
-    '@type': 'Place',
-    name: 'Uttarakhand, India',
-  },
-  sameAs: [
-    'https://www.facebook.com/seematra',
-    'https://www.instagram.com/seematra6?igsh=MTB4eGJlYTU5N2RkeA==',
-    'https://www.youtube.com/@seematratravel',
-  ],
-};
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${edu.variable} ${boldonse.variable}`}>
       <head>
         {/* Preconnect to external resources for faster loading */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
-        {/* Organization structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
       </head>
       <body>
         <AuthProvider>
