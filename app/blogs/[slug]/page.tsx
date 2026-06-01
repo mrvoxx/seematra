@@ -12,6 +12,7 @@ import Link from 'next/link';
 import SocialVideoEmbed from '@/components/global/SocialVideoEmbed';
 import SidebarRecommendations from '@/components/global/SidebarRecommendations';
 import BlogContent from '@/components/blog/BlogContent';
+import { stripHtml } from '@/lib/utils';
 
 export const revalidate = 3600;
 
@@ -23,13 +24,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const data = await Blog.findOne({ slug: params.slug }).lean() as any;
   if (!data) return { title: 'Not Found | Seematra' };
 
-  const description = (data.content || '')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/<[^>]*>/gm, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 160);
+  const description = stripHtml(data.content || '').slice(0, 160);
 
   return {
     title: `${data.title} – Seematra Uttarakhand Travel Guides`,

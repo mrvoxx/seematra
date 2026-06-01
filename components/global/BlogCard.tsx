@@ -8,6 +8,8 @@ import { format } from 'date-fns';
 import FavoriteButton from './FavoriteButton';
 import { motion, Variants } from 'framer-motion';
 
+import { stripHtml } from '@/lib/utils';
+
 interface Props {
   blog: IBlog;
   index?: number;
@@ -24,13 +26,7 @@ const cardVariant: Variants = {
 
 export default function BlogCard({ blog, index = 0 }: Props) {
   // Strip HTML and CSS for clean excerpt
-  const rawText = (blog.content ?? '')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/<[^>]*>/gm, '')
-    .replace(/&[a-z]+;/gi, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const rawText = stripHtml(blog.content ?? '');
   const excerpt = rawText.length > 130 ? rawText.slice(0, 130) + '…' : rawText;
 
   return (
