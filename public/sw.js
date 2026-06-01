@@ -8,7 +8,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // We can add caching logic here later if needed
-  // For now, it just bypasses to the network
-  event.respondWith(fetch(event.request));
+  // We leave this empty to satisfy the PWA install requirement,
+  // but we do NOT call event.respondWith() so that the browser 
+  // handles all requests natively. This prevents CORS and opaque 
+  // response issues with cross-origin images (Cloudinary) and maps.
 });
