@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
-  MapPin, ArrowRight, Clock, IndianRupee,
-  ChevronLeft, ChevronRight, BookOpen, Loader2
+  MapPin, ArrowRight, Clock, ChevronLeft, ChevronRight,
+  BookOpen, Loader2, Star, CalendarDays,
 } from 'lucide-react';
 
 interface RoadmapPoint {
@@ -24,198 +24,232 @@ interface ItineraryData {
   roadmap: RoadmapPoint[];
 }
 
-interface Props {
-  itineraryId: string;
-}
+interface Props { itineraryId: string; }
 
 export default function ItineraryEmbedCard({ itineraryId }: Props) {
-  const [data, setData] = useState<ItineraryData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [data, setData]           = useState<ItineraryData | null>(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(false);
   const [activeDay, setActiveDay] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef                 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!itineraryId) return;
     fetch(`/api/itineraries/${itineraryId}`)
       .then(r => r.json())
       .then(d => {
-        // ok() helper wraps as { success: true, data: {...} }
         const it = d.data || d;
-        if (it?._id) setData(it);
-        else setError(true);
+        if (it?._id) setData(it); else setError(true);
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [itineraryId]);
 
   const scrollDays = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: dir === 'left' ? -220 : 220, behavior: 'smooth' });
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' });
   };
 
   const selectDay = (idx: number) => {
     setActiveDay(idx);
-    // scroll to keep selected day visible
-    if (scrollRef.current) {
-      const card = scrollRef.current.children[idx] as HTMLElement;
-      card?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
+    const el = scrollRef.current?.children[idx] as HTMLElement | undefined;
+    el?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   };
 
-  if (loading) {
-    return (
-      <div className="my-10 flex items-center justify-center gap-3 py-12 rounded-2xl border border-brand-border dark:border-brand-border-dark bg-surface dark:bg-surface-dark">
-        <Loader2 size={18} className="animate-spin text-primary" />
-        <span className="text-sm font-inter text-brand-text/50">Loading itinerary…</span>
-      </div>
-    );
-  }
+  /* ── Loading ── */
+  if (loading) return (
+    <div className="my-10 flex items-center justify-center gap-3 py-14 rounded-2xl border border-brand-border dark:border-brand-border-dark bg-surface dark:bg-surface-dark">
+      <Loader2 size={18} className="animate-spin text-primary" />
+      <span className="text-sm font-inter text-brand-text/50">Loading itinerary…</span>
+    </div>
+  );
 
-  if (error || !data) {
-    return (
-      <div className="my-10 py-8 px-6 rounded-2xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/10 text-center">
-        <p className="text-sm font-inter text-red-600 dark:text-red-400">Could not load itinerary embed.</p>
-      </div>
-    );
-  }
+  /* ── Error ── */
+  if (error || !data) return (
+    <div className="my-10 py-8 px-6 rounded-2xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/10 text-center">
+      <p className="text-sm font-inter text-red-500">Could not load itinerary.</p>
+    </div>
+  );
 
-  const roadmap = data.roadmap ?? [];
-  const activePoint = roadmap[activeDay];
+  const roadmap    = data.roadmap ?? [];
+  const active     = roadmap[activeDay];
 
   return (
-    <div className="my-12 rounded-2xl overflow-hidden border border-brand-border dark:border-brand-border-dark shadow-xl bg-brand-card dark:bg-brand-card-dark not-prose">
+    <div className="my-10 rounded-2xl overflow-hidden border border-brand-border dark:border-brand-border-dark shadow-2xl bg-white dark:bg-brand-card-dark not-prose">
 
-      {/* ── Header strip ── */}
-      <div className="relative h-44 overflow-hidden">
-        {/* Background image (active day or thumbnail) */}
+      {/* ════════════════════════════════════════
+          HERO STRIP — image always fills top
+      ════════════════════════════════════════ */}
+      <div className="relative w-full h-52 overflow-hidden">
         <img
-          key={activePoint?.image || data.thumbnail}
-          src={activePoint?.image || data.thumbnail}
-          alt={activePoint?.locationName || data.title}
-          className="w-full h-full object-cover transition-all duration-700"
+          key={active?.image || data.thumbnail}
+          src={active?.image || data.thumbnail}
+          alt={active?.locationName || data.title}
+          className="absolute inset-0 w-full h-full object-cover object-center transition-all duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        {/* Strong dark overlay so any image is readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10" />
 
-        {/* Title + meta */}
-        <div className="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-1.5 mb-1">
-              <MapPin size={12} className="text-secondary" />
-              <span className="text-[10px] font-bold text-secondary uppercase tracking-wider font-outfit">
-                Featured Itinerary
-              </span>
-            </div>
-            <h3 className="text-white font-outfit font-extrabold text-lg leading-tight line-clamp-2">
+        {/* Pill badge top-left */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-md border border-white/15 rounded-full px-2.5 py-1">
+          <MapPin size={10} className="text-primary" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-white font-outfit">
+            Featured Itinerary
+          </span>
+        </div>
+
+        {/* Content at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            {/* Title — always white */}
+            <h3 className="text-white font-outfit font-extrabold text-base md:text-lg leading-snug line-clamp-2 mb-2"
+              style={{ textShadow: '0 1px 12px rgba(0,0,0,0.8)' }}>
               {data.title}
             </h3>
-            <div className="flex items-center gap-3 mt-1.5">
-              <span className="flex items-center gap-1 text-white/75 text-xs font-inter">
-                <Clock size={11} /> {data.duration}
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="flex items-center gap-1 text-white/80 text-[11px] font-inter">
+                <CalendarDays size={10} /> {data.duration}
               </span>
-              <span className="flex items-center gap-1 text-white/75 text-xs font-inter">
-                <IndianRupee size={11} /> from ₹{data.price?.toLocaleString('en-IN')}
+              <span className="flex items-center gap-1 text-white/80 text-[11px] font-inter">
+                <Star size={10} className="fill-amber-400 text-amber-400" />
+                from <span className="font-bold text-white">₹{data.price?.toLocaleString('en-IN')}</span>
               </span>
             </div>
           </div>
           <Link
             href={`/itineraries/${data._id}`}
-            className="shrink-0 flex items-center gap-1.5 bg-white text-primary text-xs font-bold px-3.5 py-2 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all duration-200"
+            className="shrink-0 flex items-center gap-1.5 bg-white text-primary text-[11px] font-bold px-3 py-1.5 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all duration-200 whitespace-nowrap"
           >
-            <BookOpen size={12} /> Book Now <ArrowRight size={11} />
+            <BookOpen size={11} /> Book Now
           </Link>
         </div>
       </div>
 
-      {/* ── Active Day Detail ── */}
-      {activePoint && (
-        <div className="px-5 py-4 border-b border-brand-border dark:border-brand-border-dark bg-surface/50 dark:bg-surface-dark/50">
-          <p className="text-[10px] font-bold font-outfit uppercase tracking-wider text-primary mb-1">
-            Day {activePoint.day} — {activePoint.locationName}
-          </p>
-          <p className="text-xs font-inter text-brand-text/70 dark:text-brand-text-dark/70 line-clamp-2 leading-relaxed">
-            {activePoint.overview}
-          </p>
+      {/* ════════════════════════════════════════
+          ACTIVE DAY DETAIL STRIP
+      ════════════════════════════════════════ */}
+      {active && (
+        <div className="flex items-start gap-3 px-4 py-3 bg-primary/8 dark:bg-primary/10 border-b border-brand-border dark:border-brand-border-dark">
+          {/* Day pill */}
+          <div className="shrink-0 flex flex-col items-center justify-center bg-primary rounded-xl px-2.5 py-1.5 min-w-[44px]">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-white/80 font-outfit">Day</span>
+            <span className="text-base font-extrabold leading-none text-white font-outfit">{active.day}</span>
+          </div>
+          <div className="flex-1 min-w-0 pt-0.5">
+            <p className="text-sm font-bold font-outfit text-brand-text dark:text-brand-text-dark leading-tight mb-0.5 truncate">
+              {active.locationName}
+            </p>
+            <p className="text-xs font-inter text-brand-text/65 dark:text-brand-text-dark/65 line-clamp-2 leading-relaxed">
+              {active.overview}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* ── Scrollable Day Roadmap ── */}
+      {/* ════════════════════════════════════════
+          SCROLLABLE DAY STRIP
+      ════════════════════════════════════════ */}
       {roadmap.length > 0 && (
-        <div className="p-4">
+        <div className="px-4 pt-4 pb-3">
+          {/* Header row */}
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-bold font-outfit text-brand-text/60 dark:text-brand-text-dark/60 uppercase tracking-wider">
+            <p className="text-[10px] font-bold font-outfit text-brand-text/50 dark:text-brand-text-dark/50 uppercase tracking-widest">
               Day-by-Day Roadmap
             </p>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => scrollDays('left')}
-                className="w-7 h-7 rounded-full border border-brand-border dark:border-brand-border-dark flex items-center justify-center text-brand-text/50 hover:text-primary hover:border-primary transition-colors"
+                aria-label="Scroll left"
+                className="w-6 h-6 rounded-full border border-brand-border dark:border-brand-border-dark flex items-center justify-center text-brand-text/40 hover:text-primary hover:border-primary transition-colors"
               >
-                <ChevronLeft size={14} />
+                <ChevronLeft size={13} />
               </button>
               <button
+                type="button"
                 onClick={() => scrollDays('right')}
-                className="w-7 h-7 rounded-full border border-brand-border dark:border-brand-border-dark flex items-center justify-center text-brand-text/50 hover:text-primary hover:border-primary transition-colors"
+                aria-label="Scroll right"
+                className="w-6 h-6 rounded-full border border-brand-border dark:border-brand-border-dark flex items-center justify-center text-brand-text/40 hover:text-primary hover:border-primary transition-colors"
               >
-                <ChevronRight size={14} />
+                <ChevronRight size={13} />
               </button>
             </div>
           </div>
 
-          {/* Scrollable strip */}
+          {/*
+            KEY FIX: py-1 gives breathing room so ring doesn't clip,
+            no scale transform — selection shown via ring + shadow only.
+          */}
           <div
             ref={scrollRef}
-            className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+            className="flex gap-2.5 overflow-x-auto py-1 pr-1"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {roadmap.map((point, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => selectDay(idx)}
-                className={`shrink-0 w-40 rounded-xl overflow-hidden border-2 transition-all duration-200 text-left ${
-                  activeDay === idx
-                    ? 'border-primary shadow-lg shadow-primary/20 scale-[1.03]'
-                    : 'border-transparent hover:border-primary/40 opacity-75 hover:opacity-100'
-                }`}
-              >
-                <div className="relative h-24 overflow-hidden">
-                  <img
-                    src={point.image}
-                    alt={point.locationName}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  {/* Day badge */}
-                  <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-outfit">
-                    Day {point.day}
+            {roadmap.map((point, idx) => {
+              const isActive = activeDay === idx;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => selectDay(idx)}
+                  className={[
+                    'shrink-0 w-[130px] rounded-xl text-left transition-all duration-200 overflow-hidden',
+                    isActive
+                      ? 'ring-2 ring-primary shadow-lg shadow-primary/25'
+                      : 'ring-1 ring-brand-border dark:ring-brand-border-dark opacity-70 hover:opacity-100 hover:ring-primary/40',
+                  ].join(' ')}
+                >
+                  {/* Image fills right to the top — no padding above */}
+                  <div className="relative w-full h-[88px] overflow-hidden">
+                    <img
+                      src={point.image}
+                      alt={point.locationName}
+                      className="absolute inset-0 w-full h-full object-cover object-center"
+                      loading="lazy"
+                    />
+                    {/* Day badge */}
+                    <div className={[
+                      'absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full font-outfit',
+                      isActive
+                        ? 'bg-primary text-white'
+                        : 'bg-black/55 backdrop-blur-sm text-white',
+                    ].join(' ')}>
+                      Day {point.day}
+                    </div>
                   </div>
-                  {activeDay === idx && (
-                    <div className="absolute inset-0 ring-2 ring-primary ring-inset rounded-xl" />
-                  )}
-                </div>
-                <div className="px-2.5 py-2 bg-surface dark:bg-surface-dark">
-                  <p className={`text-[11px] font-bold font-outfit truncate ${activeDay === idx ? 'text-primary' : 'text-brand-text dark:text-brand-text-dark'}`}>
-                    {point.locationName}
-                  </p>
-                </div>
-              </button>
-            ))}
+                  {/* Name label */}
+                  <div className={[
+                    'px-2 py-1.5',
+                    isActive ? 'bg-primary' : 'bg-surface dark:bg-surface-dark',
+                  ].join(' ')}>
+                    <p className={[
+                      'text-[11px] font-bold font-outfit truncate leading-tight',
+                      isActive ? 'text-white' : 'text-brand-text dark:text-brand-text-dark',
+                    ].join(' ')}>
+                      {point.locationName}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* ── Footer CTA ── */}
-      <div className="px-4 pb-4 pt-3 border-t border-brand-border dark:border-brand-border-dark bg-surface/40 dark:bg-surface-dark/40">
+      {/* ════════════════════════════════════════
+          FOOTER CTA — explicit white text
+      ════════════════════════════════════════ */}
+      <div className="px-4 pb-4 pt-2">
         <Link
           href={`/itineraries/${data._id}`}
-          className="w-full flex items-center justify-center gap-2 bg-primary text-white font-outfit font-bold text-sm py-3 rounded-xl shadow-lg shadow-primary/30 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+          style={{ backgroundColor: 'var(--color-primary-dyn)', color: '#ffffff' }}
+          className="w-full flex items-center justify-center gap-2 font-outfit font-bold text-sm py-3 rounded-xl shadow-lg hover:opacity-90 hover:shadow-xl active:scale-[0.98] transition-all duration-200"
         >
           <BookOpen size={15} />
           View Full Itinerary · {roadmap.length} Days
           <ArrowRight size={14} />
         </Link>
       </div>
+
     </div>
   );
 }
