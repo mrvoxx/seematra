@@ -114,36 +114,37 @@ export default async function BlogDetailPage(props: Props) {
         </div>
       </div>
 
-      {/* ─── Content + Floating CTA ─── */}
-      <div className="relative">
-        {/* Floating Book Now — fixed right side */}
-        {linkedItinerary && (
-          <div className="fixed right-4 md:right-8 bottom-8 z-50 flex flex-col items-end gap-3">
-            <div className="hidden md:flex flex-col items-end gap-1 bg-surface dark:bg-surface-dark border border-brand-border dark:border-brand-border-dark shadow-xl rounded-2xl p-4 max-w-[220px]">
-              {linkedItinerary.thumbnail && (
-                <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-24 object-cover rounded-xl mb-2" />
-              )}
-              <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 text-right">{linkedItinerary.title}</p>
-              <p className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 text-right">
-                {linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
-              </p>
-            </div>
-            <Link
-              href={`/itineraries/${linkedItinerary._id}`}
-              className="flex items-center gap-2 bg-primary text-surface px-6 py-3.5 rounded-full font-outfit font-bold shadow-xl shadow-primary/30 hover:bg-primary/90 hover:scale-105 transition-all duration-200 text-sm"
-            >
-              <BookOpen size={16} />
-              Book Now
-              <ArrowRight size={14} />
-            </Link>
+      {/* ─── Floating Book Now (fixed, right side) ─── */}
+      {linkedItinerary && (
+        <div className="fixed right-4 md:right-8 bottom-8 z-50 flex flex-col items-end gap-3">
+          <div className="hidden md:flex flex-col items-end gap-1 bg-surface dark:bg-surface-dark border border-brand-border dark:border-brand-border-dark shadow-xl rounded-2xl p-4 max-w-[220px]">
+            {linkedItinerary.thumbnail && (
+              <img src={linkedItinerary.thumbnail} alt={linkedItinerary.title} className="w-full h-24 object-cover rounded-xl mb-2" />
+            )}
+            <p className="text-xs font-outfit font-bold text-brand-text dark:text-brand-text-dark line-clamp-2 text-right">{linkedItinerary.title}</p>
+            <p className="text-xs text-brand-text/50 dark:text-brand-text-dark/50 text-right">
+              {linkedItinerary.duration} · <span className="text-primary font-bold">₹{linkedItinerary.price?.toLocaleString('en-IN')}</span>
+            </p>
           </div>
-        )}
+          <Link
+            href={`/itineraries/${linkedItinerary._id}`}
+            className="flex items-center gap-2 bg-primary text-surface px-6 py-3.5 rounded-full font-outfit font-bold shadow-xl shadow-primary/30 hover:bg-primary/90 hover:scale-105 transition-all duration-200 text-sm"
+          >
+            <BookOpen size={16} />
+            Book Now
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
 
-        {/* Main article layout (2-column) */}
-        <div className="container mx-auto px-4 lg:px-8 py-12 flex flex-col lg:flex-row gap-12">
-          {/* Left Column: Main Content */}
-          <article className="flex-1 max-w-none">
-            {blog.content && (
+      {/* ─── Main 2-column layout ─── */}
+      <div className="container mx-auto px-4 lg:px-8 py-12 max-w-7xl flex flex-col lg:flex-row gap-12">
+
+        {/* ── Left: Article content ── */}
+        <article className="flex-1 min-w-0">
+
+          {/* HTML Content */}
+          {blog.content && (
             <BlogContent
               html={blog.content}
               className="prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none font-inter text-brand-text/80 dark:text-brand-text-dark/80 prose-headings:font-outfit prose-headings:font-bold prose-headings:text-primary prose-strong:text-primary prose-img:rounded-xl prose-a:text-primary hover:prose-a:text-primary-dark"
@@ -161,10 +162,10 @@ export default async function BlogDetailPage(props: Props) {
                     </h2>
                   )}
                   {section.image && (
-                    <img 
-                      src={section.image} 
-                      alt={section.header || `Section ${idx + 1}`} 
-                      className="w-full rounded-2xl object-cover max-h-[500px]" 
+                    <img
+                      src={section.image}
+                      alt={section.header || `Section ${idx + 1}`}
+                      className="w-full rounded-2xl object-cover max-h-[500px]"
                     />
                   )}
                   {section.paragraph && (
@@ -176,7 +177,7 @@ export default async function BlogDetailPage(props: Props) {
               ))}
             </div>
           )}
-          
+
           {/* Dynamic FAQs */}
           {blog.faqs && blog.faqs.length > 0 && (
             <div className="mt-16 border-t border-brand-border dark:border-brand-border-dark pt-12">
@@ -188,9 +189,7 @@ export default async function BlogDetailPage(props: Props) {
                   <details key={idx} className="group bg-surface/50 dark:bg-surface-dark/50 border border-brand-border dark:border-brand-border-dark rounded-xl overflow-hidden">
                     <summary className="flex items-center justify-between p-5 cursor-pointer font-outfit font-bold text-lg text-brand-text dark:text-brand-text-dark select-none">
                       {faq.question}
-                      <span className="text-primary transform group-open:rotate-180 transition-transform duration-300">
-                        ▼
-                      </span>
+                      <span className="text-primary transform group-open:rotate-180 transition-transform duration-300">▼</span>
                     </summary>
                     <div className="p-5 pt-0 text-brand-text/80 dark:text-brand-text-dark/80 font-inter leading-relaxed whitespace-pre-wrap">
                       {faq.answer}
@@ -200,12 +199,12 @@ export default async function BlogDetailPage(props: Props) {
               </div>
             </div>
           )}
+
         </article>
 
-        {/* Right Column: Sidebar */}
-        <aside className="w-full lg:w-[380px] shrink-0 space-y-12">
-          {/* Sticky Container */}
-          <div className="sticky top-28 space-y-12">
+        {/* ── Right: Sticky sidebar ── */}
+        <aside className="w-full lg:w-[340px] shrink-0">
+          <div className="sticky top-28 space-y-10">
             {/* Social Video Embed */}
             {blog.videoUrl && (
               <div className="animate-fade-left">
@@ -213,37 +212,36 @@ export default async function BlogDetailPage(props: Props) {
                 <SocialVideoEmbed url={blog.videoUrl} />
               </div>
             )}
-
             {/* Sidebar Recommendations */}
             <SidebarRecommendations currentBlogId={blog._id} />
           </div>
         </aside>
+
       </div>
 
-        {/* ─── Animated Roadmap ─── */}
-        {linkedItinerary && linkedItinerary.roadmap.length > 0 && (
-          <div className="container mx-auto px-4 lg:px-8 pb-16 max-w-5xl">
-            <div className="border-t border-brand-border dark:border-brand-border-dark pt-12">
-              <TravelRoadmap
-                roadmap={linkedItinerary.roadmap}
-                itineraryTitle={linkedItinerary.title}
-              />
-              {/* CTA below roadmap */}
-              <div className="text-center mt-16">
-                <p className="text-brand-text/60 dark:text-brand-text-dark/60 font-inter mb-4">Ready to experience this journey?</p>
-                <Link
-                  href={`/itineraries/${linkedItinerary._id}`}
-                  className="btn-primary text-lg px-10 py-4 inline-flex items-center gap-3"
-                >
-                  <BookOpen size={20} />
-                  Book This Itinerary · ₹{linkedItinerary.price?.toLocaleString('en-IN')}
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
+      {/* ─── Animated Roadmap (full width, below 2-col) ─── */}
+      {linkedItinerary && linkedItinerary.roadmap.length > 0 && (
+        <div className="container mx-auto px-4 lg:px-8 pb-16 max-w-5xl">
+          <div className="border-t border-brand-border dark:border-brand-border-dark pt-12">
+            <TravelRoadmap
+              roadmap={linkedItinerary.roadmap}
+              itineraryTitle={linkedItinerary.title}
+            />
+            <div className="text-center mt-16">
+              <p className="text-brand-text/60 dark:text-brand-text-dark/60 font-inter mb-4">Ready to experience this journey?</p>
+              <Link
+                href={`/itineraries/${linkedItinerary._id}`}
+                className="btn-primary text-lg px-10 py-4 inline-flex items-center gap-3"
+              >
+                <BookOpen size={20} />
+                Book This Itinerary · ₹{linkedItinerary.price?.toLocaleString('en-IN')}
+                <ArrowRight size={18} />
+              </Link>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }
+

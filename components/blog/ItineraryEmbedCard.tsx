@@ -40,9 +40,9 @@ export default function ItineraryEmbedCard({ itineraryId }: Props) {
     fetch(`/api/itineraries/${itineraryId}`)
       .then(r => r.json())
       .then(d => {
-        // API may return the itinerary directly or nested
-        const it = d.itinerary || d;
-        if (it._id) setData(it);
+        // ok() helper wraps as { success: true, data: {...} }
+        const it = d.data || d;
+        if (it?._id) setData(it);
         else setError(true);
       })
       .catch(() => setError(true))
