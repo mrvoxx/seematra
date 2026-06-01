@@ -7,15 +7,16 @@ import { IBooking, IItinerary } from '@/types';
 import LoadingSpinner from '@/components/global/LoadingSpinner';
 import ItineraryForm from '@/components/admin/ItineraryForm';
 import BlogForm from '@/components/admin/BlogForm';
+import CloudinaryGallery from '@/components/admin/CloudinaryGallery';
 import {
   Pencil, Trash2, Plus, Bell, LayoutDashboard,
   Map, BookOpen, CalendarCheck, Users, IndianRupee,
-  TrendingUp, CheckCircle2, Clock, ChevronRight, Star, Eye, EyeOff
+  TrendingUp, CheckCircle2, Clock, ChevronRight, Star, Eye, EyeOff, Images
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 
-type Tab = 'overview' | 'bookings' | 'itineraries' | 'builder' | 'blogs' | 'blog-editor' | 'reviews';
+type Tab = 'overview' | 'bookings' | 'itineraries' | 'builder' | 'blogs' | 'blog-editor' | 'reviews' | 'media';
 
 interface Stats {
   totalBookings: number;
@@ -104,7 +105,7 @@ export default function AdminDashboardClient() {
       } catch (err) { console.error(err); }
       finally { setLoading(false); }
     };
-    if (!['builder', 'blog-editor'].includes(activeTab)) fetchData();
+    if (!['builder', 'blog-editor', 'media'].includes(activeTab)) fetchData();
   }, [activeTab]);
 
   const NAV: { key: Tab; label: string; icon: any }[] = [
@@ -114,6 +115,7 @@ export default function AdminDashboardClient() {
     { key: 'builder',      label: 'New Itinerary',   icon: Plus },
     { key: 'blogs',        label: 'Blogs & Guides',  icon: BookOpen },
     { key: 'blog-editor',  label: 'Write Blog',      icon: Pencil },
+    { key: 'media',        label: 'Media Library',   icon: Images },
     { key: 'reviews',      label: 'Reviews',         icon: Star },
   ];
 
@@ -472,6 +474,13 @@ export default function AdminDashboardClient() {
                   <button onClick={() => setActiveTab('blogs')} className="btn-secondary py-2 text-sm">Cancel</button>
                 </div>
                 <BlogForm initial={editingBlog} onSuccess={() => { setEditingBlog(null); setActiveTab('blogs'); }} />
+              </div>
+            )}
+
+            {/* ══ MEDIA LIBRARY ══ */}
+            {activeTab === 'media' && (
+              <div className="bg-brand-card dark:bg-brand-card-dark border border-brand-border dark:border-brand-border-dark rounded-2xl p-6 animate-fade-up">
+                <CloudinaryGallery />
               </div>
             )}
 

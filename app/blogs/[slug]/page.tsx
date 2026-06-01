@@ -11,6 +11,7 @@ import TravelRoadmap from '@/components/global/TravelRoadmap';
 import Link from 'next/link';
 import SocialVideoEmbed from '@/components/global/SocialVideoEmbed';
 import SidebarRecommendations from '@/components/global/SidebarRecommendations';
+import BlogContent from '@/components/blog/BlogContent';
 
 export const revalidate = 3600;
 
@@ -143,9 +144,9 @@ export default async function BlogDetailPage(props: Props) {
           {/* Left Column: Main Content */}
           <article className="flex-1 max-w-none">
             {blog.content && (
-            <div
+            <BlogContent
+              html={blog.content}
               className="prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none font-inter text-brand-text/80 dark:text-brand-text-dark/80 prose-headings:font-outfit prose-headings:font-bold prose-headings:text-primary prose-strong:text-primary prose-img:rounded-xl prose-a:text-primary hover:prose-a:text-primary-dark"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
             />
           )}
 
