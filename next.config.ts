@@ -10,7 +10,7 @@ const CSP = [
   `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://cdn.razorpay.com`,
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' https://fonts.gstatic.com`,
-  `img-src 'self' data: blob: https://res.cloudinary.com https://lh3.googleusercontent.com https://images.unsplash.com https://unpkg.com https://*.tile.openstreetmap.org https://randomuser.me`,
+  `img-src * data: blob: 'unsafe-inline'`,
   `connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://api.msg91.com`,
   `frame-src https://api.razorpay.com https://checkout.razorpay.com`,
   `object-src 'none'`,
@@ -31,9 +31,8 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     remotePatterns: [
-      { protocol: 'https', hostname: 'res.cloudinary.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
     ],
   },
 
