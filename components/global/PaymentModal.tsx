@@ -101,6 +101,7 @@ export default function PaymentModal({ itinerary, onSuccess, onClose }: Props) {
 
             toast.success('Payment confirmed! Booking saved.');
             setConfirmedBookingId(bookingId);
+            localStorage.setItem('hasBooked', 'true');
             setStep('success');
             onSuccess(bookingId);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

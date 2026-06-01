@@ -13,7 +13,12 @@ export default function InstallPWA() {
       e.preventDefault();
       setDeferredPrompt(e);
       // Show the prompt after a slight delay so it's not too aggressive
-      setTimeout(() => setShowInstall(true), 3000);
+      // ONLY show it if the user has successfully booked an itinerary
+      setTimeout(() => {
+        if (localStorage.getItem('hasBooked') === 'true') {
+          setShowInstall(true);
+        }
+      }, 3000);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
